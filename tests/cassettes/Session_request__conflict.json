@@ -15,7 +15,7 @@
           "Content-Length": "57",
           "Content-Type": "application/x-www-form-urlencoded",
           "Cookie": "loid=S1UX7gEWPLHZFXDMKZ",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.10.1"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.10.1"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -67,7 +67,7 @@
           "Content-Length": "87",
           "Content-Type": "application/x-www-form-urlencoded",
           "Cookie": "edgebucket=NTUmIaQTzkbc6Ni4JG; loid=S1UX7gEWPLHZFXDMKZ; session_tracker=DJojrrAVPFxgb0vizI.0.1495932294853.Z0FBQUFBQlpLaDJIaFl0OUFYbXdtejdaSmg3Mm5ZZ19EZ2JzTzZhVlFEbERZUVZ2RzJuOUpVWkUwQVBQUmRBLWpZWUVEaHBzNy1nTEh1LXN3TVZHa1dwNDJ1ai05cko1OWhWRDVFLWw2MEN5VEdmNTdHejZUcFJwWUhiUWtmSS1nY2czaklKanNoTVY",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.10.1"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.10.1"
         },
         "method": "POST",
         "uri": "https://oauth.reddit.com/r/ThirdRealm/api/wiki/edit?raw_json=1"

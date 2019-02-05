@@ -15,7 +15,7 @@
           "Content-Length": "57",
           "Content-Type": "application/x-www-form-urlencoded",
           "Cookie": "__cfduid=dd96ea2981f3ad6ab5250a89b33e0ace81458613117; loid=S1UX7gEWPLHZFXDMKZ",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.0.13"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.0.13"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -63,7 +63,7 @@
           "Content-Length": "35",
           "Content-Type": "application/json",
           "Cookie": "__cfduid=dd96ea2981f3ad6ab5250a89b33e0ace81458613117; loid=S1UX7gEWPLHZFXDMKZ",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.0.13"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.0.13"
         },
         "method": "PATCH",
         "uri": "https://oauth.reddit.com/api/v1/me/prefs?raw_json=1"

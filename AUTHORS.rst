@@ -1,4 +1,4 @@
-prawcore is written and maintained by Bryce Boe and various contributors:
+asyncprawcore is written and maintained by Bryce Boe and various contributors:
 
 Maintainers
 ===========

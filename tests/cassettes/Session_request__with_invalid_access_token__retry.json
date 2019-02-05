@@ -15,7 +15,7 @@
           "Content-Length": "29",
           "Content-Type": "application/x-www-form-urlencoded",
           "Cookie": "loid=mmMAwMoHaJm04NKk1i",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.10.0"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.10.0"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -65,7 +65,7 @@
           "Authorization": "bearer 1yexa9ZAUv1v14Qdcp_k5eH69Dcinvalid",
           "Connection": "keep-alive",
           "Cookie": "edgebucket=96mMhLDqGpQs0k62pi; loid=mmMAwMoHaJm04NKk1i.0.1491884054647.Z0FBQUFBQlk3RmdXX21iejJKMWpEcENQZEhtOTAyVENkb2hSTmZBQlpLbHhNVmo0MFVIZ256VllUVWg1QlBqLU1RMjdkWVRxUmkxOHNkQ0NMNmFHZ2VxeDVINW1CaElUVTdBOTZOZnhTaHlvRGZ1R2FETUNDSEhtVEdweDRFRmVPbVRQTWQ3cWZXXzk",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.10.0"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.10.0"
         },
         "method": "GET",
         "uri": "https://oauth.reddit.com/?raw_json=1"
@@ -120,7 +120,7 @@
           "Content-Length": "29",
           "Content-Type": "application/x-www-form-urlencoded",
           "Cookie": "edgebucket=96mMhLDqGpQs0k62pi; loid=mmMAwMoHaJm04NKk1i.0.1491884054647.Z0FBQUFBQlk3RmdXX21iejJKMWpEcENQZEhtOTAyVENkb2hSTmZBQlpLbHhNVmo0MFVIZ256VllUVWg1QlBqLU1RMjdkWVRxUmkxOHNkQ0NMNmFHZ2VxeDVINW1CaElUVTdBOTZOZnhTaHlvRGZ1R2FETUNDSEhtVEdweDRFRmVPbVRQTWQ3cWZXXzk",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.10.0"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.10.0"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -169,7 +169,7 @@
           "Authorization": "bearer K-BTKerWB4Qu_S6zjAQmHd5q-tU",
           "Connection": "keep-alive",
           "Cookie": "edgebucket=96mMhLDqGpQs0k62pi; loid=mmMAwMoHaJm04NKk1i.0.1491884054647.Z0FBQUFBQlk3RmdXX21iejJKMWpEcENQZEhtOTAyVENkb2hSTmZBQlpLbHhNVmo0MFVIZ256VllUVWg1QlBqLU1RMjdkWVRxUmkxOHNkQ0NMNmFHZ2VxeDVINW1CaElUVTdBOTZOZnhTaHlvRGZ1R2FETUNDSEhtVEdweDRFRmVPbVRQTWQ3cWZXXzk",
-          "User-Agent": "prawcore:test (by /u/bboe) prawcore/0.10.0"
+          "User-Agent": "asyncprawcore:test (by /u/bboe) asyncprawcore/0.10.0"
         },
         "method": "GET",
         "uri": "https://oauth.reddit.com/?raw_json=1"

@@ -1,7 +1,7 @@
-"""Test for prawcore.Sessions module."""
+"""Test for asyncprawcore.Sessions module."""
 from copy import copy
 from mock import patch
-from prawcore.rate_limit import RateLimiter
+from asyncprawcore.rate_limit import RateLimiter
 import unittest
 
 

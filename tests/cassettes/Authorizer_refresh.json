@@ -14,7 +14,7 @@
           "Connection": "keep-alive",
           "Content-Length": "66",
           "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": "prawcore/0.0.1a1"
+          "User-Agent": "asyncprawcore/0.0.1a1"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"

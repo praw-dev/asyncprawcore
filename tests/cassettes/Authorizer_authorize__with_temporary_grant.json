@@ -15,7 +15,7 @@
           "Content-Length": "105",
           "Content-Type": "application/x-www-form-urlencoded",
           "Cookie": "__cfduid=d85ee693995a0b47572b2d5fa2f438f191455481879",
-          "User-Agent": "prawcore/0.0.1a1"
+          "User-Agent": "asyncprawcore/0.0.1a1"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"

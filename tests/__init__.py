@@ -1,4 +1,4 @@
-"""Test prawcore."""
+"""Test asyncprawcore."""
 import time
 
 

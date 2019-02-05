@@ -1,16 +1,23 @@
-"""Provide exception classes for the prawcore package."""
-from urllib.parse import urlparse
+"""Provide exception classes for the asyncprawcore package."""
+
+import sys
 
 
-class PrawcoreException(Exception):
+if sys.version_info[0] == 2:
+    from urlparse import urlparse
+else:
+    from urllib.parse import urlparse
+
+
+class asyncprawcoreException(Exception):
     """Base exception class for exceptions that occur within this package."""
 
 
-class InvalidInvocation(PrawcoreException):
+class InvalidInvocation(asyncprawcoreException):
     """Indicate that the code to execute cannot be completed."""
 
 
-class RequestException(PrawcoreException):
+class RequestException(asyncprawcoreException):
     """Indicate that there was an error with the incomplete HTTP request."""
 
     def __init__(self, original_exception, request_args, request_kwargs):
@@ -24,12 +31,11 @@ class RequestException(PrawcoreException):
         self.original_exception = original_exception
         self.request_args = request_args
         self.request_kwargs = request_kwargs
-        super(RequestException, self).__init__(
-            "error with request {}".format(original_exception)
-        )
+        super(RequestException, self).__init__('error with request {}'
+                                               .format(original_exception))
 
 
-class ResponseException(PrawcoreException):
+class ResponseException(asyncprawcoreException):
     """Indicate that there was an error with the completed HTTP request."""
 
     def __init__(self, response):
@@ -39,12 +45,10 @@ class ResponseException(PrawcoreException):
 
         """
         self.response = response
-        super(ResponseException, self).__init__(
-            "received {} HTTP response".format(response.status_code)
-        )
+        super(ResponseException, self).__init__('received {} HTTP response'.format(response.status))
 
 
-class OAuthException(PrawcoreException):
+class OAuthException(asyncprawcoreException):
     """Indicate that there was an OAuth2 related error with the request."""
 
     def __init__(self, response, error, description):
@@ -58,10 +62,10 @@ class OAuthException(PrawcoreException):
         self.error = error
         self.description = description
         self.response = response
-        message = "{} error processing request".format(error)
+        message = '{} error processing request'.format(error)
         if description:
-            message += " ({})".format(description)
-        PrawcoreException.__init__(self, message)
+            message += ' ({})'.format(description)
+        asyncprawcoreException.__init__(self, message)
 
 
 class BadJSON(ResponseException):
@@ -107,17 +111,10 @@ class Redirect(ResponseException):
         header.
 
         """
-        path = urlparse(response.headers["location"]).path
-        self.path = path[:-5] if path.endswith(".json") else path
+        path = urlparse(response.headers['location']).path
+        self.path = path[:-5] if path.endswith('.json') else path
         self.response = response
-        msg = "Redirect to {}".format(self.path)
-        msg += (
-            " (You may be trying to perform a non-read-only action via a "
-            "read-only instance.)"
-            if "/login/" in self.path
-            else ""
-        )
-        PrawcoreException.__init__(self, msg)
+        asyncprawcoreException.__init__(self, 'Redirect to {}'.format(self.path))
 
 
 class ServerError(ResponseException):
@@ -137,12 +134,10 @@ class SpecialError(ResponseException):
         self.response = response
 
         resp_dict = self.response.json()  # assumes valid JSON
-        self.message = resp_dict.get("message", "")
-        self.reason = resp_dict.get("reason", "")
-        self.special_errors = resp_dict.get("special_errors", [])
-        PrawcoreException.__init__(
-            self, "Special error {!r}".format(self.message)
-        )
+        self.message = resp_dict.get('message', '')
+        self.reason = resp_dict.get('reason', '')
+        self.special_errors = resp_dict.get('special_errors', [])
+        asyncprawcoreException.__init__(self, 'Special error {!r}'.format(self.message))
 
 
 class TooLarge(ResponseException):
