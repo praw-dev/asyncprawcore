@@ -88,8 +88,7 @@ class Session(object):
             if hasattr(self._authorizer, 'refresh'):
                 do_retry = True
 
-        if retries > 1 and (do_retry or response is None or
-                            response.status in self.RETRY_STATUSES):
+        if retries > 1 and (do_retry or response is None or response.status in self.RETRY_STATUSES):
             return await self._do_retry(data, files, json, method, params, response, retries, saved_exception, url)
         elif response.status in self.STATUS_EXCEPTIONS:
             raise self.STATUS_EXCEPTIONS[response.status](response)

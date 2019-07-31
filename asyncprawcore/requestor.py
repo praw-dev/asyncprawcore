@@ -35,7 +35,7 @@ class Requestor(object):
         self.reddit_url = reddit_url
 
     def getHttp(self, session):
-        self._http = session or aiohttp.ClientSession(loop=self.loop)
+        self._http = session or aiohttp.ClientSession(loop=self.loop, timeout=aiohttp.ClientTimeout(total=None))
 
     def close(self):
         """Call close on the underlying session."""
