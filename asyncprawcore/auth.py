@@ -61,7 +61,7 @@ class BaseAuthenticator(object):
         request = Request('GET', url, params=params)
         return request.prepare().url
 
-    def revoke_token(self, token, token_type=None):
+    async def revoke_token(self, token, token_type=None):
         """Ask Reddit to revoke the provided token.
 
         :param token: The access or refresh token to revoke.
@@ -74,7 +74,7 @@ class BaseAuthenticator(object):
         if token_type is not None:
             data['token_type_hint'] = token_type
         url = self._requestor.reddit_url + const.REVOKE_TOKEN_PATH
-        self._post(url, success_status=codes['no_content'], **data)
+        await self._post(url, success_status=codes['no_content'], **data)
 
 
 class TrustedAuthenticator(BaseAuthenticator):
@@ -97,13 +97,15 @@ class TrustedAuthenticator(BaseAuthenticator):
         super(TrustedAuthenticator, self).__init__(requestor, client_id, redirect_uri)
         self.client_secret = client_secret
 
-    def _auth(self): return aiohttp.helpers.BasicAuth(self.client_id, self.client_secret)
+    def _auth(self): 
+        return aiohttp.helpers.BasicAuth(self.client_id, self.client_secret)
 
 
 class UntrustedAuthenticator(BaseAuthenticator):
     """Store OAuth2 authentication credentials for installed applications."""
 
-    def _auth(self): return aiohttp.helpers.BasicAuth(self.client_id, '')
+    def _auth(self): 
+        return aiohttp.helpers.BasicAuth(self.client_id, '')
 
 
 
@@ -152,12 +154,12 @@ class BaseAuthorizer(object):
         """
         return self.access_token is not None and time.time() < self._expiration_timestamp
 
-    def revoke(self):
+    async def revoke(self):
         """Revoke the current Authorization."""
         if self.access_token is None:
             raise InvalidInvocation('no token available to revoke')
 
-        self._authenticator.revoke_token(self.access_token, 'access_token')
+        await self._authenticator.revoke_token(self.access_token, 'access_token')
         self._clear_access_token()
 
 
@@ -178,7 +180,7 @@ class Authorizer(BaseAuthorizer):
         super(Authorizer, self).__init__(authenticator)
         self.refresh_token = refresh_token
 
-    def authorize(self, code):
+    async def authorize(self, code):
         """Obtain and set authorization tokens based on ``code``.
 
         :param code: The code obtained by an out-of-band authorization request
@@ -187,7 +189,7 @@ class Authorizer(BaseAuthorizer):
         """
         if self._authenticator.redirect_uri is None:
             raise InvalidInvocation('redirect URI not provided')
-        self._request_token(code=code, grant_type='authorization_code', redirect_uri=self._authenticator.redirect_uri)
+        await self._request_token(code=code, grant_type='authorization_code', redirect_uri=self._authenticator.redirect_uri)
 
     async def refresh(self):
         """Obtain a new access token from the refresh_token."""
@@ -195,7 +197,7 @@ class Authorizer(BaseAuthorizer):
             raise InvalidInvocation('refresh token not provided')
         await self._request_token(grant_type='refresh_token', refresh_token=self.refresh_token)
 
-    def revoke(self, only_access=False):
+    async def revoke(self, only_access=False):
         """Revoke the current Authorization.
 
         :param only_access: (Optional) When explicitly set to True, do not
@@ -206,9 +208,9 @@ class Authorizer(BaseAuthorizer):
 
         """
         if only_access or self.refresh_token is None:
-            super(Authorizer, self).revoke()
+            await super(Authorizer, self).revoke()
         else:
-            self._authenticator.revoke_token(self.refresh_token, 'refresh_token')
+            await self._authenticator.revoke_token(self.refresh_token, 'refresh_token')
             self._clear_access_token()
             self.refresh_token = None
 
@@ -235,10 +237,10 @@ class DeviceIDAuthorizer(BaseAuthorizer):
         super(DeviceIDAuthorizer, self).__init__(authenticator)
         self._device_id = device_id
 
-    def refresh(self):
+    async def refresh(self):
         """Obtain a new access token."""
         grant_type = 'https://oauth.reddit.com/grants/installed_client'
-        self._request_token(grant_type=grant_type, device_id=self._device_id)
+        await self._request_token(grant_type=grant_type, device_id=self._device_id)
 
 
 class ImplicitAuthorizer(BaseAuthorizer):
@@ -279,9 +281,9 @@ class ReadOnlyAuthorizer(Authorizer):
 
     AUTHENTICATOR_CLASS = TrustedAuthenticator
 
-    def refresh(self):
+    async def refresh(self):
         """Obtain a new ReadOnly access token."""
-        self._request_token(grant_type='client_credentials')
+        await self._request_token(grant_type='client_credentials')
 
 
 class ScriptAuthorizer(Authorizer):
@@ -307,6 +309,6 @@ class ScriptAuthorizer(Authorizer):
         self._username = username
         self._password = password
 
-    def refresh(self):
+    async def refresh(self):
         """Obtain a new personal-use script type access token."""
-        self._request_token(grant_type='password', username=self._username, password=self._password)
+        await self._request_token(grant_type='password', username=self._username, password=self._password)
