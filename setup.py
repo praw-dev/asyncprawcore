@@ -6,7 +6,7 @@ from os import path
 from setuptools import setup
 
 
-PACKAGE_NAME = "prawcore"
+PACKAGE_NAME = "asyncprawcore"
 HERE = path.abspath(path.dirname(__file__))
 with open(path.join(HERE, "README.rst"), encoding="utf-8") as fp:
     README = fp.read()
@@ -17,9 +17,7 @@ extras = {
     "ci": ["coveralls"],
     "lint": ["black", "flake8", "pre-commit", "pydocstyle"],
     "test": [
-        "betamax >=0.8, <0.9",
-        "betamax_matchers >=0.4.0, <0.5",
-        "betamax-serializers >=0.2.0, <0.3",
+        "pytest-vcr",
         "mock >=0.8",
         "pytest",
         "testfixtures >4.13.2, <7",
@@ -46,8 +44,8 @@ setup(
     ],
     description="Low-level communication layer for PRAW 4+.",
     extras_require=extras,
-    install_requires=["requests >=2.6.0, <3.0"],
-    keywords="praw reddit api",
+    install_requires=["aiohttp"],
+    keywords="praw reddit api async",
     license="Simplified BSD License",
     long_description=README,
     packages=[PACKAGE_NAME],
