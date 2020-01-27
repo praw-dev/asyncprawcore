@@ -3,16 +3,24 @@ import requests, aiohttp, asyncio
 from .const import __version__, TIMEOUT
 from .exceptions import InvalidInvocation, RequestException
 
+
 class Requestor(object):
     """Requestor provides an interface to HTTP requests."""
 
     def __getattr__(self, attribute):
         """Pass all undefined attributes to the _http attribute."""
-        if attribute.startswith('__'):
+        if attribute.startswith("__"):
             raise AttributeError
         return getattr(self._http, attribute)
 
-    def __init__(self, user_agent, oauth_url='https://oauth.reddit.com', reddit_url='https://www.reddit.com', session=None, loop=None):
+    def __init__(
+        self,
+        user_agent,
+        oauth_url="https://oauth.reddit.com",
+        reddit_url="https://www.reddit.com",
+        session=None,
+        loop=None,
+    ):
         """Create an instance of the Requestor class.
 
         :param user_agent: The user-agent for your application. Please follow
@@ -26,16 +34,20 @@ class Requestor(object):
             with requests.Session(). (Default: None)
         """
         if user_agent is None or len(user_agent) < 7:
-            raise InvalidInvocation('user_agent is not descriptive')
+            raise InvalidInvocation("user_agent is not descriptive")
         self.loop = loop or asyncio.get_event_loop()
         # self.loop.set_debug(True)
         self.getHttp(session)
-        self._http._default_headers['User-Agent'] = '{} asyncprawcore/{}'.format(user_agent, __version__)
+        self._http._default_headers[
+            "User-Agent"
+        ] = "{} asyncprawcore/{}".format(user_agent, __version__)
         self.oauth_url = oauth_url
         self.reddit_url = reddit_url
 
     def getHttp(self, session):
-        self._http = session or aiohttp.ClientSession(loop=self.loop, timeout=aiohttp.ClientTimeout(total=None))
+        self._http = session or aiohttp.ClientSession(
+            loop=self.loop, timeout=aiohttp.ClientTimeout(total=None)
+        )
 
     def close(self):
         """Call close on the underlying session."""

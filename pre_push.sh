@@ -7,9 +7,6 @@ function exit_error() {
 
 black *.py examples asyncprawcore tests || exit_error "Please install black: pip install black"
 
-python setup.py test || exit_error "Please fix test issues."
-echo "tests pass!"
-
 flake8 --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     exit_error "Please install flake8: pip install flake8"
@@ -23,5 +20,8 @@ if [ $? -ne 0 ]; then
 fi
 pydocstyle || exit_error "Please correct pydocstyle issues."
 echo "doc style pass!"
+
+python3 setup.py test || exit_error "Please fix test issues."
+echo "tests pass!"
 
 exit 0

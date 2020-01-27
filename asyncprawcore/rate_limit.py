@@ -20,7 +20,9 @@ class RateLimiter(object):
         self.reset_timestamp = None
         self.used = None
 
-    async def call(self, request_function, set_header_callback, *args, **kwargs):
+    async def call(
+        self, request_function, set_header_callback, *args, **kwargs
+    ):
         """Rate limit the call to request_function.
 
         :param request_function: A function call that returns an HTTP response
@@ -33,7 +35,7 @@ class RateLimiter(object):
 
         """
         self.delay()
-        kwargs['headers'] = await set_header_callback()
+        kwargs["headers"] = await set_header_callback()
         response = await request_function(*args, **kwargs)
         self.update(response.headers)
         return response
@@ -45,7 +47,9 @@ class RateLimiter(object):
         sleep_seconds = self.next_request_timestamp - time.time()
         if sleep_seconds <= 0:
             return
-        message = 'Sleeping: {:0.2f} seconds prior to call'.format(sleep_seconds)
+        message = "Sleeping: {:0.2f} seconds prior to call".format(
+            sleep_seconds
+        )
         log.debug(message)
         # time.sleep(sleep_seconds)
         time.sleep(0)
@@ -60,7 +64,7 @@ class RateLimiter(object):
         responses should trigger exceptions that indicate invalid behavior.
 
         """
-        if 'x-ratelimit-remaining' not in response_headers:
+        if "x-ratelimit-remaining" not in response_headers:
             if self.remaining is not None:
                 self.remaining -= 1
                 self.used += 1
@@ -69,9 +73,9 @@ class RateLimiter(object):
         now = time.time()
         prev_remaining = self.remaining
 
-        seconds_to_reset = int(response_headers['x-ratelimit-reset'])
-        self.remaining = float(response_headers['x-ratelimit-remaining'])
-        self.used = int(response_headers['x-ratelimit-used'])
+        seconds_to_reset = int(response_headers["x-ratelimit-reset"])
+        self.remaining = float(response_headers["x-ratelimit-remaining"])
+        self.used = int(response_headers["x-ratelimit-used"])
         self.reset_timestamp = now + seconds_to_reset
 
         if self.remaining <= 0:
@@ -84,4 +88,5 @@ class RateLimiter(object):
             estimated_clients = 1.0
 
         self.next_request_timestamp = now + (
-            estimated_clients * seconds_to_reset / self.remaining)
+            estimated_clients * seconds_to_reset / self.remaining
+        )
