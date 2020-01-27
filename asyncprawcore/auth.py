@@ -3,9 +3,9 @@ import aiohttp
 import time
 
 from aiohttp import ClientRequest
-from requests.status_codes import codes
 
 from . import const
+from .codes import codes
 from .exceptions import InvalidInvocation, OAuthException, ResponseException
 
 

@@ -1,5 +1,6 @@
 """Provides the HTTP request handling interface."""
-import requests, aiohttp, asyncio
+import aiohttp
+import asyncio
 from .const import __version__, TIMEOUT
 from .exceptions import InvalidInvocation, RequestException
 
@@ -37,14 +38,15 @@ class Requestor(object):
             raise InvalidInvocation("user_agent is not descriptive")
         self.loop = loop or asyncio.get_event_loop()
         # self.loop.set_debug(True)
-        self.getHttp(session)
+        self.set_http(session)
         self._http._default_headers[
             "User-Agent"
         ] = "{} asyncprawcore/{}".format(user_agent, __version__)
         self.oauth_url = oauth_url
         self.reddit_url = reddit_url
 
-    def getHttp(self, session):
+    def set_http(self, session):
+        """Set the http session."""
         self._http = session or aiohttp.ClientSession(
             loop=self.loop, timeout=aiohttp.ClientTimeout(total=None)
         )

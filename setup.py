@@ -1,6 +1,5 @@
 """asyncprawcore setup.py."""
 
-import re
 from codecs import open
 from os import path
 from setuptools import setup
@@ -11,7 +10,10 @@ HERE = path.abspath(path.dirname(__file__))
 with open(path.join(HERE, "README.rst"), encoding="utf-8") as fp:
     README = fp.read()
 with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
-    VERSION = re.search("__version__ = '([^']+)'", fp.read()).group(1)
+    VERSION_LINE = next(
+        line for line in fp.readlines() if "__version__" in line
+    )
+    VERSION = VERSION_LINE.split("=")[-1].strip().replace('"', "")
 
 extras = {
     "ci": ["coveralls"],

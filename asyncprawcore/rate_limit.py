@@ -1,5 +1,4 @@
 """Provide the RateLimiter class."""
-import asyncio
 import logging
 import time
 
