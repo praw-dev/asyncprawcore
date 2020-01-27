@@ -1,11 +1,11 @@
-"""Constants for the prawcore test suite."""
+"""Constants for the asyncprawcore test suite."""
 
 import os
 from base64 import b64encode
 from betamax import Betamax
 from betamax_matchers.json_body import JSONBodyMatcher
 from betamax_serializers import pretty_json
-from prawcore import Requestor
+from asyncprawcore import Requestor
 
 CLIENT_ID = os.environ.get("PRAWCORE_CLIENT_ID", "fake_client_id")
 CLIENT_SECRET = os.environ.get("PRAWCORE_CLIENT_SECRET", "fake_client_secret")
@@ -21,7 +21,7 @@ TEMPORARY_GRANT_CODE = os.environ.get(
 USERNAME = os.environ.get("PRAWCORE_USERNAME", "fake_username")
 
 
-REQUESTOR = Requestor("prawcore:test (by /u/bboe)")
+REQUESTOR = Requestor("asyncprawcore:test (by /u/bboe)")
 
 
 def b64_string(input_string):

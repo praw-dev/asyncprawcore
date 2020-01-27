@@ -49,6 +49,6 @@ setup(
     license="Simplified BSD License",
     long_description=README,
     packages=[PACKAGE_NAME],
-    url="https://github.com/praw-dev/prawcore",
+    url="https://github.com/praw-dev/asyncprawcore",
     version=VERSION,
 )

@@ -52,7 +52,7 @@ jobs:
         pip install .[test]
         pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
     - name: Test with pytest
-      run: coverage run --source prawcore --module pytest
+      run: coverage run --source asyncprawcore --module pytest
     - env:
         COVERALLS_PARALLEL: true
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
