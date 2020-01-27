@@ -46,7 +46,7 @@ setup(
     ],
     description="Low-level communication layer for PRAW 4+.",
     extras_require=extras,
-    install_requires=["aiohttp"],
+    install_requires=["aiohttp", "yarl"],
     keywords="praw reddit api async",
     license="Simplified BSD License",
     long_description=README,
