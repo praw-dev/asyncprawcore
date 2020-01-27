@@ -2,9 +2,7 @@
 
 import os
 from base64 import b64encode
-from betamax import Betamax
-from betamax_matchers.json_body import JSONBodyMatcher
-from betamax_serializers import pretty_json
+from vcr import VCR
 from asyncprawcore import Requestor
 
 CLIENT_ID = os.environ.get("PRAWCORE_CLIENT_ID", "fake_client_id")
@@ -29,22 +27,31 @@ def b64_string(input_string):
     return b64encode(input_string.encode("utf-8")).decode("utf-8")
 
 
-Betamax.register_request_matcher(JSONBodyMatcher)
-Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+class CustomVCR(VCR):
+    def use_cassette(self, path="", **kwargs):
+        """Use a cassette."""
+        path += ".json"
+        return super().use_cassette(path, **kwargs)
 
-with Betamax.configure() as config:
-    if os.getenv("TRAVIS"):
-        config.default_cassette_options["record_mode"] = "none"
-    config.cassette_library_dir = "tests/cassettes"
-    config.default_cassette_options["serialize_with"] = "prettyjson"
-    config.default_cassette_options["match_requests_on"].append("body")
-    config.define_cassette_placeholder(
-        "<BASIC_AUTH>", b64_string("{}:{}".format(CLIENT_ID, CLIENT_SECRET))
-    )
-    config.define_cassette_placeholder("<CLIENT_ID>", CLIENT_ID)
-    config.define_cassette_placeholder("<CLIENT_SECRET>", CLIENT_SECRET)
-    config.define_cassette_placeholder("<PASSWORD>", PASSWORD)
-    config.define_cassette_placeholder("<PERM_CODE>", PERMANENT_GRANT_CODE)
-    config.define_cassette_placeholder("<REFRESH_TOKEN>", REFRESH_TOKEN)
-    config.define_cassette_placeholder("<TEMP_CODE>", TEMPORARY_GRANT_CODE)
-    config.define_cassette_placeholder("<USERNAME>", USERNAME)
+
+placeholders = [
+    tuple(reversed(placeholder))
+    for placeholder in [
+        ("<CLIENT_ID>", CLIENT_ID),
+        ("<CLIENT_SECRET>", CLIENT_SECRET),
+        ("<PASSWORD>", PASSWORD),
+        ("<PERM_CODE>", PERMANENT_GRANT_CODE),
+        ("<REFRESH_TOKEN>", REFRESH_TOKEN),
+        ("<TEMP_CODE>", TEMPORARY_GRANT_CODE),
+        ("<USERNAME>", USERNAME),
+    ]
+]
+
+VCR = CustomVCR(
+    serializer="json",
+    cassette_library_dir="tests/cassettes",
+    match_on=["uri", "method"],
+    filter_headers=placeholders,
+    filter_post_data_parameters=placeholders,
+    filter_query_parameters=placeholders,
+)

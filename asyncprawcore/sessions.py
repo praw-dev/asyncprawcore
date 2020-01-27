@@ -4,13 +4,8 @@ import logging
 import random
 import time
 
-from requests.compat import urljoin
-from requests.exceptions import (
-    ChunkedEncodingError,
-    ConnectionError,
-    ReadTimeout,
-)
-from requests.status_codes import codes
+from urllib.parse import urljoin
+from .codes import codes
 
 from .auth import BaseAuthorizer
 from .rate_limit import RateLimiter
@@ -35,7 +30,7 @@ log = logging.getLogger(__package__)
 class Session(object):
     """The low-level connection interface to reddit's API."""
 
-    RETRY_EXCEPTIONS = (ChunkedEncodingError, ConnectionError, ReadTimeout)
+    RETRY_EXCEPTIONS = (ConnectionError)
     RETRY_STATUSES = {
         520,
         522,

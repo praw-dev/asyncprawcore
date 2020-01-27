@@ -1,7 +1,7 @@
 """Test for asyncprawcore.auth.Authorizer classes."""
 import asyncprawcore
 import unittest
-from .config import (
+from .conftest import (
     CLIENT_ID,
     CLIENT_SECRET,
     PASSWORD,
@@ -11,8 +11,8 @@ from .config import (
     REQUESTOR,
     TEMPORARY_GRANT_CODE,
     USERNAME,
+    VCR,
 )
-from betamax import Betamax
 
 
 class AuthorizerTestBase(unittest.TestCase):
@@ -26,7 +26,7 @@ class AuthorizerTest(AuthorizerTestBase):
     def test_authorize__with_permanent_grant(self):
         self.authentication.redirect_uri = REDIRECT_URI
         authorizer = asyncprawcore.Authorizer(self.authentication)
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_authorize__with_permanent_grant"
         ):
             authorizer.authorize(PERMANENT_GRANT_CODE)
@@ -40,7 +40,7 @@ class AuthorizerTest(AuthorizerTestBase):
     def test_authorize__with_temporary_grant(self):
         self.authentication.redirect_uri = REDIRECT_URI
         authorizer = asyncprawcore.Authorizer(self.authentication)
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_authorize__with_temporary_grant"
         ):
             authorizer.authorize(TEMPORARY_GRANT_CODE)
@@ -54,7 +54,7 @@ class AuthorizerTest(AuthorizerTestBase):
     def test_authorize__with_invalid_code(self):
         self.authentication.redirect_uri = REDIRECT_URI
         authorizer = asyncprawcore.Authorizer(self.authentication)
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_authorize__with_invalid_code"
         ):
             self.assertRaises(
@@ -99,7 +99,7 @@ class AuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.Authorizer(
             self.authentication, REFRESH_TOKEN
         )
-        with Betamax(REQUESTOR).use_cassette("Authorizer_refresh"):
+        with VCR.use_cassette("Authorizer_refresh"):
             authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
@@ -111,7 +111,7 @@ class AuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.Authorizer(
             self.authentication, "INVALID_TOKEN"
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_refresh__with_invalid_token"
         ):
             self.assertRaises(
@@ -128,7 +128,7 @@ class AuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.Authorizer(
             self.authentication, REFRESH_TOKEN
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_revoke__access_token_with_refresh_set"
         ):
             authorizer.refresh()
@@ -146,7 +146,7 @@ class AuthorizerTest(AuthorizerTestBase):
     def test_revoke__access_token_without_refresh_set(self):
         self.authentication.redirect_uri = REDIRECT_URI
         authorizer = asyncprawcore.Authorizer(self.authentication)
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_revoke__access_token_without_refresh_set"
         ):
             authorizer.authorize(TEMPORARY_GRANT_CODE)
@@ -161,7 +161,7 @@ class AuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.Authorizer(
             self.authentication, REFRESH_TOKEN
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_revoke__refresh_token_with_access_set"
         ):
             authorizer.refresh()
@@ -176,7 +176,7 @@ class AuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.Authorizer(
             self.authentication, REFRESH_TOKEN
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Authorizer_revoke__refresh_token_without_access_set"
         ):
             authorizer.revoke()
@@ -223,7 +223,7 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
 
     def test_refresh(self):
         authorizer = asyncprawcore.DeviceIDAuthorizer(self.authentication)
-        with Betamax(REQUESTOR).use_cassette("DeviceIDAuthorizer_refresh"):
+        with VCR.use_cassette("DeviceIDAuthorizer_refresh"):
             authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
@@ -234,7 +234,7 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.DeviceIDAuthorizer(
             self.authentication, "a" * 19
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "DeviceIDAuthorizer_refresh__with_short_device_id"
         ):
             self.assertRaises(asyncprawcore.OAuthException, authorizer.refresh)
@@ -280,7 +280,7 @@ class ReadOnlyAuthorizerTest(AuthorizerTestBase):
         self.assertIsNone(authorizer.scopes)
         self.assertFalse(authorizer.is_valid())
 
-        with Betamax(REQUESTOR).use_cassette("ReadOnlyAuthorizer_refresh"):
+        with VCR.use_cassette("ReadOnlyAuthorizer_refresh"):
             authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
@@ -309,7 +309,7 @@ class ScriptAuthorizerTest(AuthorizerTestBase):
         self.assertIsNone(authorizer.scopes)
         self.assertFalse(authorizer.is_valid())
 
-        with Betamax(REQUESTOR).use_cassette("ScriptAuthorizer_refresh"):
+        with VCR.use_cassette("ScriptAuthorizer_refresh"):
             authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
@@ -320,7 +320,7 @@ class ScriptAuthorizerTest(AuthorizerTestBase):
         authorizer = asyncprawcore.ScriptAuthorizer(
             self.authentication, USERNAME, "invalidpassword"
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "ScriptAuthorizer_refresh__with_invalid_username_or_password"
         ):
             self.assertRaises(asyncprawcore.OAuthException, authorizer.refresh)

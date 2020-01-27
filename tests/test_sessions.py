@@ -4,23 +4,18 @@ from json import dumps
 
 import asyncprawcore
 import unittest
-from betamax import Betamax
 from mock import Mock, patch
 from asyncprawcore.exceptions import RequestException
-from requests.exceptions import (
-    ChunkedEncodingError,
-    ConnectionError,
-    ReadTimeout,
-)
 from testfixtures import LogCapture
 
-from .config import (
+from .conftest import (
     CLIENT_ID,
     CLIENT_SECRET,
     REFRESH_TOKEN,
     REQUESTOR,
     PASSWORD,
     USERNAME,
+    VCR,
 )
 
 
@@ -162,7 +157,7 @@ class SessionTest(unittest.TestCase):
         self.assertEqual(3, session_instance.request.call_count)
 
     def test_request__get(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__get"):
+        with VCR.use_cassette("Session_request__get"):
             session = asyncprawcore.Session(readonly_authorizer())
             params = {"limit": 100}
             response = session.request("GET", "/", params=params)
@@ -171,7 +166,7 @@ class SessionTest(unittest.TestCase):
         self.assertEqual("Listing", response["kind"])
 
     def test_request__patch(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__patch",
             match_requests_on=["method", "uri", "json-body"],
         ):
@@ -182,7 +177,7 @@ class SessionTest(unittest.TestCase):
             self.assertEqual(123, response["num_comments"])
 
     def test_request__post(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__post"):
+        with VCR.use_cassette("Session_request__post"):
             session = asyncprawcore.Session(script_authorizer())
             data = {
                 "kind": "self",
@@ -198,7 +193,7 @@ class SessionTest(unittest.TestCase):
             self.assertEqual(key_count, len(data))  # Ensure data is untouched
 
     def test_request__post__with_files(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__post__with_files",
             match_requests_on=["uri", "method"],
         ):
@@ -215,7 +210,7 @@ class SessionTest(unittest.TestCase):
             self.assertIn("img_src", response)
 
     def test_request__raw_json(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__raw_json"):
+        with VCR.use_cassette("Session_request__raw_json"):
             session = asyncprawcore.Session(readonly_authorizer())
             response = session.request(
                 "GET",
@@ -227,7 +222,7 @@ class SessionTest(unittest.TestCase):
         )
 
     def test_request__bad_gateway(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__bad_gateway"):
+        with VCR.use_cassette("Session_request__bad_gateway"):
             session = asyncprawcore.Session(readonly_authorizer())
             with self.assertRaises(
                 asyncprawcore.ServerError
@@ -238,7 +233,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__bad_json(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__bad_json"):
+        with VCR.use_cassette("Session_request__bad_json"):
             session = asyncprawcore.Session(script_authorizer())
             with self.assertRaises(asyncprawcore.BadJSON) as context_manager:
                 session.request("GET", "/")
@@ -247,7 +242,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__bad_request(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__bad_request"):
+        with VCR.use_cassette("Session_request__bad_request"):
             session = asyncprawcore.Session(script_authorizer())
             with self.assertRaises(
                 asyncprawcore.BadRequest
@@ -260,7 +255,7 @@ class SessionTest(unittest.TestCase):
             self.assertIn("reason", context_manager.exception.response.json())
 
     def test_request__cloudflair_connection_timed_out(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__cloudflair_connection_timed_out"
         ):
             session = asyncprawcore.Session(readonly_authorizer())
@@ -275,7 +270,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__cloudflair_unknown_error(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__cloudflair_unknown_error"
         ):
             session = asyncprawcore.Session(readonly_authorizer())
@@ -290,7 +285,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__conflict(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__conflict"):
+        with VCR.use_cassette("Session_request__conflict"):
             session = asyncprawcore.Session(script_authorizer())
             previous = "f0214574-430d-11e7-84ca-1201093304fa"
             with self.assertRaises(asyncprawcore.Conflict) as context_manager:
@@ -308,7 +303,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__created(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__created"):
+        with VCR.use_cassette("Session_request__created"):
             session = asyncprawcore.Session(script_authorizer())
             response = session.request(
                 "PUT", "/api/v1/me/friends/spez", data="{}"
@@ -316,7 +311,7 @@ class SessionTest(unittest.TestCase):
             self.assertIn("name", response)
 
     def test_request__forbidden(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__forbidden"):
+        with VCR.use_cassette("Session_request__forbidden"):
             session = asyncprawcore.Session(script_authorizer())
             self.assertRaises(
                 asyncprawcore.Forbidden,
@@ -326,7 +321,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__gateway_timeout(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__gateway_timeout"
         ):
             session = asyncprawcore.Session(readonly_authorizer())
@@ -339,7 +334,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__internal_server_error(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__internal_server_error"
         ):
             session = asyncprawcore.Session(readonly_authorizer())
@@ -352,13 +347,13 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__no_content(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__no_content"):
+        with VCR.use_cassette("Session_request__no_content"):
             session = asyncprawcore.Session(script_authorizer())
             response = session.request("DELETE", "/api/v1/me/friends/spez")
             self.assertIsNone(response)
 
     def test_request__not_found(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__not_found"):
+        with VCR.use_cassette("Session_request__not_found"):
             session = asyncprawcore.Session(script_authorizer())
             self.assertRaises(
                 asyncprawcore.NotFound,
@@ -368,7 +363,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__okay_with_0_byte_content(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__okay_with_0_byte_content"
         ):
             session = asyncprawcore.Session(script_authorizer())
@@ -412,14 +407,14 @@ class SessionTest(unittest.TestCase):
         self.assertEqual(3, session_instance.request.call_count)
 
     def test_request__redirect(self):
-        with Betamax(REQUESTOR).use_cassette("Session_request__redirect"):
+        with VCR.use_cassette("Session_request__redirect"):
             session = asyncprawcore.Session(readonly_authorizer())
             with self.assertRaises(asyncprawcore.Redirect) as context_manager:
                 session.request("GET", "/r/random")
             self.assertTrue(context_manager.exception.path.startswith("/r/"))
 
     def test_request__service_unavailable(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__service_unavailable"
         ):
             session = asyncprawcore.Session(readonly_authorizer())
@@ -434,7 +429,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__too_large(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__too_large", match_requests_on=["uri", "method"]
         ):
             session = asyncprawcore.Session(script_authorizer())
@@ -455,7 +450,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__unavailable_for_legal_reasons(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__unavailable_for_legal_reasons"
         ):
             session = asyncprawcore.Session(readonly_authorizer())
@@ -467,7 +462,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__unsupported_media_type(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__unsupported_media_type"
         ):
             session = asyncprawcore.Session(script_authorizer())
@@ -483,7 +478,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__with_insufficent_scope(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__with_insufficient_scope"
         ):
             session = asyncprawcore.Session(client_authorizer())
@@ -503,7 +498,7 @@ class SessionTest(unittest.TestCase):
         )
         session = asyncprawcore.Session(authorizer)
 
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__with_invalid_access_token"
         ):
             session._authorizer.access_token = "invalid"
@@ -512,7 +507,7 @@ class SessionTest(unittest.TestCase):
             )
 
     def test_request__with_invalid_access_token__retry(self):
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "Session_request__with_invalid_access_token__retry"
         ):
             session = asyncprawcore.Session(readonly_authorizer())

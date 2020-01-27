@@ -1,8 +1,7 @@
 """Test for sublcasses of asyncprawcore.auth.BaseAuthenticator class."""
 import asyncprawcore
 import unittest
-from .conftest import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REQUESTOR
-from betamax import Betamax
+from .conftest import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REQUESTOR, VCR
 
 
 class TrustedAuthenticatorTest(unittest.TestCase):
@@ -48,7 +47,7 @@ class TrustedAuthenticatorTest(unittest.TestCase):
         authenticator = asyncprawcore.TrustedAuthenticator(
             REQUESTOR, CLIENT_ID, CLIENT_SECRET
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "TrustedAuthenticator_revoke_token"
         ):
             authenticator.revoke_token("dummy token")
@@ -57,7 +56,7 @@ class TrustedAuthenticatorTest(unittest.TestCase):
         authenticator = asyncprawcore.TrustedAuthenticator(
             REQUESTOR, CLIENT_ID, CLIENT_SECRET
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "TrustedAuthenticator_revoke_token__with_access_token_hint"
         ):
             authenticator.revoke_token("dummy token", "access_token")
@@ -66,7 +65,7 @@ class TrustedAuthenticatorTest(unittest.TestCase):
         authenticator = asyncprawcore.TrustedAuthenticator(
             REQUESTOR, CLIENT_ID, CLIENT_SECRET
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "TrustedAuthenticator_revoke_token__with_refresh_token_hint"
         ):
             authenticator.revoke_token("dummy token", "refresh_token")
@@ -128,7 +127,7 @@ class UntrustedAuthenticatorTest(unittest.TestCase):
         authenticator = asyncprawcore.UntrustedAuthenticator(
             REQUESTOR, CLIENT_ID
         )
-        with Betamax(REQUESTOR).use_cassette(
+        with VCR.use_cassette(
             "UntrustedAuthenticator_revoke_token"
         ):
             authenticator.revoke_token("dummy token")
