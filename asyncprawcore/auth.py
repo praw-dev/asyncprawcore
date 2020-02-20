@@ -3,7 +3,7 @@ import aiohttp
 import time
 
 from aiohttp import ClientRequest
-From yarl import URL
+from yarl import URL
 
 from . import const
 from .codes import codes
