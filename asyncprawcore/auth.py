@@ -3,6 +3,7 @@ import aiohttp
 import time
 
 from aiohttp import ClientRequest
+From yarl import URL
 
 from . import const
 from .codes import codes
@@ -74,7 +75,7 @@ class BaseAuthenticator(object):
             "state": state,
         }
         url = self._requestor.reddit_url + const.AUTHORIZATION_PATH
-        request = ClientRequest("GET", url, params=params)
+        request = ClientRequest("GET", URL(url), params=params)
         return request.url
 
     async def revoke_token(self, token, token_type=None):
