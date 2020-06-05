@@ -51,13 +51,13 @@ class Requestor(object):
             loop=self.loop, timeout=aiohttp.ClientTimeout(total=None)
         )
 
-    def close(self):
+    async def close(self):
         """Call close on the underlying session."""
-        return self.loop.run_until_complete(self._http.close())
+        return await self._http.close()
 
-    def request(self, *args, **kwargs):
+    async def request(self, *args, timeout=TIMEOUT, **kwargs):
         """Issue the HTTP request capturing any errors that may occur."""
         try:
-            return self._http.request(*args, timeout=TIMEOUT, **kwargs)
+            return await self._http.request(*args, timeout=timeout, **kwargs)
         except Exception as exc:
             raise RequestException(exc, args, kwargs)
