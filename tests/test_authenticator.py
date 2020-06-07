@@ -1,26 +1,33 @@
 """Test for sublcasses of asyncprawcore.auth.BaseAuthenticator class."""
 import asyncprawcore
-import unittest
-from .conftest import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REQUESTOR, VCR
+import asynctest
+from .conftest import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, VCR
+from asyncprawcore.requestor import Requestor
 
 
-class TrustedAuthenticatorTest(unittest.TestCase):
-    def test_authorize_url(self):
+class TrustedAuthenticatorTest(asynctest.TestCase):
+    async def setUp(self) -> None:
+        self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
+
+    async def tearDown(self) -> None:
+        await self.requestor.close()
+
+    async def test_authorize_url(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+            self.requestor, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
         )
         url = authenticator.authorize_url(
             "permanent", ["identity", "read"], "a_state"
         )
-        self.assertIn("client_id={}".format(CLIENT_ID), url)
-        self.assertIn("duration=permanent", url)
-        self.assertIn("response_type=code", url)
-        self.assertIn("scope=identity+read", url)
-        self.assertIn("state=a_state", url)
+        self.assertIn("client_id={}".format(CLIENT_ID), str(url))
+        self.assertIn("duration=permanent", str(url))
+        self.assertIn("response_type=code", str(url))
+        self.assertIn("scope=identity+read", str(url))
+        self.assertIn("state=a_state", str(url))
 
     def test_authorize_url__fail_with_implicit(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+            self.requestor, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
         )
         self.assertRaises(
             asyncprawcore.InvalidInvocation,
@@ -33,7 +40,7 @@ class TrustedAuthenticatorTest(unittest.TestCase):
 
     def test_authorize_url__fail_without_redirect_uri(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, CLIENT_SECRET
+            self.requestor, CLIENT_ID, CLIENT_SECRET
         )
         self.assertRaises(
             asyncprawcore.InvalidInvocation,
@@ -43,77 +50,79 @@ class TrustedAuthenticatorTest(unittest.TestCase):
             "...",
         )
 
-    def test_revoke_token(self):
+    async def test_revoke_token(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, CLIENT_SECRET
+            self.requestor, CLIENT_ID, CLIENT_SECRET
         )
-        with VCR.use_cassette(
-            "TrustedAuthenticator_revoke_token"
-        ):
-            authenticator.revoke_token("dummy token")
+        with VCR.use_cassette("TrustedAuthenticator_revoke_token"):
+            await authenticator.revoke_token("dummy token")
 
-    def test_revoke_token__with_access_token_hint(self):
+    async def test_revoke_token__with_access_token_hint(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, CLIENT_SECRET
+            self.requestor, CLIENT_ID, CLIENT_SECRET
         )
         with VCR.use_cassette(
             "TrustedAuthenticator_revoke_token__with_access_token_hint"
         ):
-            authenticator.revoke_token("dummy token", "access_token")
+            await authenticator.revoke_token("dummy token", "access_token")
 
-    def test_revoke_token__with_refresh_token_hint(self):
+    async def test_revoke_token__with_refresh_token_hint(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, CLIENT_SECRET
+            self.requestor, CLIENT_ID, CLIENT_SECRET
         )
         with VCR.use_cassette(
             "TrustedAuthenticator_revoke_token__with_refresh_token_hint"
         ):
-            authenticator.revoke_token("dummy token", "refresh_token")
+            await authenticator.revoke_token("dummy token", "refresh_token")
 
 
-class UntrustedAuthenticatorTest(unittest.TestCase):
-    def test_authorize_url__code(self):
+class UntrustedAuthenticatorTest(asynctest.TestCase):
+    async def setUp(self) -> None:
+        self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
+
+    async def tearDown(self) -> None:
+        await self.requestor.close()
+
+    async def test_authorize_url__code(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, REDIRECT_URI
+            self.requestor, CLIENT_ID, REDIRECT_URI
         )
         url = authenticator.authorize_url(
             "permanent", ["identity", "read"], "a_state"
         )
-        self.assertIn("client_id={}".format(CLIENT_ID), url)
-        self.assertIn("duration=permanent", url)
-        self.assertIn("response_type=code", url)
-        self.assertIn("scope=identity+read", url)
-        self.assertIn("state=a_state", url)
+        self.assertIn("client_id={}".format(CLIENT_ID), str(url))
+        self.assertIn("duration=permanent", str(url))
+        self.assertIn("response_type=code", str(url))
+        self.assertIn("scope=identity+read", str(url))
+        self.assertIn("state=a_state", str(url))
 
-    def test_authorize_url__token(self):
+    async def test_authorize_url__token(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, REDIRECT_URI
+            self.requestor, CLIENT_ID, REDIRECT_URI
         )
         url = authenticator.authorize_url(
             "temporary", ["identity", "read"], "a_state", implicit=True
         )
-        self.assertIn("client_id={}".format(CLIENT_ID), url)
-        self.assertIn("duration=temporary", url)
-        self.assertIn("response_type=token", url)
-        self.assertIn("scope=identity+read", url)
-        self.assertIn("state=a_state", url)
+        self.assertIn("client_id={}".format(CLIENT_ID), str(url))
+        self.assertIn("duration=temporary", str(url))
+        self.assertIn("response_type=token", str(url))
+        self.assertIn("scope=identity+read", str(url))
+        self.assertIn("state=a_state", str(url))
 
-    def test_authorize_url__fail_with_token_and_permanent(self):
+    async def test_authorize_url__fail_with_token_and_permanent(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
-            REQUESTOR, CLIENT_ID, REDIRECT_URI
+            self.requestor, CLIENT_ID, REDIRECT_URI
         )
-        self.assertRaises(
-            asyncprawcore.InvalidInvocation,
-            authenticator.authorize_url,
-            "permanent",
-            ["identity", "read"],
-            "a_state",
-            implicit=True,
-        )
+        with self.assertRaises(asyncprawcore.InvalidInvocation):
+            authenticator.authorize_url("permanent",
+                                        ["identity", "read"],
+                                        "a_state",
+                                        implicit=True,
+                                        )
 
     def test_authorize_url__fail_without_redirect_uri(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
-            REQUESTOR, CLIENT_ID
+            self.requestor, CLIENT_ID
         )
         self.assertRaises(
             asyncprawcore.InvalidInvocation,
@@ -123,11 +132,10 @@ class UntrustedAuthenticatorTest(unittest.TestCase):
             "...",
         )
 
-    def test_revoke_token(self):
+    async def test_revoke_token(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
-            REQUESTOR, CLIENT_ID
+            self.requestor, CLIENT_ID
         )
-        with VCR.use_cassette(
-            "UntrustedAuthenticator_revoke_token"
-        ):
-            authenticator.revoke_token("dummy token")
+        with VCR.use_cassette("UntrustedAuthenticator_revoke_token"):
+            await authenticator.revoke_token("dummy token")
+
