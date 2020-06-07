@@ -1,11 +1,11 @@
 """Test for asyncprawcore.Sessions module."""
+import asynctest
 from copy import copy
 from mock import patch
 from asyncprawcore.rate_limit import RateLimiter
-import unittest
 
 
-class RateLimiterTest(unittest.TestCase):
+class RateLimiterTest(asynctest.TestCase):
     def _headers(self, remaining, used, reset):
         return {
             "x-ratelimit-remaining": str(float(remaining)),
@@ -17,32 +17,32 @@ class RateLimiterTest(unittest.TestCase):
         self.rate_limiter = RateLimiter()
         self.rate_limiter.next_request_timestamp = 100
 
-    @patch("time.sleep")
+    @patch("asyncio.sleep")
     @patch("time.time")
-    def test_delay(self, mock_time, mock_sleep):
+    async def test_delay(self, mock_time, mock_sleep):
         mock_time.return_value = 1
-        self.rate_limiter.delay()
+        await self.rate_limiter.delay()
         self.assertTrue(mock_time.called)
         mock_sleep.assert_called_with(99)
 
-    @patch("time.sleep")
+    @patch("asyncio.sleep")
     @patch("time.time")
-    def test_delay__no_sleep_when_time_in_past(self, mock_time, mock_sleep):
+    async def test_delay__no_sleep_when_time_in_past(self, mock_time, mock_sleep):
         mock_time.return_value = 101
-        self.rate_limiter.delay()
+        await self.rate_limiter.delay()
         self.assertTrue(mock_time.called)
         self.assertFalse(mock_sleep.called)
 
-    @patch("time.sleep")
-    def test_delay__no_sleep_when_time_is_not_set(self, mock_sleep):
-        self.rate_limiter.delay()
+    @patch("asyncio.sleep")
+    async def test_delay__no_sleep_when_time_is_not_set(self, mock_sleep):
+        await self.rate_limiter.delay()
         self.assertFalse(mock_sleep.called)
 
-    @patch("time.sleep")
+    @patch("asyncio.sleep")
     @patch("time.time")
-    def test_delay__no_sleep_when_times_match(self, mock_time, mock_sleep):
+    async def test_delay__no_sleep_when_times_match(self, mock_time, mock_sleep):
         mock_time.return_value = 100
-        self.rate_limiter.delay()
+        await self.rate_limiter.delay()
         self.assertTrue(mock_time.called)
         self.assertFalse(mock_sleep.called)
 

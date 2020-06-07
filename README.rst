@@ -55,8 +55,8 @@ have the environment variables ``asyncprawcore_CLIENT_ID`` and
             pprint.pprint(await session.request('GET', '/api/v1/user/bboe/trophies'))
 
     if __name__ == "__main__":
-        asyncio.run(main()))
-
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main())
 
 Save the above as ``trophies.py`` and then execute via:
 

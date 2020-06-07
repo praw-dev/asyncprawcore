@@ -2,7 +2,7 @@
 from copy import deepcopy
 import logging
 import random
-import time
+import asyncio
 
 from urllib.parse import urljoin
 from .codes import codes
@@ -27,6 +27,7 @@ from .util import authorization_error_class
 
 log = logging.getLogger(__package__)
 
+
 class RetryStrategy(object):
     """An abstract class for scheduling request retries.
 
@@ -44,7 +45,7 @@ class RetryStrategy(object):
                 sleep_seconds
             )
             log.debug(message)
-            time.sleep(sleep_seconds)
+            asyncio.sleep(sleep_seconds)
 
 
 class FiniteRetryStrategy(RetryStrategy):
@@ -72,10 +73,11 @@ class FiniteRetryStrategy(RetryStrategy):
         """Return ``True`` if and only if the strategy will allow another retry."""
         return self._retries > 1
 
+
 class Session(object):
     """The low-level connection interface to reddit's API."""
 
-    RETRY_EXCEPTIONS = (ConnectionError)
+    RETRY_EXCEPTIONS = ConnectionError
     RETRY_STATUSES = {
         520,
         522,
@@ -120,7 +122,7 @@ class Session(object):
                 sleep_seconds
             )
             log.debug(message)
-            time.sleep(sleep_seconds)
+            asyncio.sleep(sleep_seconds)
 
     def __init__(self, authorizer):
         """Preprare the connection to reddit's API.
@@ -141,14 +143,12 @@ class Session(object):
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-    # def __exit__(self, *_args):
         """Allow this object to be used as a context manager."""
         await self.close()
 
     async def _do_retry(
         self,
         data,
-        files,
         json,
         method,
         params,
@@ -167,7 +167,6 @@ class Session(object):
         )
         return await self._request_with_retries(
             data=data,
-            files=files,
             json=json,
             method=method,
             params=params,
@@ -177,15 +176,15 @@ class Session(object):
         )
 
     async def _make_request(
-            self,
-            data,
-            files,
-            json,
-            method,
-            params,
-            retry_strategy_state,
-            timeout,
-            url):
+        self,
+        data,
+        json,
+        method,
+        params,
+        retry_strategy_state,
+        timeout,
+        url,
+    ):
         try:
             response = await self._rate_limiter.call(
                 self._requestor.request,
@@ -194,7 +193,6 @@ class Session(object):
                 url,
                 allow_redirects=False,
                 data=data,
-                files=files,
                 json=json,
                 params=params,
                 timeout=timeout,
@@ -215,7 +213,6 @@ class Session(object):
     async def _request_with_retries(
         self,
         data,
-        files,
         json,
         method,
         params,
@@ -228,13 +225,12 @@ class Session(object):
         self._log_request(data, method, params, url)
         response, saved_exception = await self._make_request(
             data,
-            files,
             json,
             method,
             params,
             retry_strategy_state,
             timeout,
-            url
+            url,
         )
 
         do_retry = False
@@ -250,7 +246,6 @@ class Session(object):
         ):
             return await self._do_retry(
                 data,
-                files,
                 json,
                 method,
                 params,
@@ -296,7 +291,6 @@ class Session(object):
         method,
         path,
         data=None,
-        files=None,
         json=None,
         params=None,
         timeout=TIMEOUT,
@@ -330,7 +324,6 @@ class Session(object):
         url = urljoin(self._requestor.oauth_url, path)
         return await self._request_with_retries(
             data=data,
-            files=files,
             json=json,
             method=method,
             params=params,

@@ -1,6 +1,7 @@
 """Provide the RateLimiter class."""
 import logging
 import time
+import asyncio
 
 log = logging.getLogger(__package__)
 
@@ -33,13 +34,13 @@ class RateLimiter(object):
         :param **kwargs: The keyword arguments to ``request_function``.
 
         """
-        self.delay()
+        await self.delay()
         kwargs["headers"] = await set_header_callback()
         response = await request_function(*args, **kwargs)
         self.update(response.headers)
         return response
 
-    def delay(self):
+    async def delay(self):
         """Sleep for an amount of time to remain under the rate limit."""
         if self.next_request_timestamp is None:
             return
@@ -50,8 +51,7 @@ class RateLimiter(object):
             sleep_seconds
         )
         log.debug(message)
-        # time.sleep(sleep_seconds)
-        time.sleep(0)
+        await asyncio.sleep(sleep_seconds)
 
     def update(self, response_headers):
         """Update the state of the rate limiter based on the response headers.

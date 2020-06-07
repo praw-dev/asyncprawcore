@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 function exit_error() {
     echo $1
