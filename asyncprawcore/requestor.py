@@ -58,7 +58,6 @@ class Requestor(object):
     async def request(self, *args, timeout=TIMEOUT, **kwargs):
         """Issue the HTTP request capturing any errors that may occur."""
         try:
-            timeout_aiohttp = aiohttp.ClientTimeout(total=timeout)
-            return await self._http.request(*args, timeout=timeout_aiohttp, **kwargs)
+            return await self._http.request(*args, timeout=timeout, **kwargs)
         except Exception as exc:
             raise RequestException(exc, args, kwargs)

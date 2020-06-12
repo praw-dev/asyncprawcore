@@ -3,7 +3,7 @@ from copy import deepcopy
 import logging
 import random
 import asyncio
-
+from aiohttp.web import HTTPRequestTimeout
 from urllib.parse import urljoin
 from .codes import codes
 
@@ -77,7 +77,7 @@ class FiniteRetryStrategy(RetryStrategy):
 class Session(object):
     """The low-level connection interface to reddit's API."""
 
-    RETRY_EXCEPTIONS = ConnectionError
+    RETRY_EXCEPTIONS = (ConnectionError, HTTPRequestTimeout)
     RETRY_STATUSES = {
         520,
         522,
@@ -291,6 +291,7 @@ class Session(object):
         method,
         path,
         data=None,
+        files=None,
         json=None,
         params=None,
         timeout=TIMEOUT,
@@ -314,13 +315,9 @@ class Session(object):
         """
         params = deepcopy(params) or {}
         params["raw_json"] = 1
-        if isinstance(data, dict):
-            data = deepcopy(data)
-            data["api_type"] = "json"
-            data = sorted(data.items())
-        if isinstance(json, dict):
-            json = deepcopy(json)
-            json["api_type"] = "json"
+
+        json = self.validate_json(json)
+        data = self.validate_data_files(data, files)
         url = urljoin(self._requestor.oauth_url, path)
         return await self._request_with_retries(
             data=data,
@@ -330,6 +327,25 @@ class Session(object):
             timeout=timeout,
             url=url,
         )
+
+    @staticmethod
+    def validate_data_files(data, files):
+        if isinstance(data, dict):
+            data = deepcopy(data)
+            data["api_type"] = "json"
+            if files is not None:
+                data.update(files)
+            data = sorted(data.items())
+        else:
+            data = files
+        return data
+
+    @staticmethod
+    def validate_json(json):
+        if isinstance(json, dict):
+            json = deepcopy(json)
+            json["api_type"] = "json"
+        return json
 
 
 def session(authorizer=None):
