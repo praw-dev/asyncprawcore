@@ -10,30 +10,37 @@ their username and password.
 import os
 import asyncprawcore
 import sys
+import asyncio
 
 
-def main():
+async def main():
     """Provide the program's entry point when directly executed."""
-    authenticator = asyncprawcore.TrustedAuthenticator(
-        asyncprawcore.Requestor("asyncprawcore_script_auth_example"),
-        os.environ["asyncprawcore_CLIENT_ID"],
-        os.environ["asyncprawcore_CLIENT_SECRET"],
-    )
-    authorizer = asyncprawcore.ScriptAuthorizer(
-        authenticator,
-        os.environ["asyncprawcore_USERNAME"],
-        os.environ["asyncprawcore_PASSWORD"],
-    )
-    authorizer.refresh()
+    requestor = asyncprawcore.Requestor("asyncprawcore_script_auth_example")
 
-    with asyncprawcore.session(authorizer) as session:
-        data = session.request("GET", "/api/v1/me/friends")
+    try:
+        authenticator = asyncprawcore.TrustedAuthenticator(
+            requestor,
+            os.environ["asyncprawcore_CLIENT_ID"],
+            os.environ["asyncprawcore_CLIENT_SECRET"],
+        )
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            authenticator,
+            os.environ["asyncprawcore_USERNAME"],
+            os.environ["asyncprawcore_PASSWORD"],
+        )
+        await authorizer.refresh()
 
-    for friend in data["data"]["children"]:
-        print(friend["name"])
+        with asyncprawcore.session(authorizer) as session:
+            data = session.request("GET", "/api/v1/me/friends")
 
-    return 0
+        for friend in data["data"]["children"]:
+            print(friend["name"])
+
+        return 0
+    finally:
+        await requestor.close()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    loop = asyncio.get_event_loop()
+    sys.exit(loop.run_until_complete(main()))

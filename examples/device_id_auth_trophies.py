@@ -9,24 +9,26 @@ This program demonstrates the use of ``asyncprawcore.DeviceIDAuthorizer``.
 import os
 import asyncprawcore
 import sys
+import asyncio
 
 
-def main():
+async def main():
     """Provide the program's entry point when directly executed."""
     if len(sys.argv) != 2:
         print("Usage: {} USERNAME".format(sys.argv[0]))
         return 1
+
 
     authenticator = asyncprawcore.UntrustedAuthenticator(
         asyncprawcore.Requestor("asyncprawcore_device_id_auth_example"),
         os.environ["asyncprawcore_CLIENT_ID"],
     )
     authorizer = asyncprawcore.DeviceIDAuthorizer(authenticator)
-    authorizer.refresh()
+    await authorizer.refresh()
 
     user = sys.argv[1]
-    with asyncprawcore.session(authorizer) as session:
-        data = session.request("GET", "/api/v1/user/{}/trophies".format(user))
+    async with asyncprawcore.session(authorizer) as session:
+        data = await session.request("GET", "/api/v1/user/{}/trophies".format(user))
 
     for trophy in data["data"]["trophies"]:
         description = trophy["data"]["description"]
@@ -39,4 +41,6 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    loop = asyncio.get_event_loop()
+    sys.exit(loop.run_until_complete(main()))
+
