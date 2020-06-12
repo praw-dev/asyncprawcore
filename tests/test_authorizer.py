@@ -64,7 +64,7 @@ class AuthorizerTest(AuthorizerTestBase):
         with self.assertRaises(asyncprawcore.InvalidInvocation):
             await authorizer.authorize("dummy code")
         self.assertFalse(authorizer.is_valid())
-#
+
     def test_initialize(self):
         authorizer = asyncprawcore.Authorizer(self.authentication)
         self.assertIsNone(authorizer.access_token)
