@@ -176,14 +176,7 @@ class Session(object):
         )
 
     async def _make_request(
-        self,
-        data,
-        json,
-        method,
-        params,
-        retry_strategy_state,
-        timeout,
-        url,
+        self, data, json, method, params, retry_strategy_state, timeout, url,
     ):
         try:
             response = await self._rate_limiter.call(
@@ -224,13 +217,7 @@ class Session(object):
             retry_strategy_state = self._retry_strategy_class()
         self._log_request(data, method, params, url)
         response, saved_exception = await self._make_request(
-            data,
-            json,
-            method,
-            params,
-            retry_strategy_state,
-            timeout,
-            url,
+            data, json, method, params, retry_strategy_state, timeout, url,
         )
 
         do_retry = False
@@ -315,8 +302,9 @@ class Session(object):
         """
         params = deepcopy(params) or {}
         params["raw_json"] = 1
-
-        json = self.validate_json(json)
+        if isinstance(json, dict):
+            json = deepcopy(json)
+            json["api_type"] = "json"
         data = self.validate_data_files(data, files)
         url = urljoin(self._requestor.oauth_url, path)
         return await self._request_with_retries(
@@ -330,22 +318,25 @@ class Session(object):
 
     @staticmethod
     def validate_data_files(data, files):
+        """Transfers the files and data from the arguments into the data.
+
+        This is done to maintain consistency with prawcore
+        :param data dictionary of data
+        :param files dictionary of "file" mapped to file-stream
+        """
+        if data is not None and files is not None:
+            raise InvalidInvocation(
+                "Both data and files cannot be non-None simultaneously"
+            )
         if isinstance(data, dict):
             data = deepcopy(data)
             data["api_type"] = "json"
             if files is not None:
                 data.update(files)
             data = sorted(data.items())
-        else:
+        if isinstance(files, dict):
             data = files
         return data
-
-    @staticmethod
-    def validate_json(json):
-        if isinstance(json, dict):
-            json = deepcopy(json)
-            json["api_type"] = "json"
-        return json
 
 
 def session(authorizer=None):

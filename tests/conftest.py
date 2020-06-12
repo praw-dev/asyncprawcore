@@ -18,6 +18,8 @@ USERNAME = os.environ.get("PRAWCORE_USERNAME", "fake_username")
 
 
 class CustomVCR(VCR):
+    """Derived from VCR to make setting paths easier."""
+
     def use_cassette(self, path="", **kwargs):
         """Use a cassette."""
         path += ".json"
@@ -48,10 +50,14 @@ VCR = CustomVCR(
 
 
 class AsyncMock:
+    """Class to assist making asynchronous mocks simpler to write."""
+
     def __init__(self, status, response_dict, headers):
+        """Initialize the class with return status, response-dict and headers."""
         self.status = status
         self.response_dict = response_dict
         self.headers = headers
 
     async def json(self):
+        """Mock the json of ClientSession.request."""
         return self.response_dict

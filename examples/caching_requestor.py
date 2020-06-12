@@ -58,10 +58,14 @@ async def main():
         user = sys.argv[1]
 
         async with asyncprawcore.session(authorizer) as session:
-            data1 = await session.request("GET", "/api/v1/user/{}/trophies".format(user))
+            data1 = await session.request(
+                "GET", "/api/v1/user/{}/trophies".format(user)
+            )
 
         async with asyncprawcore.session(authorizer) as session:
-            data2 = await session.request("GET", "/api/v1/user/{}/trophies".format(user))
+            data2 = await session.request(
+                "GET", "/api/v1/user/{}/trophies".format(user)
+            )
 
         for trophy in data1["data"]["trophies"]:
             description = trophy["data"]["description"]

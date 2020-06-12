@@ -34,7 +34,7 @@ class BaseAuthenticator(object):
             url,
             auth=self._auth(),
             data=sorted(data.items()),
-            headers={"Connection": "close"}
+            headers={"Connection": "close"},
         )
         if response.status != success_status:
             raise ResponseException(response)

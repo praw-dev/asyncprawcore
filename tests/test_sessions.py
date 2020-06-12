@@ -4,7 +4,6 @@ from json import dumps
 import asynctest
 import asyncprawcore
 from mock import patch
-from mock import Mock, patch
 import asyncio
 from aiohttp.web import HTTPRequestTimeout
 from asyncprawcore.exceptions import RequestException
@@ -17,13 +16,15 @@ from .conftest import (
     PASSWORD,
     USERNAME,
     VCR,
-    AsyncMock
+    AsyncMock,
 )
 
 
 class InvalidAuthorizer(asyncprawcore.Authorizer):
     def __init__(self):
-        requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+        requestor = asyncprawcore.requestor.Requestor(
+            "asyncprawcore:test (by /u/bboe)"
+        )
 
         super(InvalidAuthorizer, self).__init__(
             asyncprawcore.TrustedAuthenticator(
@@ -36,7 +37,9 @@ class InvalidAuthorizer(asyncprawcore.Authorizer):
 
 
 async def client_authorizer():
-    requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+    requestor = asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/bboe)"
+    )
 
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
@@ -46,8 +49,15 @@ async def client_authorizer():
     return authorizer
 
 
-async def readonly_authorizer(refresh=True, requestor=asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")):
-    requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+async def readonly_authorizer(
+    refresh=True,
+    requestor=asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/bboe)"
+    ),
+):
+    requestor = asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/bboe)"
+    )
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
     )
@@ -58,7 +68,9 @@ async def readonly_authorizer(refresh=True, requestor=asyncprawcore.requestor.Re
 
 
 async def script_authorizer():
-    requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+    requestor = asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/bboe)"
+    )
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
     )
@@ -71,7 +83,9 @@ async def script_authorizer():
 
 class SessionTest(asynctest.TestCase):
     def setUp(self) -> None:
-        self.requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = asyncprawcore.requestor.Requestor(
+            "asyncprawcore:test (by /u/bboe)"
+        )
 
     async def tearDown(self) -> None:
         await self.requestor.close()
@@ -114,12 +128,21 @@ class SessionTest(asynctest.TestCase):
         session_instance = mock_session.return_value
         try:
             session_instance.request.return_value = asyncio.Future()
-            session_instance.request.return_value.set_result(AsyncMock(
-                status=200,
-                response_dict={"access_token": "", "expires_in": 99, "scope": ""},
-                headers={}))
+            session_instance.request.return_value.set_result(
+                AsyncMock(
+                    status=200,
+                    response_dict={
+                        "access_token": "",
+                        "expires_in": 99,
+                        "scope": "",
+                    },
+                    headers={},
+                )
+            )
 
-            requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+            requestor = asyncprawcore.Requestor(
+                "asyncprawcore:test (by /u/bboe)"
+            )
             authorizer = await readonly_authorizer(requestor=requestor)
             session_instance.request.reset_mock()
 
@@ -160,7 +183,9 @@ class SessionTest(asynctest.TestCase):
         ):
             self.session = asyncprawcore.Session(await script_authorizer())
             json = {"lang": "ja", "num_comments": 123}
-            response = await self.session.request("PATCH", "/api/v1/me/prefs", json=json)
+            response = await self.session.request(
+                "PATCH", "/api/v1/me/prefs", json=json
+            )
             self.assertEqual("ja", response["lang"])
             self.assertEqual(123, response["num_comments"])
 
@@ -216,9 +241,7 @@ class SessionTest(asynctest.TestCase):
                 asyncprawcore.ServerError
             ) as context_manager:
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                502, context_manager.exception.response.status
-            )
+            self.assertEqual(502, context_manager.exception.response.status)
 
     async def test_request__bad_json(self):
         with VCR.use_cassette("Session_request__bad_json"):
@@ -240,7 +263,9 @@ class SessionTest(asynctest.TestCase):
                     "/api/v1/me/friends/spez",
                     data='{"note": "asyncprawcore"}',
                 )
-            self.assertIn("reason", await context_manager.exception.response.json())
+            self.assertIn(
+                "reason", await context_manager.exception.response.json()
+            )
 
     async def test_request__cloudflair_connection_timed_out(self):
         with VCR.use_cassette(
@@ -253,14 +278,10 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/")
                 await self.session.request("GET", "/")
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                522, context_manager.exception.response.status
-            )
+            self.assertEqual(522, context_manager.exception.response.status)
 
     async def test_request__cloudflair_unknown_error(self):
-        with VCR.use_cassette(
-            "Session_request__cloudflair_unknown_error"
-        ):
+        with VCR.use_cassette("Session_request__cloudflair_unknown_error"):
             self.session = asyncprawcore.Session(await readonly_authorizer())
             with self.assertRaises(
                 asyncprawcore.ServerError
@@ -268,9 +289,7 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/")
                 await self.session.request("GET", "/")
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                520, context_manager.exception.response.status
-            )
+            self.assertEqual(520, context_manager.exception.response.status)
 
     # # #FixMe https://github.com/kevin1024/vcrpy/issues/521
     # async def test_request__conflict(self):
@@ -290,7 +309,7 @@ class SessionTest(asynctest.TestCase):
     #         self.assertEqual(
     #             409, context_manager.exception.response.status_code
     #         )
-#
+    #
     async def test_request__created(self):
         with VCR.use_cassette("Session_request__created"):
             self.session = asyncprawcore.Session(await script_authorizer())
@@ -306,35 +325,29 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/user/spez/gilded/given")
 
     async def test_request__gateway_timeout(self):
-        with VCR.use_cassette(
-            "Session_request__gateway_timeout"
-        ):
+        with VCR.use_cassette("Session_request__gateway_timeout"):
             self.session = asyncprawcore.Session(await readonly_authorizer())
             with self.assertRaises(
                 asyncprawcore.ServerError
             ) as context_manager:
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                504, context_manager.exception.response.status
-            )
+            self.assertEqual(504, context_manager.exception.response.status)
 
     async def test_request__internal_server_error(self):
-        with VCR.use_cassette(
-            "Session_request__internal_server_error"
-        ):
+        with VCR.use_cassette("Session_request__internal_server_error"):
             self.session = asyncprawcore.Session(await readonly_authorizer())
             with self.assertRaises(
                 asyncprawcore.ServerError
             ) as context_manager:
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                500, context_manager.exception.response.status
-            )
+            self.assertEqual(500, context_manager.exception.response.status)
 
     async def test_request__no_content(self):
         with VCR.use_cassette("Session_request__no_content"):
             self.session = asyncprawcore.Session(await script_authorizer())
-            response = await self.session.request("DELETE", "/api/v1/me/friends/spez")
+            response = await self.session.request(
+                "DELETE", "/api/v1/me/friends/spez"
+            )
             self.assertIsNone(response)
 
     async def test_request__not_found(self):
@@ -344,14 +357,10 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/r/cricket/wiki/invalid")
 
     async def test_request__okay_with_0_byte_content(self):
-        with VCR.use_cassette(
-            "Session_request__okay_with_0_byte_content"
-        ):
+        with VCR.use_cassette("Session_request__okay_with_0_byte_content"):
             self.session = asyncprawcore.Session(await script_authorizer())
             data = {"model": dumps({"name": "t2"})}
-            path = "/api/multi/user/{}/m/t2".format(
-                USERNAME
-            )
+            path = "/api/multi/user/{}/m/t2".format(USERNAME)
             response = await self.session.request("DELETE", path, data=data)
             self.assertEqual("", response)
 
@@ -359,10 +368,17 @@ class SessionTest(asynctest.TestCase):
     async def test_request__read_timeout_retry(self, mock_session):
         self.session_instance = mock_session.return_value
         self.session_instance.request.return_value = asyncio.Future()
-        self.session_instance.request.return_value.set_result(AsyncMock(
-            status=200,
-            response_dict={"access_token": "", "expires_in": 99, "scope": ""},
-            headers={}))
+        self.session_instance.request.return_value.set_result(
+            AsyncMock(
+                status=200,
+                response_dict={
+                    "access_token": "",
+                    "expires_in": 99,
+                    "scope": "",
+                },
+                headers={},
+            )
+        )
 
         requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
         authorizer = await readonly_authorizer(requestor=requestor)
@@ -371,10 +387,12 @@ class SessionTest(asynctest.TestCase):
         exception = HTTPRequestTimeout()
         self.session_instance.request.side_effect = exception
 
-        expected = ('asyncprawcore',
-                    'WARNING',
-                    'Retrying due to <HTTPRequestTimeout Request Timeout not prepared> status: '
-                    'GET https://oauth.reddit.com/')
+        expected = (
+            "asyncprawcore",
+            "WARNING",
+            "Retrying due to <HTTPRequestTimeout Request Timeout not prepared> status: "
+            "GET https://oauth.reddit.com/",
+        )
 
         with LogCapture(level=logging.WARNING) as log_capture:
             with self.assertRaises(RequestException) as context_manager:
@@ -393,9 +411,7 @@ class SessionTest(asynctest.TestCase):
     #         self.assertTrue(context_manager.exception.path.startswith("/r/"))
 
     async def test_request__service_unavailable(self):
-        with VCR.use_cassette(
-            "Session_request__service_unavailable"
-        ):
+        with VCR.use_cassette("Session_request__service_unavailable"):
             self.session = asyncprawcore.Session(await readonly_authorizer())
             with self.assertRaises(
                 asyncprawcore.ServerError
@@ -403,9 +419,7 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/")
                 await self.session.request("GET", "/")
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                503, context_manager.exception.response.status
-            )
+            self.assertEqual(503, context_manager.exception.response.status)
 
     # # # #FixMe https://github.com/kevin1024/vcrpy/issues/521
     # async def test_request__too_large(self):
@@ -441,9 +455,7 @@ class SessionTest(asynctest.TestCase):
             exception_class = asyncprawcore.UnavailableForLegalReasons
             with self.assertRaises(exception_class) as context_manager:
                 await self.session.request("GET", "/")
-            self.assertEqual(
-                451, context_manager.exception.response.status
-            )
+            self.assertEqual(451, context_manager.exception.response.status)
 
     # # # #FixMe https://github.com/kevin1024/vcrpy/issues/521
     # async def test_request__unsupported_media_type(self):
@@ -463,9 +475,7 @@ class SessionTest(asynctest.TestCase):
     #         )
 
     async def test_request__with_insufficent_scope(self):
-        with VCR.use_cassette(
-            "Session_request__with_insufficient_scope"
-        ):
+        with VCR.use_cassette("Session_request__with_insufficient_scope"):
             self.session = asyncprawcore.Session(await client_authorizer())
             with self.assertRaises(asyncprawcore.InsufficientScope):
                 await self.session.request("GET", "/api/v1/me")
@@ -479,9 +489,7 @@ class SessionTest(asynctest.TestCase):
         )
         self.session = asyncprawcore.Session(self.authorizer)
 
-        with VCR.use_cassette(
-            "Session_request__with_invalid_access_token"
-        ):
+        with VCR.use_cassette("Session_request__with_invalid_access_token"):
             self.session._authorizer.access_token = "invalid"
             with self.assertRaises(asyncprawcore.InvalidToken):
                 await self.session.request("get", "/")
@@ -505,9 +513,6 @@ class SessionFunctionTest(asynctest.TestCase):
     async def test_session(self):
         session = asyncprawcore.session(InvalidAuthorizer())
         try:
-            self.assertIsInstance(
-                session, asyncprawcore.Session
-            )
+            self.assertIsInstance(session, asyncprawcore.Session)
         finally:
             await session.close()
-

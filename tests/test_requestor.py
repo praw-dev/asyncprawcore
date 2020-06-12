@@ -1,5 +1,4 @@
 """Test for asyncprawcore.requestor.Requestor class."""
-import pickle
 import asyncprawcore
 import asynctest
 import asyncio
@@ -11,13 +10,13 @@ class RequestorTest(asynctest.TestCase):
     async def tearDown(self) -> None:
         if hasattr(self, "requestor"):
             if isinstance(self.requestor, asyncprawcore.requestor.Requestor):
-                try:
+                if not isinstance(self.requestor._http, Mock):
                     await self.requestor.close()
-                except:
-                    pass
 
     async def test_initialize(self):
-        self.requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/bboe)"
+        )
         self.assertEqual(
             "asyncprawcore:test (by /u/bboe) asyncprawcore/{}".format(
                 asyncprawcore.__version__
@@ -35,7 +34,9 @@ class RequestorTest(asynctest.TestCase):
         exception = Exception("asyncprawcore wrap_request_exceptions")
         session_instance = mock_session.return_value
         session_instance.request.side_effect = exception
-        self.requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/bboe)"
+        )
         with self.assertRaises(
             asyncprawcore.RequestException
         ) as context_manager:
@@ -55,8 +56,10 @@ class RequestorTest(asynctest.TestCase):
         headers = {"session_header": custom_header}
         return_of_request = asyncio.Future()
         return_of_request.set_result(override)
-        attrs = {"request.return_value": return_of_request,
-                 "_default_headers": headers}
+        attrs = {
+            "request.return_value": return_of_request,
+            "_default_headers": headers,
+        }
         session = Mock(**attrs)
 
         self.requestor = asyncprawcore.Requestor(
@@ -70,9 +73,12 @@ class RequestorTest(asynctest.TestCase):
             self.requestor._http._default_headers["User-Agent"],
         )
         self.assertEqual(
-            self.requestor._http._default_headers["session_header"], custom_header
+            self.requestor._http._default_headers["session_header"],
+            custom_header,
         )
-        self.assertEqual(await self.requestor.request("https://reddit.com"), override)
+        self.assertEqual(
+            await self.requestor.request("https://reddit.com"), override
+        )
 
     # FixMe Cannot pickle async objects?
     # async def test_pickle(self):

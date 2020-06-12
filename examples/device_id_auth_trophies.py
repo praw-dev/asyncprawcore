@@ -18,7 +18,6 @@ async def main():
         print("Usage: {} USERNAME".format(sys.argv[0]))
         return 1
 
-
     authenticator = asyncprawcore.UntrustedAuthenticator(
         asyncprawcore.Requestor("asyncprawcore_device_id_auth_example"),
         os.environ["asyncprawcore_CLIENT_ID"],
@@ -28,7 +27,9 @@ async def main():
 
     user = sys.argv[1]
     async with asyncprawcore.session(authorizer) as session:
-        data = await session.request("GET", "/api/v1/user/{}/trophies".format(user))
+        data = await session.request(
+            "GET", "/api/v1/user/{}/trophies".format(user)
+        )
 
     for trophy in data["data"]["trophies"]:
         description = trophy["data"]["description"]
@@ -43,4 +44,3 @@ async def main():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     sys.exit(loop.run_until_complete(main()))
-

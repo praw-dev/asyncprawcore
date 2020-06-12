@@ -81,7 +81,9 @@ async def main():
         authorizer = asyncprawcore.Authorizer(authenticator)
         await authorizer.authorize(params["code"])
 
-        send_message(client, "Refresh token: {}".format(authorizer.refresh_token))
+        send_message(
+            client, "Refresh token: {}".format(authorizer.refresh_token)
+        )
         return 0
     finally:
         await requestor.close()
@@ -90,4 +92,3 @@ async def main():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     sys.exit(loop.run_until_complete(main()))
-

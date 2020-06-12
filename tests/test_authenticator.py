@@ -114,11 +114,9 @@ class UntrustedAuthenticatorTest(asynctest.TestCase):
             self.requestor, CLIENT_ID, REDIRECT_URI
         )
         with self.assertRaises(asyncprawcore.InvalidInvocation):
-            authenticator.authorize_url("permanent",
-                                        ["identity", "read"],
-                                        "a_state",
-                                        implicit=True,
-                                        )
+            authenticator.authorize_url(
+                "permanent", ["identity", "read"], "a_state", implicit=True,
+            )
 
     def test_authorize_url__fail_without_redirect_uri(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
@@ -138,4 +136,3 @@ class UntrustedAuthenticatorTest(asynctest.TestCase):
         )
         with VCR.use_cassette("UntrustedAuthenticator_revoke_token"):
             await authenticator.revoke_token("dummy token")
-

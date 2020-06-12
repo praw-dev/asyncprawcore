@@ -80,7 +80,7 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertIsNone(authorizer.scopes)
         self.assertEqual(REFRESH_TOKEN, authorizer.refresh_token)
         self.assertFalse(authorizer.is_valid())
-#
+
     def test_initialize__with_untrusted_authenticator(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(None, None)
         authorizer = asyncprawcore.Authorizer(authenticator)
@@ -198,7 +198,6 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
         self.authentication = asyncprawcore.UntrustedAuthenticator(
             self.requestor, CLIENT_ID
         )
-
 
     def test_initialize(self):
         authorizer = asyncprawcore.DeviceIDAuthorizer(self.authentication)
