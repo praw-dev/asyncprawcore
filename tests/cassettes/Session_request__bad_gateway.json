@@ -1,0 +1,209 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "post",
+                "uri": "https://www.reddit.com/api/v1/access_token",
+                "body": [
+                    [
+                        "grant_type",
+                        "client_credentials"
+                    ]
+                ],
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Connection": [
+                        "close"
+                    ],
+                    "AUTHORIZATION": [
+                        "Basic <placeholder_auth>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Connection": "close",
+                    "Content-Length": "106",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-reddit-loid": "00000000006wrxia6p.2.1592041573877.Z0FBQUFBQmU1S0JscHYzdktzSGVQR1hCWEdvcmk5VnhEQmVheWtUY3F0Z2RNamhlT3lMQVhJcGZYZmZEc1NIa3dNWUxDVXNreHhublpaVDNnbmRvQ1g2YjY2cXFibUFWdmNVeUhoUGlFdHJfVWRyTTJPZmprSGRHd3VHZGtHTjRDbHh4WlNYYl9uV0I",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 09:46:13 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21034-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592041574.816165,VS0,VE120",
+                    "Set-Cookie": "edgebucket=GkyaDz24hWacC0D119; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": "{\"access_token\": \"fake_access_Token\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+                },
+                "url": "https://www.reddit.com/api/v1/access_token"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://oauth.reddit.com/?raw_json=1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Authorization": [
+                        "bearer <beaerer_token>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 502,
+                    "message": "BAD GATEWAY"
+                },
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Content-Length": "41102",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-ua-compatible": "IE=edge",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "access-control-allow-origin": "*",
+                    "access-control-expose-headers": "X-Moose",
+                    "Content-Encoding": "gzip",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 09:46:19 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21050-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592041578.380099,VS0,VE770",
+                    "Vary": "accept-encoding",
+                    "Set-Cookie": "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": ""
+                },
+                "url": "https://oauth.reddit.com/?raw_json=1"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://oauth.reddit.com/?raw_json=1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Authorization": [
+                        "bearer <beaerer_token>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 502,
+                    "message": "BAD GATEWAY"
+                },
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Content-Length": "41102",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-ua-compatible": "IE=edge",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "access-control-allow-origin": "*",
+                    "access-control-expose-headers": "X-Moose",
+                    "Content-Encoding": "gzip",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 09:46:30 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21050-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592041590.604430,VS0,VE849",
+                    "Vary": "accept-encoding",
+                    "Set-Cookie": "session_tracker=nqelobgajdhenddonq.0.1592041589684.Z0FBQUFBQmU1S0IyaTZtNHpOUy1OdEZKZ3VwWU5JbXZYb3I4Tnp6SXgyNTVRc3JnRGdzdEZvVndSSG9mbmNWYXFjVkJLTTlIMnJVYWx2ZVdRdDlwVkF5TF9mVElSa2RDZFhKc0lhQ0lBNU5QbXBCRnRpY3dESGZwTkRrN09GU096eXh6MnVIS3dkbUU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 11:46:30 GMT; secure; SameSite=None; Secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": ""
+                },
+                "url": "https://oauth.reddit.com/?raw_json=1"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://oauth.reddit.com/?raw_json=1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Authorization": [
+                        "bearer <beaerer_token>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 502,
+                    "message": "BAD GATEWAY"
+                },
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Content-Length": "41082",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-ua-compatible": "IE=edge",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "access-control-allow-origin": "*",
+                    "access-control-expose-headers": "X-Moose",
+                    "Content-Encoding": "gzip",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 09:46:35 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21050-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592041595.964061,VS0,VE922",
+                    "Vary": "accept-encoding",
+                    "Set-Cookie": "session_tracker=nqelobgajdhenddonq.0.1592041595035.Z0FBQUFBQmU1S0I3U1MtUXFaVVRlc20zUHFwTW1MdlF4cnFJZ0Y2SzM5aVBsd2RyTjdLeHlTbkQxejEzRVM2WXk2QTctOEUxNEhnMWRMd0Fad0oxdWliOXBXY2xxSTdFbmZGblhpZjdQZ2ZBeUVBTGpzc3o2aHFRaGp4TmhkRlRBN05uX3pXY1JIWVY; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 11:46:35 GMT; secure; SameSite=None; Secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": ""
+                },
+                "url": "https://oauth.reddit.com/?raw_json=1"
+            }
+        }
+    ]
+}

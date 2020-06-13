@@ -1,0 +1,61 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "post",
+                "uri": "https://www.reddit.com/api/v1/revoke_token",
+                "body": [
+                    [
+                        "token",
+                        "dummy token"
+                    ]
+                ],
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Connection": [
+                        "close"
+                    ],
+                    "AUTHORIZATION": [
+                        "Basic NWViczUyeVF0eXBzdGc6"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": "No Content"
+                },
+                "headers": {
+                    "Connection": "close",
+                    "Content-Length": "41",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "www-authenticate": "Basic realm=\"reddit\"",
+                    "x-ua-compatible": "IE=edge",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "set-cookie": "session_tracker=6GedPbNM6uJHSpSyAA.0.1592046330500.Z0FBQUFBQmU1TEw2Z2V3MW1FbFUtWVl1MC1QeURiN3g1Uk0wdjBsRWtKRFFYaXhPek5GYTZMLVprNldyYi0yZlNsbC1TLXk2cWRMWkV1S0ZYeUx6N3otSVI3V3djSFRTaVpadEJhemFaQ3NEa1JzVEhkV3Z4R3pOVk5meFQwU01SUGlZamx5SU9JNzY; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 13:05:30 GMT; secure",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 11:05:30 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21059-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592046330.420244,VS0,VE131",
+                    "Set-Cookie": "edgebucket=RpLOf4arDcbhrITfKT; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": ""
+                },
+                "url": "https://www.reddit.com/api/v1/revoke_token"
+            }
+        }
+    ]
+}
