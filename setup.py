@@ -23,6 +23,7 @@ extras = {
         "mock >=0.8",
         "pytest",
         "testfixtures >4.13.2, <7",
+        "asynctest >=0.13.0",
     ],
 }
 extras["dev"] = extras["lint"] + extras["test"]
