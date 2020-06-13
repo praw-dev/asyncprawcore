@@ -3,6 +3,7 @@ from copy import deepcopy
 import logging
 import random
 import asyncio
+from json.decoder import JSONDecodeError
 from aiohttp.web import HTTPRequestTimeout
 from urllib.parse import urljoin
 from .codes import codes
@@ -253,7 +254,7 @@ class Session(object):
             return ""
         try:
             return await response.json()
-        except ValueError:
+        except (JSONDecodeError, ValueError):
             raise BadJSON(response)
 
     async def _set_header_callback(self):
