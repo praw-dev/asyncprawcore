@@ -249,7 +249,7 @@ class SessionTest(asynctest.TestCase):
             with self.assertRaises(asyncprawcore.BadJSON) as context_manager:
                 await self.session.request("GET", "/")
             self.assertEqual(
-                16308, context_manager.exception.response.content_length
+                17512, context_manager.exception.response.content_length
             )
 
     async def test_request__bad_request(self):
