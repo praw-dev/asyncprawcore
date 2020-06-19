@@ -48,7 +48,7 @@ have the environment variables ``asyncprawcore_CLIENT_ID`` and
             asyncprawcore.Requestor('YOUR_VALID_USER_AGENT'),
             os.environ['asyncprawcore_CLIENT_ID'],
             os.environ['asyncprawcore_CLIENT_SECRET'])
-
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
         await authorizer.refresh()
 
         async with asyncprawcore.session(authorizer) as session:
