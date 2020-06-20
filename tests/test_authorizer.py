@@ -192,14 +192,14 @@ class AuthorizerTest(AuthorizerTestBase):
 
 
 class DeviceIDAuthorizerTest(AuthorizerTestBase):
-    def setUp(self):
+    async def setUp(self):
         self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
 
         self.authentication = asyncprawcore.UntrustedAuthenticator(
             self.requestor, CLIENT_ID
         )
 
-    def test_initialize(self):
+    async def test_initialize(self):
         authorizer = asyncprawcore.DeviceIDAuthorizer(self.authentication)
         self.assertIsNone(authorizer.access_token)
         self.assertIsNone(authorizer.scopes)

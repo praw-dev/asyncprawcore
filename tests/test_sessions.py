@@ -78,7 +78,7 @@ async def script_authorizer():
 
 
 class SessionTest(asynctest.TestCase):
-    def setUp(self) -> None:
+    async def setUp(self) -> None:
         self.requestor = asyncprawcore.requestor.Requestor(
             "asyncprawcore:test (by /u/bboe)"
         )
