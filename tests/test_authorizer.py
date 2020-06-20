@@ -16,7 +16,7 @@ from .conftest import (
 
 
 class AuthorizerTestBase(asynctest.TestCase):
-    def setUp(self):
+    async def setUp(self):
         self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
         self.authentication = asyncprawcore.TrustedAuthenticator(
             self.requestor, CLIENT_ID, CLIENT_SECRET

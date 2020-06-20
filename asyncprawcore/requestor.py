@@ -37,7 +37,6 @@ class Requestor(object):
         if user_agent is None or len(user_agent) < 7:
             raise InvalidInvocation("user_agent is not descriptive")
         self.loop = loop or asyncio.get_event_loop()
-        # self.loop.set_debug(True)
         self.set_http(session)
         self._http._default_headers[
             "User-Agent"
