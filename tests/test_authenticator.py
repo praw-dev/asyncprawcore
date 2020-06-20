@@ -1,6 +1,7 @@
 """Test for sublcasses of asyncprawcore.auth.BaseAuthenticator class."""
 import asyncprawcore
 import asynctest
+
 from .conftest import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, VCR
 from asyncprawcore.requestor import Requestor
 

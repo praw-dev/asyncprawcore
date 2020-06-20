@@ -3,6 +3,7 @@ import logging
 from json import dumps
 import asynctest
 import asyncprawcore
+
 from mock import patch
 import asyncio
 from aiohttp.web import HTTPRequestTimeout
@@ -49,12 +50,7 @@ async def client_authorizer():
     return authorizer
 
 
-async def readonly_authorizer(
-    refresh=True,
-    requestor=asyncprawcore.requestor.Requestor(
-        "asyncprawcore:test (by /u/bboe)"
-    ),
-):
+async def readonly_authorizer(refresh=True):
     requestor = asyncprawcore.requestor.Requestor(
         "asyncprawcore:test (by /u/bboe)"
     )
@@ -140,10 +136,7 @@ class SessionTest(asynctest.TestCase):
                 )
             )
 
-            requestor = asyncprawcore.Requestor(
-                "asyncprawcore:test (by /u/bboe)"
-            )
-            authorizer = await readonly_authorizer(requestor=requestor)
+            authorizer = await readonly_authorizer()
             session_instance.request.reset_mock()
 
             # Fail on subsequent request
@@ -380,8 +373,7 @@ class SessionTest(asynctest.TestCase):
             )
         )
 
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
-        authorizer = await readonly_authorizer(requestor=requestor)
+        authorizer = await readonly_authorizer()
         self.session_instance.request.reset_mock()
 
         exception = HTTPRequestTimeout()

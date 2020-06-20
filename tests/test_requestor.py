@@ -1,7 +1,10 @@
 """Test for asyncprawcore.requestor.Requestor class."""
 import asyncprawcore
 import asynctest
+
 import asyncio
+
+# import pickle
 from mock import patch, Mock
 from asyncprawcore import RequestException
 
@@ -80,7 +83,7 @@ class RequestorTest(asynctest.TestCase):
             await self.requestor.request("https://reddit.com"), override
         )
 
-    # FixMe Cannot pickle async objects?
+    # # FixMe Cannot pickle async objects?
     # async def test_pickle(self):
     #     requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
     #     for protocol in range(pickle.HIGHEST_PROTOCOL + 1):

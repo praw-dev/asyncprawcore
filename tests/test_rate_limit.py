@@ -1,5 +1,6 @@
 """Test for asyncprawcore.Sessions module."""
 import asynctest
+
 from copy import copy
 from mock import patch
 from asyncprawcore.rate_limit import RateLimiter
