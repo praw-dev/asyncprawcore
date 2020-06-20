@@ -30,8 +30,8 @@ async def main():
         )
         await authorizer.refresh()
 
-        with asyncprawcore.session(authorizer) as session:
-            data = session.request("GET", "/api/v1/me/friends")
+        async with asyncprawcore.session(authorizer) as session:
+            data = await session.request("GET", "/api/v1/me/friends")
 
         for friend in data["data"]["children"]:
             print(friend["name"])
