@@ -1,4 +1,4 @@
-"""Use our own codes instead of requiring Requests."""
+"""Use our own codes instead of requiring Requests/Aiohttp."""
 
 
 def _make_into_dict(tupledict):

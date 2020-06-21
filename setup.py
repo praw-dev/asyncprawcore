@@ -23,6 +23,7 @@ extras = {
         "mock >=0.8",
         "pytest",
         "testfixtures >4.13.2, <7",
+        "asynctest >=0.13.0",
     ],
 }
 extras["dev"] = extras["lint"] + extras["test"]
@@ -39,12 +40,11 @@ setup(
         "Natural Language :: English",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    description="Low-level communication layer for PRAW 4+.",
+    description="Low-level asynchronous communication layer for PRAW 4+.",
     extras_require=extras,
     install_requires=["aiohttp", "yarl"],
     keywords="praw reddit api async",

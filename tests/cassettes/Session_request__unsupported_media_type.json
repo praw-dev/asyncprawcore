@@ -15,7 +15,7 @@
             "gzip, deflate"
           ],
           "Authorization": [
-            "Basic <BASIC_AUTH>"
+            "Basic <placeholder_auth>"
           ],
           "Connection": [
             "keep-alive"
@@ -30,7 +30,7 @@
             "loid=mmMAwMoHaJm04NKk1i; session_tracker=DJojrrAVPFxgb0vizI.0.1495932294853.Z0FBQUFBQlpLaDJIaFl0OUFYbXdtejdaSmg3Mm5ZZ19EZ2JzTzZhVlFEbERZUVZ2RzJuOUpVWkUwQVBQUmRBLWpZWUVEaHBzNy1nTEh1LXN3TVZHa1dwNDJ1ai05cko1OWhWRDVFLWw2MEN5VEdmNTdHejZUcFJwWUhiUWtmSS1nY2czaklKanNoTVY"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by /u/bboe) asyncprawcore/0.14.0"
+            "prawcore:test (by /u/bboe) prawcore/0.14.0"
           ]
         },
         "method": "POST",
@@ -39,7 +39,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"access_token\": \"0oMQ0UR6qTnRWidnH1mbXrIgucQ\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+          "string": "{\"access_token\": \"fake_access_Token\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
           "Accept-Ranges": [
@@ -120,7 +120,7 @@
             "gzip, deflate"
           ],
           "Authorization": [
-            "bearer oNOjYO9S4zSVLw3pG7o62C1FKec"
+            "bearer <beaerer_token>"
           ],
           "Connection": [
             "keep-alive"
@@ -135,7 +135,7 @@
             "edgebucket=9oc0rjaOoD6kfWnzW7; loid=mmMAwMoHaJm04NKk1i; session_tracker=jfaburHovD9fuehUDX.0.1521260973148.Z0FBQUFBQmFySm10aU42amkyM2RrcDc3WFZFcTNNdW5UZ0FfMXlfM2tIZ2dSVkZRODV6aHFUbjJVRHZyWmh1V1UxQUtRQTA3dVd1RWJhaXdMdDZrV2hVNG96YWZ2VTRaMlB4dEcwLV9qQndlX3NLZWNjOG9xYTBaRmdtLWVJUnptdExxSjhuMmNabFY"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by /u/bboe) asyncprawcore/0.14.0"
+            "prawcore:test (by /u/bboe) prawcore/0.14.0"
           ]
         },
         "method": "POST",

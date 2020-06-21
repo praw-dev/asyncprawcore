@@ -38,20 +38,25 @@ have the environment variables ``asyncprawcore_CLIENT_ID`` and
 
 .. code-block:: python
 
-   #!/usr/bin/env python
-   import os
-   import pprint
-   import asyncprawcore
+    import os
+    import pprint
+    import asyncio
+    import asyncprawcore
 
-   authenticator = asyncprawcore.TrustedAuthenticator(
-       asyncprawcore.Requestor('YOUR_VALID_USER_AGENT'),
-       os.environ['asyncprawcore_CLIENT_ID'],
-       os.environ['asyncprawcore_CLIENT_SECRET'])
-   authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
-   authorizer.refresh()
+    async def main():
+        authenticator = asyncprawcore.TrustedAuthenticator(
+            asyncprawcore.Requestor('YOUR_VALID_USER_AGENT'),
+            os.environ['asyncprawcore_CLIENT_ID'],
+            os.environ['asyncprawcore_CLIENT_SECRET'])
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
+        await authorizer.refresh()
 
-   with asyncprawcore.session(authorizer) as session:
-       pprint.pprint(session.request('GET', '/api/v1/user/bboe/trophies'))
+        async with asyncprawcore.session(authorizer) as session:
+            pprint.pprint(await session.request('GET', '/api/v1/user/bboe/trophies'))
+
+    if __name__ == "__main__":
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main())
 
 Save the above as ``trophies.py`` and then execute via:
 

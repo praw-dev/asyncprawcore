@@ -1,6 +1,7 @@
 """Provide the RateLimiter class."""
 import logging
 import time
+import asyncio
 
 log = logging.getLogger(__package__)
 
@@ -33,13 +34,13 @@ class RateLimiter(object):
         :param **kwargs: The keyword arguments to ``request_function``.
 
         """
-        self.delay()
+        await self.delay()
         kwargs["headers"] = await set_header_callback()
         response = await request_function(*args, **kwargs)
         self.update(response.headers)
         return response
 
-    def delay(self):
+    async def delay(self):
         """Sleep for an amount of time to remain under the rate limit."""
         if self.next_request_timestamp is None:
             return
@@ -50,8 +51,7 @@ class RateLimiter(object):
             sleep_seconds
         )
         log.debug(message)
-        # time.sleep(sleep_seconds)
-        time.sleep(0)
+        await asyncio.sleep(sleep_seconds)
 
     def update(self, response_headers):
         """Update the state of the rate limiter based on the response headers.
@@ -70,7 +70,6 @@ class RateLimiter(object):
             return
 
         now = time.time()
-        prev_remaining = self.remaining
 
         seconds_to_reset = int(response_headers["x-ratelimit-reset"])
         self.remaining = float(response_headers["x-ratelimit-remaining"])
@@ -80,12 +79,7 @@ class RateLimiter(object):
         if self.remaining <= 0:
             self.next_request_timestamp = self.reset_timestamp
             return
-
-        if prev_remaining is not None and prev_remaining > self.remaining:
-            estimated_clients = prev_remaining - self.remaining
-        else:
-            estimated_clients = 1.0
-
-        self.next_request_timestamp = now + (
-            estimated_clients * seconds_to_reset / self.remaining
+        self.next_request_timestamp = min(
+            self.reset_timestamp,
+            now + max(min((seconds_to_reset - self.remaining) / 2, 10), 0),
         )

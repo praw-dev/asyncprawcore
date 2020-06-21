@@ -1,38 +1,46 @@
 """Test for asyncprawcore.requestor.Requestor class."""
-import pickle
-
 import asyncprawcore
-import unittest
+import asynctest
+import asyncio
 from mock import patch, Mock
 from asyncprawcore import RequestException
 
 
-class RequestorTest(unittest.TestCase):
-    def test_initialize(self):
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+class RequestorTest(asynctest.TestCase):
+    async def tearDown(self) -> None:
+        if hasattr(self, "requestor"):
+            if isinstance(self.requestor, asyncprawcore.requestor.Requestor):
+                if not isinstance(self.requestor._http, Mock):
+                    await self.requestor.close()
+
+    async def test_initialize(self):
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/bboe)"
+        )
         self.assertEqual(
             "asyncprawcore:test (by /u/bboe) asyncprawcore/{}".format(
                 asyncprawcore.__version__
             ),
-            requestor._http.headers["User-Agent"],
+            self.requestor._http._default_headers["User-Agent"],
         )
 
     def test_initialize__failures(self):
         for agent in [None, "shorty"]:
-            self.assertRaises(
-                asyncprawcore.InvalidInvocation, asyncprawcore.Requestor, agent
-            )
+            with self.assertRaises(asyncprawcore.InvalidInvocation):
+                self.requestor = asyncprawcore.Requestor(agent)
 
-    @patch("requests.Session")
-    def test_request__wrap_request_exceptions(self, mock_session):
+    @patch("aiohttp.ClientSession")
+    async def test_request__wrap_request_exceptions(self, mock_session):
         exception = Exception("asyncprawcore wrap_request_exceptions")
         session_instance = mock_session.return_value
         session_instance.request.side_effect = exception
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/bboe)"
+        )
         with self.assertRaises(
             asyncprawcore.RequestException
         ) as context_manager:
-            requestor.request("get", "http://a.b", data="bar")
+            await self.requestor.request("get", "http://a.b", data="bar")
         self.assertIsInstance(context_manager.exception, RequestException)
         self.assertIs(exception, context_manager.exception.original_exception)
         self.assertEqual(
@@ -42,14 +50,19 @@ class RequestorTest(unittest.TestCase):
             {"data": "bar"}, context_manager.exception.request_kwargs
         )
 
-    def test_request__use_custom_session(self):
+    async def test_request__use_custom_session(self):
         override = "REQUEST OVERRIDDEN"
         custom_header = "CUSTOM SESSION HEADER"
         headers = {"session_header": custom_header}
-        attrs = {"request.return_value": override, "headers": headers}
+        return_of_request = asyncio.Future()
+        return_of_request.set_result(override)
+        attrs = {
+            "request.return_value": return_of_request,
+            "_default_headers": headers,
+        }
         session = Mock(**attrs)
 
-        requestor = asyncprawcore.Requestor(
+        self.requestor = asyncprawcore.Requestor(
             "asyncprawcore:test (by /u/bboe)", session=session
         )
 
@@ -57,15 +70,12 @@ class RequestorTest(unittest.TestCase):
             "asyncprawcore:test (by /u/bboe) asyncprawcore/{}".format(
                 asyncprawcore.__version__
             ),
-            requestor._http.headers["User-Agent"],
+            self.requestor._http._default_headers["User-Agent"],
         )
         self.assertEqual(
-            requestor._http.headers["session_header"], custom_header
+            self.requestor._http._default_headers["session_header"],
+            custom_header,
         )
-
-        self.assertEqual(requestor.request("https://reddit.com"), override)
-
-    def test_pickle(self):
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
-        for protocol in range(pickle.HIGHEST_PROTOCOL + 1):
-            pickle.loads(pickle.dumps(requestor, protocol=protocol))
+        self.assertEqual(
+            await self.requestor.request("https://reddit.com"), override
+        )

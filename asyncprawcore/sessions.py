@@ -2,12 +2,14 @@
 from copy import deepcopy
 import logging
 import random
-import time
-
+import asyncio
+from json.decoder import JSONDecodeError
+from aiohttp.web import HTTPRequestTimeout
 from urllib.parse import urljoin
 from .codes import codes
 
 from .auth import BaseAuthorizer
+from .const import TIMEOUT
 from .rate_limit import RateLimiter
 from .exceptions import (
     BadJSON,
@@ -27,10 +29,56 @@ from .util import authorization_error_class
 log = logging.getLogger(__package__)
 
 
+class RetryStrategy(object):
+    """An abstract class for scheduling request retries.
+
+    The strategy controls both the number and frequency of retry attempts.
+
+    Instances of this class are immutable.
+
+    """
+
+    def sleep(self):
+        """Sleep until we are ready to attempt the request."""
+        sleep_seconds = self._sleep_seconds()
+        if sleep_seconds is not None:
+            message = "Sleeping: {:0.2f} seconds prior to retry".format(
+                sleep_seconds
+            )
+            log.debug(message)
+            asyncio.sleep(sleep_seconds)
+
+
+class FiniteRetryStrategy(RetryStrategy):
+    """A ``RetryStrategy`` that retries requests a finite number of times."""
+
+    def _sleep_seconds(self):
+        if self._retries < 3:
+            base = 0 if self._retries == 2 else 2
+            return base + 2 * random.random()
+        return None
+
+    def __init__(self, retries=3):
+        """Initialize the strategy.
+
+        :param retries: Number of times to attempt a request.
+
+        """
+        self._retries = retries
+
+    def consume_available_retry(self):
+        """Allow one fewer retry."""
+        return type(self)(self._retries - 1)
+
+    def should_retry_on_failure(self):
+        """Return ``True`` if and only if the strategy will allow another retry."""
+        return self._retries > 1
+
+
 class Session(object):
     """The low-level connection interface to reddit's API."""
 
-    RETRY_EXCEPTIONS = (ConnectionError)
+    RETRY_EXCEPTIONS = (ConnectionError, HTTPRequestTimeout)
     RETRY_STATUSES = {
         520,
         522,
@@ -75,7 +123,7 @@ class Session(object):
                 sleep_seconds
             )
             log.debug(message)
-            time.sleep(sleep_seconds)
+            asyncio.sleep(sleep_seconds)
 
     def __init__(self, authorizer):
         """Preprare the connection to reddit's API.
@@ -89,25 +137,26 @@ class Session(object):
             )
         self._authorizer = authorizer
         self._rate_limiter = RateLimiter()
+        self._retry_strategy_class = FiniteRetryStrategy
 
-    def __enter__(self):
+    async def __aenter__(self):
         """Allow this object to be used as a context manager."""
         return self
 
-    def __exit__(self, *_args):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Allow this object to be used as a context manager."""
-        self.close()
+        await self.close()
 
     async def _do_retry(
         self,
         data,
-        files,
         json,
         method,
         params,
         response,
-        retries,
+        retry_strategy_state,
         saved_exception,
+        timeout,
         url,
     ):
         if saved_exception:
@@ -119,16 +168,16 @@ class Session(object):
         )
         return await self._request_with_retries(
             data=data,
-            files=files,
             json=json,
             method=method,
             params=params,
+            timeout=timeout,
             url=url,
-            retries=retries - 1,
+            retry_strategy_state=retry_strategy_state.consume_available_retry(),  # noqa: E501
         )
 
     async def _make_request(
-        self, data, files, json, method, params, retries, url
+        self, data, json, method, params, retry_strategy_state, timeout, url,
     ):
         try:
             response = await self._rate_limiter.call(
@@ -140,6 +189,7 @@ class Session(object):
                 data=data,
                 json=json,
                 params=params,
+                timeout=timeout,
             )
             log.debug(
                 "Response: {} ({} bytes)".format(
@@ -148,19 +198,27 @@ class Session(object):
             )
             return response, None
         except RequestException as exception:
-            if retries <= 1 or not isinstance(
+            if not retry_strategy_state.should_retry_on_failure() or not isinstance(  # noqa: E501
                 exception.original_exception, self.RETRY_EXCEPTIONS
             ):
                 raise
             return None, exception.original_exception
 
     async def _request_with_retries(
-        self, data, files, json, method, params, url, retries=3
+        self,
+        data,
+        json,
+        method,
+        params,
+        timeout,
+        url,
+        retry_strategy_state=None,
     ):
-        self._retry_sleep(retries)
+        if retry_strategy_state is None:
+            retry_strategy_state = self._retry_strategy_class()
         self._log_request(data, method, params, url)
         response, saved_exception = await self._make_request(
-            data, files, json, method, params, retries, url
+            data, json, method, params, retry_strategy_state, timeout, url,
         )
 
         do_retry = False
@@ -169,20 +227,20 @@ class Session(object):
             if hasattr(self._authorizer, "refresh"):
                 do_retry = True
 
-        if retries > 1 and (
+        if retry_strategy_state.should_retry_on_failure() and (
             do_retry
             or response is None
             or response.status in self.RETRY_STATUSES
         ):
             return await self._do_retry(
                 data,
-                files,
                 json,
                 method,
                 params,
                 response,
-                retries,
+                retry_strategy_state,
                 saved_exception,
+                timeout,
                 url,
             )
         elif response.status in self.STATUS_EXCEPTIONS:
@@ -196,7 +254,7 @@ class Session(object):
             return ""
         try:
             return await response.json()
-        except ValueError:
+        except (JSONDecodeError, ValueError):
             raise BadJSON(response)
 
     async def _set_header_callback(self):
@@ -212,12 +270,19 @@ class Session(object):
     def _requestor(self):
         return self._authorizer._authenticator._requestor
 
-    def close(self):
+    async def close(self):
         """Close the session and perform any clean up."""
-        self._requestor.close()
+        await self._requestor.close()
 
     async def request(
-        self, method, path, data=None, files=None, json=None, params=None
+        self,
+        method,
+        path,
+        data=None,
+        files=None,
+        json=None,
+        params=None,
+        timeout=TIMEOUT,
     ):
         """Return the json content from the resource at ``path``.
 
@@ -238,19 +303,41 @@ class Session(object):
         """
         params = deepcopy(params) or {}
         params["raw_json"] = 1
-        if isinstance(data, dict):
-            data = deepcopy(data)
-            data["api_type"] = "json"
-            data = sorted(data.items())
+        if isinstance(json, dict):
+            json = deepcopy(json)
+            json["api_type"] = "json"
+        data = self.validate_data_files(data, files)
         url = urljoin(self._requestor.oauth_url, path)
-        return self._request_with_retries(
+        return await self._request_with_retries(
             data=data,
-            files=files,
             json=json,
             method=method,
             params=params,
+            timeout=timeout,
             url=url,
         )
+
+    @staticmethod
+    def validate_data_files(data, files):
+        """Transfers the files and data from the arguments into the data.
+
+        This is done to maintain consistency with prawcore
+        :param data dictionary of data
+        :param files dictionary of "file" mapped to file-stream
+        """
+        if data is not None and files is not None:
+            raise InvalidInvocation(
+                "Both data and files cannot be non-None simultaneously"
+            )
+        if isinstance(data, dict):
+            data = deepcopy(data)
+            data["api_type"] = "json"
+            if files is not None:
+                data.update(files)
+            data = sorted(data.items())
+        if isinstance(files, dict):
+            data = files
+        return data
 
 
 def session(authorizer=None):

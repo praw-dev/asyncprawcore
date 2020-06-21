@@ -32,12 +32,11 @@ class Requestor(object):
         :param reddit_url: (Optional) The URL used when obtaining access
             tokens. (Default: https://www.reddit.com)
         :param session: (Optional) A session to handle requests, compatible
-            with requests.Session(). (Default: None)
+            with aiohttp.ClientSession(). (Default: None)
         """
         if user_agent is None or len(user_agent) < 7:
             raise InvalidInvocation("user_agent is not descriptive")
         self.loop = loop or asyncio.get_event_loop()
-        # self.loop.set_debug(True)
         self.set_http(session)
         self._http._default_headers[
             "User-Agent"
@@ -51,13 +50,13 @@ class Requestor(object):
             loop=self.loop, timeout=aiohttp.ClientTimeout(total=None)
         )
 
-    def close(self):
+    async def close(self):
         """Call close on the underlying session."""
-        return self.loop.run_until_complete(self._http.close())
+        return await self._http.close()
 
-    def request(self, *args, **kwargs):
+    async def request(self, *args, timeout=TIMEOUT, **kwargs):
         """Issue the HTTP request capturing any errors that may occur."""
         try:
-            return self._http.request(*args, timeout=TIMEOUT, **kwargs)
+            return await self._http.request(*args, timeout=timeout, **kwargs)
         except Exception as exc:
             raise RequestException(exc, args, kwargs)
