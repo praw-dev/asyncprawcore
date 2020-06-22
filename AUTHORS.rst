@@ -4,6 +4,7 @@ Maintainers
 - Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 - Vikramaditya Gaonkar <vikramaditya91@gmail.com> `@vikramaditya91 <https://github.com/vikramaditya91>`_
 
+
 Contributors
 ============
 
@@ -13,4 +14,5 @@ Contributors
 - jarhill0 `@jarhill0 <https://github.com/jarhill0>`_
 - Watchful1 `@Watchful1 <https://github.com/Watchful1>`_
 - PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
+- vikramaditya91 `@vikramaditya91 <https://github.com/vikramaditya91>`_
 - Add "Name <email (optional)> and github profile link" above this line.
