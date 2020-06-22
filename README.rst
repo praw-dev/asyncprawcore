@@ -10,9 +10,6 @@ asyncprawcore
            :target: https://travis-ci.org/praw-dev/asyncprawcore
 .. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=master
            :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=master
-.. image:: https://badges.gitter.im/praw-dev/praw.svg
-           :alt: Join the chat at https://gitter.im/praw-dev/praw
-           :target: https://gitter.im/praw-dev/praw
 
 
 asyncprawcore is a low-level communication layer for PRAW 4+.

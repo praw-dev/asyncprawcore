@@ -1,16 +1,16 @@
 """asyncprawcore.sessions: Provides asyncprawcore.Session and asyncprawcore.session."""
-from copy import deepcopy
+import asyncio
 import logging
 import random
-import asyncio
+from copy import deepcopy
 from json.decoder import JSONDecodeError
-from aiohttp.web import HTTPRequestTimeout
 from urllib.parse import urljoin
-from .codes import codes
+
+from aiohttp.web import HTTPRequestTimeout
 
 from .auth import BaseAuthorizer
+from .codes import codes
 from .const import TIMEOUT
-from .rate_limit import RateLimiter
 from .exceptions import (
     BadJSON,
     BadRequest,
@@ -24,7 +24,9 @@ from .exceptions import (
     TooLarge,
     UnavailableForLegalReasons,
 )
+from .rate_limit import RateLimiter
 from .util import authorization_error_class
+
 
 log = logging.getLogger(__package__)
 
@@ -42,9 +44,7 @@ class RetryStrategy(object):
         """Sleep until we are ready to attempt the request."""
         sleep_seconds = self._sleep_seconds()
         if sleep_seconds is not None:
-            message = "Sleeping: {:0.2f} seconds prior to retry".format(
-                sleep_seconds
-            )
+            message = f"Sleeping: {sleep_seconds:0.2f} seconds prior to retry"
             log.debug(message)
             await asyncio.sleep(sleep_seconds)
 
@@ -110,18 +110,16 @@ class Session(object):
 
     @staticmethod
     def _log_request(data, method, params, url):
-        log.debug("Fetching: {} {}".format(method, url))
-        log.debug("Data: {}".format(data))
-        log.debug("Params: {}".format(params))
+        log.debug(f"Fetching: {method} {url}")
+        log.debug(f"Data: {data}")
+        log.debug(f"Params: {params}")
 
     @staticmethod
     async def _retry_sleep(retries):
         if retries < 3:
             base = 0 if retries == 2 else 2
             sleep_seconds = base + 2 * random.random()
-            message = "Sleeping: {:0.2f} seconds prior to retry".format(
-                sleep_seconds
-            )
+            message = f"Sleeping: {sleep_seconds:0.2f} seconds prior to retry"
             log.debug(message)
             await asyncio.sleep(sleep_seconds)
 
@@ -132,9 +130,7 @@ class Session(object):
 
         """
         if not isinstance(authorizer, BaseAuthorizer):
-            raise InvalidInvocation(
-                "invalid Authorizer: {}".format(authorizer)
-            )
+            raise InvalidInvocation(f"invalid Authorizer: {authorizer}")
         self._authorizer = authorizer
         self._rate_limiter = RateLimiter()
         self._retry_strategy_class = FiniteRetryStrategy
@@ -163,9 +159,7 @@ class Session(object):
             status = repr(saved_exception)
         else:
             status = response.status
-        log.warning(
-            "Retrying due to {} status: {} {}".format(status, method, url)
-        )
+        log.warning(f"Retrying due to {status} status: {method} {url}")
         return await self._request_with_retries(
             data=data,
             json=json,
@@ -192,9 +186,7 @@ class Session(object):
                 timeout=timeout,
             )
             log.debug(
-                "Response: {} ({} bytes)".format(
-                    response.status, response.headers.get("content-length")
-                )
+                f"Response: {response.status} ({response.headers.get('content-length')} bytes)"
             )
             return response, None
         except RequestException as exception:
@@ -249,7 +241,7 @@ class Session(object):
             return
         assert (
             response.status in self.SUCCESS_STATUSES
-        ), "Unexpected status code: {}".format(response.status)
+        ), f"Unexpected status code: {response.status}"
         if response.headers.get("content-length") == "0":
             return ""
         try:
@@ -262,9 +254,7 @@ class Session(object):
             self._authorizer, "refresh"
         ):
             await self._authorizer.refresh()
-        return {
-            "Authorization": "bearer {}".format(self._authorizer.access_token)
-        }
+        return {"Authorization": f"bearer {self._authorizer.access_token}"}
 
     @property
     def _requestor(self):
