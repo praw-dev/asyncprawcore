@@ -4,12 +4,17 @@ asyncprawcore
 =============
 
 .. image:: https://img.shields.io/pypi/v/asyncprawcore.svg
-           :alt: Latest asyncprawcore Version
-           :target: https://pypi.python.org/pypi/asyncprawcore
-.. image:: https://travis-ci.org/praw-dev/asyncprawcore.svg?branch=master
-           :target: https://travis-ci.org/praw-dev/asyncprawcore
-.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=master
-           :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=master
+   :alt: Latest Asyncpraw Version
+   :target: https://pypi.python.org/pypi/asyncprawcore
+.. image:: https://img.shields.io/pypi/pyversions/asyncprawcore
+   :alt: Supported Python Versions
+   :target: https://pypi.python.org/pypi/asyncprawcore
+.. image:: https://coveralls.io/repos/github/praw_dev/asyncprawcore/badge.svg?branch=master
+   :alt: Coveralls Coverage
+   :target: https://coveralls.io/github/praw_dev/asyncprawcore?branch=master
+.. image:: https://github.com/praw_dev/asyncprawcore/workflows/CI/badge.svg
+   :alt: Github Actions Coverage
+   :target: https://github.com/praw_dev/asyncprawcore/actions?query=branch%3Amaster
 
 
 asyncprawcore is a low-level communication layer for PRAW 4+.
