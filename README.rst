@@ -4,7 +4,7 @@ asyncprawcore
 =============
 
 .. image:: https://img.shields.io/pypi/v/asyncprawcore.svg
-   :alt: Latest Asyncpraw Version
+   :alt: Latest asyncprawcore Version
    :target: https://pypi.python.org/pypi/asyncprawcore
 .. image:: https://img.shields.io/pypi/pyversions/asyncprawcore
    :alt: Supported Python Versions
@@ -18,7 +18,6 @@ asyncprawcore
 
 
 asyncprawcore is a low-level communication layer for PRAW 4+.
-
 
 Installation
 ------------
@@ -64,14 +63,14 @@ Save the above as ``trophies.py`` and then execute via:
 
 .. code-block:: console
 
-   python trophies.py
+   python3 trophies.py
 
 Additional examples can be found at:
 https://github.com/praw-dev/asyncprawcore/tree/master/examples
 
 
-Depending on asyncprawcore
---------------------------
+asyncprawcore as a Dependency
+-----------------------------
 
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
 that deprecations will not be preceded by a minor release. In essence, expect
