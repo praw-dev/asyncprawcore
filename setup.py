@@ -30,8 +30,8 @@ extras["dev"] = extras["lint"] + extras["test"]
 
 setup(
     name=PACKAGE_NAME,
-    author="LilSpazJoekp",
-    author_email="lilspazjoekp@gmail.com",
+    author="LilSpazJoekp,vikramaditya91",
+    author_email="lilspazjoekp@gmail.com,vikramaditya91@gmail.com",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
