@@ -20,7 +20,7 @@ class TrustedAuthenticatorTest(asynctest.TestCase):
         url = authenticator.authorize_url(
             "permanent", ["identity", "read"], "a_state"
         )
-        self.assertIn("client_id={}".format(CLIENT_ID), str(url))
+        self.assertIn(f"client_id={CLIENT_ID}", str(url))
         self.assertIn("duration=permanent", str(url))
         self.assertIn("response_type=code", str(url))
         self.assertIn("scope=identity+read", str(url))
@@ -91,7 +91,7 @@ class UntrustedAuthenticatorTest(asynctest.TestCase):
         url = authenticator.authorize_url(
             "permanent", ["identity", "read"], "a_state"
         )
-        self.assertIn("client_id={}".format(CLIENT_ID), str(url))
+        self.assertIn(f"client_id={CLIENT_ID}", str(url))
         self.assertIn("duration=permanent", str(url))
         self.assertIn("response_type=code", str(url))
         self.assertIn("scope=identity+read", str(url))
@@ -104,7 +104,7 @@ class UntrustedAuthenticatorTest(asynctest.TestCase):
         url = authenticator.authorize_url(
             "temporary", ["identity", "read"], "a_state", implicit=True
         )
-        self.assertIn("client_id={}".format(CLIENT_ID), str(url))
+        self.assertIn(f"client_id={CLIENT_ID}", str(url))
         self.assertIn("duration=temporary", str(url))
         self.assertIn("response_type=token", str(url))
         self.assertIn("scope=identity+read", str(url))

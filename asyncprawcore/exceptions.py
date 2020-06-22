@@ -26,7 +26,7 @@ class RequestException(asyncprawcoreException):
         self.request_args = request_args
         self.request_kwargs = request_kwargs
         super(RequestException, self).__init__(
-            "error with request {}".format(original_exception)
+            f"error with request {original_exception}"
         )
 
 
@@ -41,7 +41,7 @@ class ResponseException(asyncprawcoreException):
         """
         self.response = response
         super(ResponseException, self).__init__(
-            "received {} HTTP response".format(response.status)
+            f"received {response.status} HTTP response"
         )
 
 
@@ -59,9 +59,9 @@ class OAuthException(asyncprawcoreException):
         self.error = error
         self.description = description
         self.response = response
-        message = "{} error processing request".format(error)
+        message = f"{error} error processing request"
         if description:
-            message += " ({})".format(description)
+            message += f" ({description})"
         asyncprawcoreException.__init__(self, message)
 
 
@@ -111,9 +111,7 @@ class Redirect(ResponseException):
         path = urlparse(response.headers["location"]).path
         self.path = path[:-5] if path.endswith(".json") else path
         self.response = response
-        asyncprawcoreException.__init__(
-            self, "Redirect to {}".format(self.path)
-        )
+        asyncprawcoreException.__init__(self, f"Redirect to {self.path}")
 
 
 class ServerError(ResponseException):
@@ -137,7 +135,7 @@ class SpecialError(ResponseException):
         self.reason = resp_dict.get("reason", "")
         self.special_errors = resp_dict.get("special_errors", [])
         asyncprawcoreException.__init__(
-            self, "Special error {!r}".format(self.message)
+            self, f"Special error {self.message!r}"
         )
 
 

@@ -353,7 +353,7 @@ class SessionTest(asynctest.TestCase):
         with VCR.use_cassette("Session_request__okay_with_0_byte_content"):
             self.session = asyncprawcore.Session(await script_authorizer())
             data = {"model": dumps({"name": "t2"})}
-            path = "/api/multi/user/{}/m/t2".format(USERNAME)
+            path = f"/api/multi/user/{USERNAME}/m/t2"
             response = await self.session.request("DELETE", path, data=data)
             self.assertEqual("", response)
 

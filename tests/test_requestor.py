@@ -18,9 +18,7 @@ class RequestorTest(asynctest.TestCase):
             "asyncprawcore:test (by /u/bboe)"
         )
         self.assertEqual(
-            "asyncprawcore:test (by /u/bboe) asyncprawcore/{}".format(
-                asyncprawcore.__version__
-            ),
+            f"asyncprawcore:test (by /u/bboe) asyncprawcore/{asyncprawcore.__version__}",
             self.requestor._http._default_headers["User-Agent"],
         )
 
@@ -67,9 +65,7 @@ class RequestorTest(asynctest.TestCase):
         )
 
         self.assertEqual(
-            "asyncprawcore:test (by /u/bboe) asyncprawcore/{}".format(
-                asyncprawcore.__version__
-            ),
+            f"asyncprawcore:test (by /u/bboe) asyncprawcore/{asyncprawcore.__version__}",
             self.requestor._http._default_headers["User-Agent"],
         )
         self.assertEqual(

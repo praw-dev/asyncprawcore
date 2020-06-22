@@ -40,7 +40,7 @@ class CachingSession(aiohttp.ClientSession):
 async def main():
     """Provide the program's entry point when directly executed."""
     if len(sys.argv) != 2:
-        print("Usage: {} USERNAME".format(sys.argv[0]))
+        print(f"Usage: {sys.argv[0]} USERNAME")
         return 1
 
     caching_requestor = asyncprawcore.Requestor(
@@ -59,12 +59,12 @@ async def main():
 
         async with asyncprawcore.session(authorizer) as session:
             data1 = await session.request(
-                "GET", "/api/v1/user/{}/trophies".format(user)
+                "GET", f"/api/v1/user/{user}/trophies"
             )
 
         async with asyncprawcore.session(authorizer) as session:
             data2 = await session.request(
-                "GET", "/api/v1/user/{}/trophies".format(user)
+                "GET", f"/api/v1/user/{user}/trophies"
             )
 
         for trophy in data1["data"]["trophies"]:
@@ -72,7 +72,7 @@ async def main():
             print(
                 "Original:",
                 trophy["data"]["name"]
-                + (" ({})".format(description) if description else ""),
+                + (f" ({description})" if description else ""),
             )
 
         for trophy in data2["data"]["trophies"]:
@@ -80,7 +80,7 @@ async def main():
             print(
                 "Cached:",
                 trophy["data"]["name"]
-                + (" ({})".format(description) if description else ""),
+                + (f" ({description})" if description else ""),
             )
         print(
             "----\nCached == Original:",
