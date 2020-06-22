@@ -40,13 +40,13 @@ class RetryStrategy(object):
 
     """
 
-    def sleep(self):
+    async def sleep(self):
         """Sleep until we are ready to attempt the request."""
         sleep_seconds = self._sleep_seconds()
         if sleep_seconds is not None:
             message = f"Sleeping: {sleep_seconds:0.2f} seconds prior to retry"
             log.debug(message)
-            asyncio.sleep(sleep_seconds)
+            await asyncio.sleep(sleep_seconds)
 
 
 class FiniteRetryStrategy(RetryStrategy):
@@ -115,13 +115,13 @@ class Session(object):
         log.debug(f"Params: {params}")
 
     @staticmethod
-    def _retry_sleep(retries):
+    async def _retry_sleep(retries):
         if retries < 3:
             base = 0 if retries == 2 else 2
             sleep_seconds = base + 2 * random.random()
             message = f"Sleeping: {sleep_seconds:0.2f} seconds prior to retry"
             log.debug(message)
-            asyncio.sleep(sleep_seconds)
+            await asyncio.sleep(sleep_seconds)
 
     def __init__(self, authorizer):
         """Preprare the connection to reddit's API.

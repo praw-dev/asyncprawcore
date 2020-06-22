@@ -36,7 +36,7 @@ class ResponseException(asyncprawcoreException):
     def __init__(self, response):
         """Initialize a ResponseException instance.
 
-        :param response: response from an aiohttp request.
+        :param response: The response returned from an aiohttp request.
 
         """
         self.response = response
@@ -51,7 +51,7 @@ class OAuthException(asyncprawcoreException):
     def __init__(self, response, error, description):
         """Intialize a OAuthException instance.
 
-        :param response: response from an aiohttp request.
+        :param response: The response returned from an aiohttp request.
         :param error: The error type returned by reddit.
         :param description: A description of the error when provided.
 
@@ -104,8 +104,7 @@ class Redirect(ResponseException):
     def __init__(self, response):
         """Initialize a Redirect exception instance.
 
-        :param response: response from an aiohttp request.
-        header.
+        :param response: The response returned from an aiohttp request.
 
         """
         path = urlparse(response.headers["location"]).path
@@ -124,8 +123,7 @@ class SpecialError(ResponseException):
     def __init__(self, response):
         """Initialize a SpecialError exception instance.
 
-        :param response: response from an aiohttp request
-        containing a message and a list of special errors.
+        :param response: The response returned from an aiohttp request.
 
         """
         self.response = response

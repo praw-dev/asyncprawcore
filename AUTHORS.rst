@@ -1,9 +1,9 @@
-asyncprawcore is written and maintained by Joel Payne and various contributors:
-
 Maintainers
 ===========
 
 - Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
+- Vikramaditya Gaonkar <vikramaditya91@gmail.com> `@vikramaditya91 <https://github.com/vikramaditya91>`_
+
 
 Contributors
 ============
