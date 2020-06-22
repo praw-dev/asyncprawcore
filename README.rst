@@ -1,7 +1,7 @@
 .. _main_page:
 
 asyncprawcore
-========
+=============
 
 .. image:: https://img.shields.io/pypi/v/asyncprawcore.svg
            :alt: Latest asyncprawcore Version
@@ -66,10 +66,10 @@ https://github.com/praw-dev/asyncprawcore/tree/master/examples
 
 
 Depending on asyncprawcore
----------------------
+--------------------------
 
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
-that deprecations will not be preceded by a minor release. In essense, expect
+that deprecations will not be preceded by a minor release. In essence, expect
 only major versions to introduce breaking changes to asyncprawcore's public
 interface. As a result, if you depend on asyncprawcore then it is a good idea to
 specify not only the minimum version of asyncprawcore your package requires, but to
