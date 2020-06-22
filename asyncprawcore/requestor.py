@@ -40,7 +40,7 @@ class Requestor(object):
         self.set_http(session)
         self._http._default_headers[
             "User-Agent"
-        ] = "{} asyncprawcore/{}".format(user_agent, __version__)
+        ] = f"{user_agent} asyncprawcore/{__version__}"
         self.oauth_url = oauth_url
         self.reddit_url = reddit_url
 
