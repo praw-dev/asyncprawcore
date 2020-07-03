@@ -9,12 +9,12 @@ asyncprawcore
 .. image:: https://img.shields.io/pypi/pyversions/asyncprawcore
    :alt: Supported Python Versions
    :target: https://pypi.python.org/pypi/asyncprawcore
-.. image:: https://coveralls.io/repos/github/praw_dev/asyncprawcore/badge.svg?branch=master
+.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=master
    :alt: Coveralls Coverage
-   :target: https://coveralls.io/github/praw_dev/asyncprawcore?branch=master
-.. image:: https://github.com/praw_dev/asyncprawcore/workflows/CI/badge.svg
+   :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=master
+.. image:: https://github.com/praw-dev/asyncprawcore/workflows/CI/badge.svg
    :alt: Github Actions Coverage
-   :target: https://github.com/praw_dev/asyncprawcore/actions?query=branch%3Amaster
+   :target: https://github.com/praw-dev/asyncprawcore/actions?query=branch%3Amaster
 
 
 asyncprawcore is a low-level communication layer for PRAW 4+.
@@ -63,14 +63,14 @@ Save the above as ``trophies.py`` and then execute via:
 
 .. code-block:: console
 
-   python3 trophies.py
+   python trophies.py
 
 Additional examples can be found at:
 https://github.com/praw-dev/asyncprawcore/tree/master/examples
 
 
-asyncprawcore as a Dependency
------------------------------
+Depending on asyncprawcore
+--------------------------
 
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
 that deprecations will not be preceded by a minor release. In essence, expect
