@@ -20,11 +20,11 @@ class TrustedAuthenticatorTest(asynctest.TestCase):
         url = authenticator.authorize_url(
             "permanent", ["identity", "read"], "a_state"
         )
-        self.assertIn(f"client_id={CLIENT_ID}", str(url))
-        self.assertIn("duration=permanent", str(url))
-        self.assertIn("response_type=code", str(url))
-        self.assertIn("scope=identity+read", str(url))
-        self.assertIn("state=a_state", str(url))
+        self.assertIn(f"client_id={CLIENT_ID}", url)
+        self.assertIn("duration=permanent", url)
+        self.assertIn("response_type=code", url)
+        self.assertIn("scope=identity+read", url)
+        self.assertIn("state=a_state", url)
 
     def test_authorize_url__fail_with_implicit(self):
         authenticator = asyncprawcore.TrustedAuthenticator(
@@ -91,11 +91,11 @@ class UntrustedAuthenticatorTest(asynctest.TestCase):
         url = authenticator.authorize_url(
             "permanent", ["identity", "read"], "a_state"
         )
-        self.assertIn(f"client_id={CLIENT_ID}", str(url))
-        self.assertIn("duration=permanent", str(url))
-        self.assertIn("response_type=code", str(url))
-        self.assertIn("scope=identity+read", str(url))
-        self.assertIn("state=a_state", str(url))
+        self.assertIn(f"client_id={CLIENT_ID}", url)
+        self.assertIn("duration=permanent", url)
+        self.assertIn("response_type=code", url)
+        self.assertIn("scope=identity+read", url)
+        self.assertIn("state=a_state", url)
 
     async def test_authorize_url__token(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
@@ -104,11 +104,11 @@ class UntrustedAuthenticatorTest(asynctest.TestCase):
         url = authenticator.authorize_url(
             "temporary", ["identity", "read"], "a_state", implicit=True
         )
-        self.assertIn(f"client_id={CLIENT_ID}", str(url))
-        self.assertIn("duration=temporary", str(url))
-        self.assertIn("response_type=token", str(url))
-        self.assertIn("scope=identity+read", str(url))
-        self.assertIn("state=a_state", str(url))
+        self.assertIn(f"client_id={CLIENT_ID}", url)
+        self.assertIn("duration=temporary", url)
+        self.assertIn("response_type=token", url)
+        self.assertIn("scope=identity+read", url)
+        self.assertIn("state=a_state", url)
 
     async def test_authorize_url__fail_with_token_and_permanent(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(

@@ -80,7 +80,7 @@ class BaseAuthenticator(object):
         }
         url = self._requestor.reddit_url + const.AUTHORIZATION_PATH
         request = ClientRequest("GET", URL(url), params=params)
-        return request.url
+        return str(request.url)
 
     async def revoke_token(self, token, token_type=None):
         """Ask Reddit to revoke the provided token.
