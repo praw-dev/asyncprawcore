@@ -20,6 +20,7 @@ extras = {
     "lint": ["black", "flake8", "pre-commit", "pydocstyle"],
     "test": [
         "pytest-vcr",
+        "vcrpy==4.0.2",
         "mock >=0.8",
         "pytest",
         "testfixtures >4.13.2, <7",
