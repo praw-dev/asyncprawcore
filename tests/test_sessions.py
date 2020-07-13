@@ -1,23 +1,23 @@
 """Test for asyncprawcore.Sessions module."""
+import asyncio
 import logging
 from json import dumps
-import asynctest
-import asyncprawcore
 
-from mock import patch
-import asyncio
+import asynctest
 from aiohttp.web import HTTPRequestTimeout
-from asyncprawcore.exceptions import RequestException
+from mock import patch
 from testfixtures import LogCapture
 
+import asyncprawcore
+from asyncprawcore.exceptions import RequestException
 from .conftest import (
+    AsyncMock,
     CLIENT_ID,
     CLIENT_SECRET,
-    REFRESH_TOKEN,
     PASSWORD,
+    REFRESH_TOKEN,
     USERNAME,
     VCR,
-    AsyncMock,
 )
 
 
@@ -182,38 +182,35 @@ class SessionTest(asynctest.TestCase):
             self.assertEqual("ja", response["lang"])
             self.assertEqual(123, response["num_comments"])
 
-    # # # FixMe vcr.py does not work correctly with this
-    # async def test_request__post(self):
-    #     with VCR.use_cassette("Session_request__post"):
-    #         session = asyncprawcore.Session(await script_authorizer())
-    #         data = {
-    #             "kind": "self",
-    #             "sr": "reddit_api_test",
-    #             "text": "Test!",
-    #             "title": "A Test from asyncprawcore.",
-    #         }
-    #         key_count = len(data)
-    #         response = await session.request("POST", "/api/submit", data=data)
-    #         self.assertIn(
-    #             "a_test_from_asyncprawcore", response["json"]["data"]["url"]
-    #         )
-    #         self.assertEqual(key_count, len(data))  # Ensure data is untouched
-    #
-    # #FixMe https://github.com/kevin1024/vcrpy/issues/521
-    # async def test_request__post__with_files(self):
-    #     with VCR.use_cassette(
-    #         "Session_request__post__with_files",
-    #         match_on=["uri"],
-    #     ):
-    #         session = asyncprawcore.Session(await script_authorizer())
-    #         with open("/home/vikramaditya/PycharmProjects/asyncprawcore/tests/files/white-square.png", "rb") as fp:
-    #             files = {"file": fp}
-    #             response = await session.request(
-    #                 "POST",
-    #                 "/r/botTestingGround1/api/upload_sr_img",
-    #                 files=files,
-    #             )
-    #         self.assertIn("img_src", response)
+    async def test_request__post(self):
+        with VCR.use_cassette("Session_request__post"):
+            session = asyncprawcore.Session(await script_authorizer())
+            data = {
+                "kind": "self",
+                "sr": "asyncpraw",
+                "text": "Test!",
+                "title": "A Test from asyncprawcore.",
+            }
+            key_count = len(data)
+            response = await session.request("POST", "/api/submit", data=data)
+            self.assertIn(
+                "a_test_from_asyncprawcore", response["json"]["data"]["url"]
+            )
+            self.assertEqual(key_count, len(data))  # Ensure data is untouched
+
+    async def test_request__post__with_files(self):
+        with VCR.use_cassette(
+            "Session_request__post__with_files",
+            match_on=["uri"],
+            # serializer="yaml",
+        ):
+            session = asyncprawcore.Session(await script_authorizer())
+            with open("./tests/files/white-square.png", "rb") as fp:
+                files = {"file": fp}
+                response = await session.request(
+                    "POST", "/r/asyncpraw/api/upload_sr_img", files=files,
+                )
+            self.assertIn("img_src", response)
 
     async def test_request__raw_json(self):
         with VCR.use_cassette("Session_request__raw_json"):
@@ -284,25 +281,21 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/")
             self.assertEqual(520, context_manager.exception.response.status)
 
-    # # #FixMe https://github.com/kevin1024/vcrpy/issues/521
-    # async def test_request__conflict(self):
-    #     with VCR.use_cassette("Session_request__conflict"):
-    #         session = asyncprawcore.Session(await script_authorizer())
-    #         previous = "f0214574-430d-11e7-84ca-1201093304fa"
-    #         with self.assertRaises(asyncprawcore.Conflict) as context_manager:
-    #             await session.request(
-    #                 "POST",
-    #                 "/r/ThirdRealm/api/wiki/edit",
-    #                 data={
-    #                     "content": "New text",
-    #                     "page": "index",
-    #                     "previous": previous,
-    #                 },
-    #             )
-    #         self.assertEqual(
-    #             409, context_manager.exception.response.status_code
-    #         )
-    #
+    async def test_request__conflict(self):
+        with VCR.use_cassette("Session_request__conflict"):
+            session = asyncprawcore.Session(await script_authorizer())
+            with self.assertRaises(asyncprawcore.Conflict) as context_manager:
+                await session.request(
+                    "POST",
+                    "/api/multi/copy/",
+                    data={
+                        "display_name": "sfwpornnetwork",
+                        "from": "/user/kjoneslol/m/sfwpornnetwork",
+                        "to": f"user/{USERNAME}/m/sfwpornnetwork/",
+                    },
+                )
+            self.assertEqual(409, context_manager.exception.response.status)
+
     async def test_request__created(self):
         with VCR.use_cassette("Session_request__created"):
             self.session = asyncprawcore.Session(await script_authorizer())
@@ -350,10 +343,12 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/r/cricket/wiki/invalid")
 
     async def test_request__okay_with_0_byte_content(self):
-        with VCR.use_cassette("Session_request__okay_with_0_byte_content"):
+        with VCR.use_cassette(
+            "Session_request__okay_with_0_byte_content", match_on=["method"]
+        ):
             self.session = asyncprawcore.Session(await script_authorizer())
-            data = {"model": dumps({"name": "t2"})}
-            path = f"/api/multi/user/{USERNAME}/m/t2"
+            data = {"model": dumps({"name": "test"})}
+            path = f"/api/multi/user/{USERNAME}/m/test"
             response = await self.session.request("DELETE", path, data=data)
             self.assertEqual("", response)
 
@@ -394,13 +389,12 @@ class SessionTest(asynctest.TestCase):
         self.assertIs(exception, context_manager.exception.original_exception)
         self.assertEqual(3, self.session_instance.request.call_count)
 
-    # # FixMe cassette does not replay this as the 302 request is iterated in play_responses
-    # async def test_request__redirect(self):
-    #     with VCR.use_cassette("Session_request__redirect"):
-    #         session = asyncprawcore.Session(await readonly_authorizer())
-    #         with self.assertRaises(asyncprawcore.Redirect) as context_manager:
-    #             await session.request("GET", "/r/random")
-    #         self.assertTrue(context_manager.exception.path.startswith("/r/"))
+    async def test_request__redirect(self):
+        with VCR.use_cassette("Session_request__redirect"):
+            session = asyncprawcore.Session(await readonly_authorizer())
+            with self.assertRaises(asyncprawcore.Redirect) as context_manager:
+                await session.request("GET", "/r/random")
+            self.assertTrue(context_manager.exception.path.startswith("/r/"))
 
     async def test_request__service_unavailable(self):
         with VCR.use_cassette("Session_request__service_unavailable"):
@@ -413,25 +407,20 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/")
             self.assertEqual(503, context_manager.exception.response.status)
 
-    # # # #FixMe https://github.com/kevin1024/vcrpy/issues/521
-    # async def test_request__too_large(self):
-    #     with VCR.use_cassette(
-    #         "Session_request__too_large", match_requests_on=["uri", "method"]
-    #     ):
-    #         session = asyncprawcore.Session(await script_authorizer())
-    #         with open("/home/vikramaditya/PycharmProjects/asyncprawcore/tests/files/too_large.jpg", "rb") as fp:
-    #             files = {"file": fp}
-    #             with self.assertRaises(
-    #                 asyncprawcore.TooLarge
-    #             ) as context_manager:
-    #                 await session.request(
-    #                     "POST",
-    #                     "/r/botTestingGround1/api/upload_sr_img",
-    #                     files=files,
-    #                 )
-    #         self.assertEqual(
-    #             413, context_manager.exception.response.status_code
-    #         )
+    async def test_request__too_large(self):
+        with VCR.use_cassette(
+            "Session_request__too_large",
+            match_requests_on=["uri", "method"],  # , serializer="yaml",
+        ):
+            session = asyncprawcore.Session(await script_authorizer())
+            # with open("./tests/files/too_large.jpg", "rb") as fp:
+            with self.assertRaises(asyncprawcore.TooLarge) as context_manager:
+                await session.request(
+                    "POST",
+                    "/r/asyncpraw/api/upload_sr_img",
+                    files={"file": open("./tests/files/too_large.jpg", "rb")},
+                )
+            self.assertEqual(413, context_manager.exception.response.status)
 
     async def test_request__unavailable_for_legal_reasons(self):
         with VCR.use_cassette(
@@ -449,22 +438,23 @@ class SessionTest(asynctest.TestCase):
                 await self.session.request("GET", "/")
             self.assertEqual(451, context_manager.exception.response.status)
 
-    # # # #FixMe https://github.com/kevin1024/vcrpy/issues/521
-    # async def test_request__unsupported_media_type(self):
-    #     with VCR.use_cassette(
-    #         "Session_request__unsupported_media_type"
-    #     ):
-    #         session = asyncprawcore.Session(await script_authorizer())
-    #         exception_class = asyncprawcore.SpecialError
-    #         data = {
-    #             "content": "type: submission\naction: upvote",
-    #             "page": "config/automoderator",
-    #         }
-    #         with self.assertRaises(exception_class) as context_manager:
-    #             await session.request("POST", "r/ttft/api/wiki/edit/", data=data)
-    #         self.assertEqual(
-    #             415, context_manager.exception.response.status_code
-    #         )
+    async def test_request__unsupported_media_type(self):
+        with VCR.use_cassette(
+            "Session_request__unsupported_media_type",
+            match_requests_on=["uri", "method"],
+            serializer="yaml",
+        ):
+            session = asyncprawcore.Session(await script_authorizer())
+            exception_class = asyncprawcore.SpecialError
+            data = {
+                "content": "type: submission\naction: upvote",
+                "page": "config/automoderator",
+            }
+            with self.assertRaises(exception_class) as context_manager:
+                await session.request(
+                    "POST", "r/asyncpraw/api/wiki/edit/", data=data
+                )
+            self.assertEqual(415, context_manager.exception.response.status)
 
     async def test_request__with_insufficent_scope(self):
         with VCR.use_cassette("Session_request__with_insufficient_scope"):

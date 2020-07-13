@@ -1,66 +1,107 @@
 {
-    "version": 1,
-    "interactions": [
-        {
-            "request": {
-                "method": "post",
-                "uri": "https://www.reddit.com/api/v1/access_token",
-                "body": [
-                    [
-                        "grant_type",
-                        "password"
-                    ],
-                    [
-                        "password",
-                        "fake_password"
-                    ],
-                    [
-                        "username",
-                        "mc_bc_bot"
-                    ]
-                ],
-                "headers": {
-                    "User-Agent": [
-                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
-                    ],
-                    "Connection": [
-                        "close"
-                    ],
-                    "AUTHORIZATION": [
-                        "Basic <placeholder_auth>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Connection": "close",
-                    "Content-Length": "118",
-                    "Content-Type": "application/json; charset=UTF-8",
-                    "x-frame-options": "SAMEORIGIN",
-                    "x-content-type-options": "nosniff",
-                    "x-xss-protection": "1; mode=block",
-                    "cache-control": "max-age=0, must-revalidate",
-                    "X-Moose": "majestic",
-                    "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 10:22:59 GMT",
-                    "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21049-AMS",
-                    "X-Cache": "MISS",
-                    "X-Cache-Hits": "0",
-                    "X-Timer": "S1592043779.101230,VS0,VE387",
-                    "Set-Cookie": "edgebucket=0J9Ae3le2ErjeOdzX7; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
-                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
-                    "Server": "snooserv"
-                },
-                "body": {
-                    "string": "{\"access_token\": \"fake_access_Token\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
-                },
-                "url": "https://www.reddit.com/api/v1/access_token"
-            }
-        }
-    ]
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "grant_type",
+            "password"
+          ],
+          [
+            "password",
+            "<PASSWORD>"
+          ],
+          [
+            "username",
+            "<USERNAME>"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "close",
+          "Content-Length": "118",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 13 Jul 2020 01:02:13 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=gq12Lcn6CfcMRaBzNB; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-mci5924-MCI",
+          "X-Timer": "S1594602133.812415,VS0,VE338",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "request": {
+        "body": {},
+        "headers": {
+          "Authorization": [
+            "bearer 266290221070-1zSenQ_YouSv-11FeSdNLm90Y-Y"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/asyncpraw/api/upload_sr_img?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "string": "<html><head><script type='text/javascript'>parent.completedUploadImage('failed','','',[['BAD_CSS_NAME', ''], ['IMAGE_ERROR', 'too big. keep it under 500 KiB']],'');</script></head><body>you shouldn't be here</body></html>"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "keep-alive",
+          "Date": "Mon, 13 Jul 2020 01:02:13 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-mci5943-MCI",
+          "X-Timer": "S1594602133.225079,VS0,VE353"
+        },
+        "status": {
+          "code": 413,
+          "message": "Too Big"
+        },
+        "url": "https://oauth.reddit.com/r/asyncpraw/api/upload_sr_img?raw_json=1"
+      }
+    }
+  ],
+  "recorded_at": "2020-07-12T20:02:13",
+  "version": 1
 }

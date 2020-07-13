@@ -3,15 +3,15 @@
 from urllib.parse import urlparse
 
 
-class asyncprawcoreException(Exception):
+class AsyncPrawcoreException(Exception):
     """Base exception class for exceptions that occur within this package."""
 
 
-class InvalidInvocation(asyncprawcoreException):
+class InvalidInvocation(AsyncPrawcoreException):
     """Indicate that the code to execute cannot be completed."""
 
 
-class RequestException(asyncprawcoreException):
+class RequestException(AsyncPrawcoreException):
     """Indicate that there was an error with the incomplete HTTP request."""
 
     def __init__(self, original_exception, request_args, request_kwargs):
@@ -30,7 +30,7 @@ class RequestException(asyncprawcoreException):
         )
 
 
-class ResponseException(asyncprawcoreException):
+class ResponseException(AsyncPrawcoreException):
     """Indicate that there was an error with the completed HTTP request."""
 
     def __init__(self, response):
@@ -45,7 +45,7 @@ class ResponseException(asyncprawcoreException):
         )
 
 
-class OAuthException(asyncprawcoreException):
+class OAuthException(AsyncPrawcoreException):
     """Indicate that there was an OAuth2 related error with the request."""
 
     def __init__(self, response, error, description):
@@ -62,7 +62,7 @@ class OAuthException(asyncprawcoreException):
         message = f"{error} error processing request"
         if description:
             message += f" ({description})"
-        asyncprawcoreException.__init__(self, message)
+        AsyncPrawcoreException.__init__(self, message)
 
 
 class BadJSON(ResponseException):
@@ -107,10 +107,10 @@ class Redirect(ResponseException):
         :param response: The response returned from an aiohttp request.
 
         """
-        path = urlparse(response.headers["location"]).path
+        path = urlparse(response.headers.get("location")).path
         self.path = path[:-5] if path.endswith(".json") else path
         self.response = response
-        asyncprawcoreException.__init__(self, f"Redirect to {self.path}")
+        AsyncPrawcoreException.__init__(self, f"Redirect to {self.path}")
 
 
 class ServerError(ResponseException):
@@ -120,7 +120,7 @@ class ServerError(ResponseException):
 class SpecialError(ResponseException):
     """Indicate syntax or spam-prevention issues."""
 
-    def __init__(self, response):
+    def __init__(self, response, resp_dict):
         """Initialize a SpecialError exception instance.
 
         :param response: The response returned from an aiohttp request.
@@ -128,11 +128,10 @@ class SpecialError(ResponseException):
         """
         self.response = response
 
-        resp_dict = self.response.json()  # assumes valid JSON
         self.message = resp_dict.get("message", "")
         self.reason = resp_dict.get("reason", "")
         self.special_errors = resp_dict.get("special_errors", [])
-        asyncprawcoreException.__init__(
+        AsyncPrawcoreException.__init__(
             self, f"Special error {self.message!r}"
         )
 

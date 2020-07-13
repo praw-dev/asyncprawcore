@@ -236,7 +236,14 @@ class Session(object):
                 url,
             )
         elif response.status in self.STATUS_EXCEPTIONS:
-            raise self.STATUS_EXCEPTIONS[response.status](response)
+            if (
+                response.status == codes["media_type"]
+            ):  # since exception class needs response.json
+                raise self.STATUS_EXCEPTIONS[response.status](
+                    response, await response.json()
+                )
+            else:
+                raise self.STATUS_EXCEPTIONS[response.status](response)
         elif response.status == codes["no_content"]:
             return
         assert (
@@ -315,10 +322,6 @@ class Session(object):
         :param data dictionary of data
         :param files dictionary of "file" mapped to file-stream
         """
-        if data is not None and files is not None:
-            raise InvalidInvocation(
-                "Both data and files cannot be non-None simultaneously"
-            )
         if isinstance(data, dict):
             data = deepcopy(data)
             data["api_type"] = "json"
