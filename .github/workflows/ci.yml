@@ -51,7 +51,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[test]
         pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
-        pip install git+https://github.com/LilSpazJoekp/vcrpy.git@asyncpraw#egg=vcrpy-4.0.2
+        pip install https://github.com/LilSpazJoekp/vcrpy/archive/asyncpraw.zip
     - name: Test with pytest
       run: coverage run --source asyncprawcore --module pytest
     - env:

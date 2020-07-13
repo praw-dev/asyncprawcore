@@ -20,7 +20,6 @@ extras = {
     "lint": ["black", "flake8", "pre-commit", "pydocstyle"],
     "test": [
         "pytest-vcr",
-        # "vcrpy @ git+https://github.com/LilSpazJoekp/vcrpy.git@asyncpraw#egg=vcrpy-4.0.2",  # this will have to be installed manually
         "mock >=0.8",
         "pytest",
         "testfixtures >4.13.2, <7",
