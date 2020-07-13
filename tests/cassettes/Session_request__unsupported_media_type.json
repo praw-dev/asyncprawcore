@@ -1,106 +1,130 @@
-interactions:
-- request:
-    body:
-    - !!python/tuple
-      - grant_type
-      - password
-    - !!python/tuple
-      - password
-      - <PASSWORD>
-    - !!python/tuple
-      - username
-      - <USERNAME>
-    headers:
-      AUTHORIZATION:
-      - Basic <BASIC_AUTH>
-      Connection:
-      - close
-      User-Agent:
-      - asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1
-    method: POST
-    uri: https://www.reddit.com/api/v1/access_token
-  response:
-    body:
-      string: '{"access_token": "<ACCESS_TOKEN>", "token_type": "bearer", "expires_in":
-        3600, "scope": "*"}'
-    headers:
-      Accept-Ranges: bytes
-      Cache-Control: max-age=0, must-revalidate
-      Connection: close
-      Content-Length: '118'
-      Content-Type: application/json; charset=UTF-8
-      Date: Mon, 13 Jul 2020 01:19:05 GMT
-      Server: snooserv
-      Set-Cookie: edgebucket=iZtWskPKMDY9F9R5Io; Domain=reddit.com; Max-Age=63071999;
-        Path=/;  secure
-      Strict-Transport-Security: max-age=15552000; includeSubDomains; preload
-      Via: 1.1 varnish
-      X-Cache: MISS
-      X-Cache-Hits: '0'
-      X-Moose: majestic
-      X-Served-By: cache-mci5937-MCI
-      X-Timer: S1594603145.297827,VS0,VE330
-      x-content-type-options: nosniff
-      x-frame-options: SAMEORIGIN
-      x-xss-protection: 1; mode=block
-    status:
-      code: 200
-      message: OK
-    url: https://www.reddit.com/api/v1/access_token
-- request:
-    body:
-    - !!python/tuple
-      - api_type
-      - json
-    - !!python/tuple
-      - content
-      - 'type: submission
-
-        action: upvote'
-    - !!python/tuple
-      - page
-      - config/automoderator
-    headers:
-      Authorization:
-      - bearer 266290221070-3u11jH-CrYsG13bF60YZga0ymhA
-      User-Agent:
-      - asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1
-    method: POST
-    uri: https://oauth.reddit.com/r/asyncpraw/api/wiki/edit/?raw_json=1
-  response:
-    body:
-      string: '{"reason": "SPECIAL_ERRORS", "message": "Unsupported Media Type", "special_errors":
-        ["invalid value for `action`: `upvote` in rule:\n\ntype: submission\naction:
-        upvote"]}'
-    headers:
-      Accept-Ranges: bytes
-      Cache-Control: private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0,
-        must-revalidate
-      Connection: keep-alive
-      Content-Length: '170'
-      Content-Type: application/json; charset=UTF-8
-      Date: Mon, 13 Jul 2020 01:19:05 GMT
-      Expires: '-1'
-      Server: snooserv
-      Set-Cookie: session_tracker=91KRXUxU2B5chrxzpV.0.1594603145839.Z0FBQUFBQmZDN2FKZWJvYWlOVk53RUFpMXlQMndJRkh4RVI1bWFnN3AyQkRmanQwbFVQSDAyYUMxb0lFV2N1WG9ZeEdNZGVIaTV1Q3FkSUJfZEtXaHJmeGRPLVNnV2hiTFY4YVA5emR6SkRaelp3T21Ua1pldnZPbDJwMWpJc053VnAyaW4xRnBWSnU;
-        Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 13-Jul-2020 03:19:05
-        GMT; secure
-      Strict-Transport-Security: max-age=15552000; includeSubDomains; preload
-      Via: 1.1 varnish
-      X-Cache: MISS
-      X-Cache-Hits: '0'
-      X-Moose: majestic
-      X-Served-By: cache-mci5922-MCI
-      X-Timer: S1594603146.732970,VS0,VE132
-      x-content-type-options: nosniff
-      x-frame-options: SAMEORIGIN
-      x-ratelimit-remaining: '599.0'
-      x-ratelimit-reset: '55'
-      x-ratelimit-used: '1'
-      x-ua-compatible: IE=edge
-      x-xss-protection: 1; mode=block
-    status:
-      code: 415
-      message: Unsupported Media Type
-    url: https://oauth.reddit.com/r/asyncpraw/api/wiki/edit/?raw_json=1
-version: 1
+{
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "grant_type",
+            "password"
+          ],
+          [
+            "password",
+            "<PASSWORD>"
+          ],
+          [
+            "username",
+            "<USERNAME>"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "close",
+          "Content-Length": "118",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 13 Jul 2020 02:11:03 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=8ZenXDy6gAfUFg5Yuj; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-mci5943-MCI",
+          "X-Timer": "S1594606263.666832,VS0,VE356",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "request": {
+        "body": [
+          [
+            "api_type",
+            "json"
+          ],
+          [
+            "content",
+            "type: submission\naction: upvote"
+          ],
+          [
+            "page",
+            "config/automoderator"
+          ]
+        ],
+        "headers": {
+          "Authorization": [
+            "bearer 266290221070-8gopPqhsV-qoxgM02rGE5i800ds"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/asyncpraw/api/wiki/edit/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "string": "{\"reason\": \"SPECIAL_ERRORS\", \"message\": \"Unsupported Media Type\", \"special_errors\": [\"invalid value for `action`: `upvote` in rule:\\n\\ntype: submission\\naction: upvote\"]}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate",
+          "Connection": "keep-alive",
+          "Content-Length": "170",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 13 Jul 2020 02:11:03 GMT",
+          "Expires": "-1",
+          "Server": "snooserv",
+          "Set-Cookie": "session_tracker=5XfCF9x36f2Bf4HhFz.0.1594606263269.Z0FBQUFBQmZDOEszb3Y5UFZVdld4dEhBVWZ5TDZxdlNmYzJUNVo1ZkRBNlRYUUMxWjg1b3hTZmJXSlRxMklScENhRVl6T0lmdG4tUHNaSElrYmQ2WXVhY1NXbFV3WXFaeWFWOE1TZERkTC1kQmN6MDZDaGh6S3pweTZVTzZmWWItY0YwNGdvNUM2NU0; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 13-Jul-2020 04:11:03 GMT; secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-mci5925-MCI",
+          "X-Timer": "S1594606263.114114,VS0,VE222",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "537",
+          "x-ratelimit-used": "1",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 415,
+          "message": "Unsupported Media Type"
+        },
+        "url": "https://oauth.reddit.com/r/asyncpraw/api/wiki/edit/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_at": "2020-07-12T21:11:03",
+  "version": 1
+}

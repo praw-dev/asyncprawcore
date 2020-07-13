@@ -441,8 +441,7 @@ class SessionTest(asynctest.TestCase):
     async def test_request__unsupported_media_type(self):
         with VCR.use_cassette(
             "Session_request__unsupported_media_type",
-            match_requests_on=["uri", "method"],
-            serializer="yaml",
+            match_requests_on=["uri", "method"]
         ):
             session = asyncprawcore.Session(await script_authorizer())
             exception_class = asyncprawcore.SpecialError
