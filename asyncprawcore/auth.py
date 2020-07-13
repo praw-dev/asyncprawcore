@@ -30,7 +30,7 @@ class BaseAuthenticator(object):
 
     async def _post(self, url, success_status=codes["ok"], **data):
         response = await self._requestor.request(
-            "post",
+            "POST",
             url,
             auth=self._auth(),
             data=sorted(data.items()),
