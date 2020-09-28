@@ -2,8 +2,8 @@
 
 """This example shows how simple in-memory caching can be used.
 
-Demonstrates the use of custom sessions with ``Requestor``. It's an adaptation
-of ``read_only_auth_trophies.py``.
+Demonstrates the use of custom sessions with ``Requestor``. It's an adaptation of
+``read_only_auth_trophies.py``.
 
 """
 
@@ -19,6 +19,7 @@ class CachingSession(aiohttp.ClientSession):
 
     Toy example of custom session to showcase the ``session`` parameter of
     ``Requestor``.
+
     """
 
     get_cache = {}
@@ -58,29 +59,23 @@ async def main():
         user = sys.argv[1]
 
         async with asyncprawcore.session(authorizer) as session:
-            data1 = await session.request(
-                "GET", f"/api/v1/user/{user}/trophies"
-            )
+            data1 = await session.request("GET", f"/api/v1/user/{user}/trophies")
 
         async with asyncprawcore.session(authorizer) as session:
-            data2 = await session.request(
-                "GET", f"/api/v1/user/{user}/trophies"
-            )
+            data2 = await session.request("GET", f"/api/v1/user/{user}/trophies")
 
         for trophy in data1["data"]["trophies"]:
             description = trophy["data"]["description"]
             print(
                 "Original:",
-                trophy["data"]["name"]
-                + (f" ({description})" if description else ""),
+                trophy["data"]["name"] + (f" ({description})" if description else ""),
             )
 
         for trophy in data2["data"]["trophies"]:
             description = trophy["data"]["description"]
             print(
                 "Cached:",
-                trophy["data"]["name"]
-                + (f" ({description})" if description else ""),
+                trophy["data"]["name"] + (f" ({description})" if description else ""),
             )
         print(
             "----\nCached == Original:",

@@ -1,5 +1,9 @@
 """Test asyncprawcore."""
-import time
+import asyncio
 
 
-time.sleep = lambda x: None
+async def _sleep(*args):
+    pass
+
+
+asyncio.sleep = _sleep

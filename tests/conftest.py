@@ -12,14 +12,10 @@ from vcr.serialize import deserialize, serialize
 CLIENT_ID = os.environ.get("PRAWCORE_CLIENT_ID", "fake_client_id")
 CLIENT_SECRET = os.environ.get("PRAWCORE_CLIENT_SECRET", "fake_client_secret")
 PASSWORD = os.environ.get("PRAWCORE_PASSWORD", "fake_password")
-PERMANENT_GRANT_CODE = os.environ.get(
-    "PRAWCORE_PERMANENT_GRANT_CODE", "fake_perm_code"
-)
+PERMANENT_GRANT_CODE = os.environ.get("PRAWCORE_PERMANENT_GRANT_CODE", "fake_perm_code")
 REDIRECT_URI = os.environ.get("PRAWCORE_REDIRECT_URI", "http://localhost:8080")
 REFRESH_TOKEN = os.environ.get("PRAWCORE_REFRESH_TOKEN", "fake_refresh_token")
-TEMPORARY_GRANT_CODE = os.environ.get(
-    "PRAWCORE_TEMPORARY_GRANT_CODE", "fake_temp_code"
-)
+TEMPORARY_GRANT_CODE = os.environ.get("PRAWCORE_TEMPORARY_GRANT_CODE", "fake_temp_code")
 USERNAME = os.environ.get("PRAWCORE_USERNAME", "fake_username")
 
 
@@ -36,17 +32,14 @@ placeholders = [
     ("<REFRESH_TOKEN>", REFRESH_TOKEN),
     ("<TEMP_CODE>", TEMPORARY_GRANT_CODE),
     ("<USERNAME>", USERNAME),
-    ("<BASIC_AUTH>", b64_string("{}:{}".format(CLIENT_ID, CLIENT_SECRET))),
+    ("<BASIC_AUTH>", b64_string(f"{CLIENT_ID}:{CLIENT_SECRET}")),
 ]
 
 
 def filter_access_token(response):
     """Add VCR callback to filter access token."""
     request_uri = response["url"]
-    if (
-        "api/v1/access_token" not in request_uri
-        or response["status"]["code"] != 200
-    ):
+    if "api/v1/access_token" not in request_uri or response["status"]["code"] != 200:
         return response
     body = response["body"]["string"].decode()
     try:
@@ -96,8 +89,7 @@ class CustomSerializer(object):
         """Serialize cassette dict."""
         cassette_dict["recorded_at"] = datetime.now().isoformat()[:-7]
         return (
-            json.dumps(serialize_dict(cassette_dict), sort_keys=True, indent=2)
-            + "\n"
+            f"{json.dumps(serialize_dict(cassette_dict), sort_keys=True, indent=2)}\n"
         )
 
     @staticmethod

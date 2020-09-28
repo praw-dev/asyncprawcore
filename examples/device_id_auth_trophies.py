@@ -15,7 +15,7 @@ import asyncio
 async def main():
     """Provide the program's entry point when directly executed."""
     if len(sys.argv) != 2:
-        print("Usage: {} USERNAME".format(sys.argv[0]))
+        print(f"Usage: {sys.argv[0]} USERNAME")
         return 1
 
     authenticator = asyncprawcore.UntrustedAuthenticator(
@@ -27,16 +27,11 @@ async def main():
 
     user = sys.argv[1]
     async with asyncprawcore.session(authorizer) as session:
-        data = await session.request(
-            "GET", "/api/v1/user/{}/trophies".format(user)
-        )
+        data = await session.request("GET", f"/api/v1/user/{user}/trophies")
 
     for trophy in data["data"]["trophies"]:
         description = trophy["data"]["description"]
-        print(
-            trophy["data"]["name"]
-            + (" ({})".format(description) if description else "")
-        )
+        print(trophy["data"]["name"] + (f" ({description})" if description else ""))
 
     return 0
 

@@ -66,8 +66,7 @@ class BaseAuthenticator(object):
             )
         if implicit and duration != "temporary":
             raise InvalidInvocation(
-                "The implicit grant flow only supports "
-                "temporary access tokens."
+                "The implicit grant flow only supports " "temporary access tokens."
             )
 
         params = {
@@ -115,9 +114,7 @@ class TrustedAuthenticator(BaseAuthenticator):
             ``authorize`` method of the ``Authorizer`` class.
 
         """
-        super(TrustedAuthenticator, self).__init__(
-            requestor, client_id, redirect_uri
-        )
+        super(TrustedAuthenticator, self).__init__(requestor, client_id, redirect_uri)
         self.client_secret = client_secret
 
     def _auth(self):
@@ -150,9 +147,7 @@ class BaseAuthorizer(object):
         self.scopes = None
 
     async def _request_token(self, **data):
-        url = (
-            self._authenticator._requestor.reddit_url + const.ACCESS_TOKEN_PATH
-        )
+        url = self._authenticator._requestor.reddit_url + const.ACCESS_TOKEN_PATH
         pre_request_time = time.time()
         response = await self._authenticator._post(url, **data)
         payload = await response.json()
@@ -161,9 +156,7 @@ class BaseAuthorizer(object):
                 response, payload["error"], payload.get("error_description")
             )
 
-        self._expiration_timestamp = (
-            pre_request_time - 10 + payload["expires_in"]
-        )
+        self._expiration_timestamp = pre_request_time - 10 + payload["expires_in"]
         self.access_token = payload["access_token"]
         if "refresh_token" in payload:
             self.refresh_token = payload["refresh_token"]
@@ -183,8 +176,7 @@ class BaseAuthorizer(object):
 
         """
         return (
-            self.access_token is not None
-            and time.time() < self._expiration_timestamp
+            self.access_token is not None and time.time() < self._expiration_timestamp
         )
 
     async def revoke(self):
@@ -192,9 +184,7 @@ class BaseAuthorizer(object):
         if self.access_token is None:
             raise InvalidInvocation("no token available to revoke")
 
-        await self._authenticator.revoke_token(
-            self.access_token, "access_token"
-        )
+        await self._authenticator.revoke_token(self.access_token, "access_token")
         self._clear_access_token()
 
 
@@ -251,9 +241,7 @@ class Authorizer(BaseAuthorizer):
         if only_access or self.refresh_token is None:
             await super(Authorizer, self).revoke()
         else:
-            await self._authenticator.revoke_token(
-                self.refresh_token, "refresh_token"
-            )
+            await self._authenticator.revoke_token(self.refresh_token, "refresh_token")
             self._clear_access_token()
             self.refresh_token = None
 
@@ -283,9 +271,7 @@ class DeviceIDAuthorizer(BaseAuthorizer):
     async def refresh(self):
         """Obtain a new access token."""
         grant_type = "https://oauth.reddit.com/grants/installed_client"
-        await self._request_token(
-            grant_type=grant_type, device_id=self._device_id
-        )
+        await self._request_token(grant_type=grant_type, device_id=self._device_id)
 
 
 class ImplicitAuthorizer(BaseAuthorizer):
@@ -334,8 +320,8 @@ class ReadOnlyAuthorizer(Authorizer):
 class ScriptAuthorizer(Authorizer):
     """Manages personal-use script type authorizations.
 
-    Only users who are listed as developers for the application will be
-    granted access tokens.
+    Only users who are listed as developers for the application will be granted access
+    tokens.
 
     """
 
@@ -345,8 +331,7 @@ class ScriptAuthorizer(Authorizer):
         """Represent a single personal-use authorization to Reddit's API.
 
         :param authenticator: An instance of :class:`TrustedAuthenticator`.
-        :param username: The Reddit username of one of the application's
-            developers.
+        :param username: The Reddit username of one of the application's developers.
         :param password: The password associated with ``username``.
 
         """

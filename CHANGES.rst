@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the
-exception that deprecations will not be announced by a minor release.
+asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
+that deprecations will not be announced by a minor release.
 
 1.4.0.post2 (2020-07-12)
 ------------------------
@@ -10,8 +10,9 @@ exception that deprecations will not be announced by a minor release.
 **Fixed**
 
 * How files are handled. ``data`` is now able to be passed with ``files`` since
-    asyncpraw can make requests with both parameters.
-* Fixed ``SpecialException`` not able to get ``response.json()`` since it is a coroutine.
+  asyncpraw can make requests with both parameters.
+* Fixed ``SpecialException`` not able to get ``response.json()`` since it is a
+  coroutine.
 
 1.4.0.post1 (2020-07-03)
 ------------------------

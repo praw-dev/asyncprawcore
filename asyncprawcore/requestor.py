@@ -24,15 +24,15 @@ class Requestor(object):
     ):
         """Create an instance of the Requestor class.
 
-        :param user_agent: The user-agent for your application. Please follow
-            reddit's user-agent guidlines:
-            https://github.com/reddit/reddit/wiki/API#rules
-        :param oauth_url: (Optional) The URL used to make OAuth requests to the
-            reddit site. (Default: https://oauth.reddit.com)
-        :param reddit_url: (Optional) The URL used when obtaining access
-            tokens. (Default: https://www.reddit.com)
-        :param session: (Optional) A session to handle requests, compatible
-            with aiohttp.ClientSession(). (Default: None)
+        :param user_agent: The user-agent for your application. Please follow reddit's
+            user-agent guidlines: https://github.com/reddit/reddit/wiki/API#rules
+        :param oauth_url: (Optional) The URL used to make OAuth requests to the reddit
+            site. (Default: https://oauth.reddit.com)
+        :param reddit_url: (Optional) The URL used when obtaining access tokens.
+            (Default: https://www.reddit.com)
+        :param session: (Optional) A session to handle requests, compatible with
+            aiohttp.ClientSession(). (Default: None)
+
         """
         if user_agent is None or len(user_agent) < 7:
             raise InvalidInvocation("user_agent is not descriptive")

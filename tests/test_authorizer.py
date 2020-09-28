@@ -73,9 +73,7 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     def test_initialize__with_refresh_token(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, REFRESH_TOKEN
-        )
+        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
         self.assertIsNone(authorizer.access_token)
         self.assertIsNone(authorizer.scopes)
         self.assertEqual(REFRESH_TOKEN, authorizer.refresh_token)
@@ -90,9 +88,7 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_refresh(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, REFRESH_TOKEN
-        )
+        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
         with VCR.use_cassette("Authorizer_refresh"):
             await authorizer.refresh()
 
@@ -102,9 +98,7 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertTrue(authorizer.is_valid())
 
     async def test_refresh__with_invalid_token(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, "INVALID_TOKEN"
-        )
+        authorizer = asyncprawcore.Authorizer(self.authentication, "INVALID_TOKEN")
         with VCR.use_cassette("Authorizer_refresh__with_invalid_token"):
             with self.assertRaises(asyncprawcore.ResponseException):
                 await authorizer.refresh()
@@ -117,12 +111,8 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__access_token_with_refresh_set(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, REFRESH_TOKEN
-        )
-        with VCR.use_cassette(
-            "Authorizer_revoke__access_token_with_refresh_set"
-        ):
+        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        with VCR.use_cassette("Authorizer_revoke__access_token_with_refresh_set"):
             await authorizer.refresh()
             await authorizer.revoke(only_access=True)
 
@@ -138,9 +128,7 @@ class AuthorizerTest(AuthorizerTestBase):
     async def test_revoke__access_token_without_refresh_set(self):
         self.authentication.redirect_uri = REDIRECT_URI
         authorizer = asyncprawcore.Authorizer(self.authentication)
-        with VCR.use_cassette(
-            "Authorizer_revoke__access_token_without_refresh_set"
-        ):
+        with VCR.use_cassette("Authorizer_revoke__access_token_without_refresh_set"):
             await authorizer.authorize(TEMPORARY_GRANT_CODE)
             await authorizer.revoke()
 
@@ -150,12 +138,8 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__refresh_token_with_access_set(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, REFRESH_TOKEN
-        )
-        with VCR.use_cassette(
-            "Authorizer_revoke__refresh_token_with_access_set"
-        ):
+        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        with VCR.use_cassette("Authorizer_revoke__refresh_token_with_access_set"):
             await authorizer.refresh()
             await authorizer.revoke()
 
@@ -165,12 +149,8 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__refresh_token_without_access_set(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, REFRESH_TOKEN
-        )
-        with VCR.use_cassette(
-            "Authorizer_revoke__refresh_token_without_access_set"
-        ):
+        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        with VCR.use_cassette("Authorizer_revoke__refresh_token_without_access_set"):
             await authorizer.revoke()
 
         self.assertIsNone(authorizer.access_token)
@@ -179,9 +159,7 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__without_access_token(self):
-        authorizer = asyncprawcore.Authorizer(
-            self.authentication, REFRESH_TOKEN
-        )
+        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
         with self.assertRaises(asyncprawcore.InvalidInvocation):
             await authorizer.revoke(only_access=True)
 
@@ -220,21 +198,15 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
         self.assertTrue(authorizer.is_valid())
 
     async def test_refresh__with_short_device_id(self):
-        authorizer = asyncprawcore.DeviceIDAuthorizer(
-            self.authentication, "a" * 19
-        )
-        with VCR.use_cassette(
-            "DeviceIDAuthorizer_refresh__with_short_device_id"
-        ):
+        authorizer = asyncprawcore.DeviceIDAuthorizer(self.authentication, "a" * 19)
+        with VCR.use_cassette("DeviceIDAuthorizer_refresh__with_short_device_id"):
             with self.assertRaises(asyncprawcore.OAuthException):
                 await authorizer.refresh()
 
 
 class ImplicitAuthorizerTest(AuthorizerTestBase):
     def test_initialize(self):
-        authenticator = asyncprawcore.UntrustedAuthenticator(
-            self.requestor, CLIENT_ID
-        )
+        authenticator = asyncprawcore.UntrustedAuthenticator(self.requestor, CLIENT_ID)
         authorizer = asyncprawcore.ImplicitAuthorizer(
             authenticator, "fake token", 1, "modposts read"
         )
@@ -255,9 +227,7 @@ class ImplicitAuthorizerTest(AuthorizerTestBase):
 
 class ReadOnlyAuthorizerTest(AuthorizerTestBase):
     def test_initialize__with_untrusted_authenticator(self):
-        authenticator = asyncprawcore.UntrustedAuthenticator(
-            self.requestor, CLIENT_ID
-        )
+        authenticator = asyncprawcore.UntrustedAuthenticator(self.requestor, CLIENT_ID)
         self.assertRaises(
             asyncprawcore.InvalidInvocation,
             asyncprawcore.ReadOnlyAuthorizer,
@@ -280,9 +250,7 @@ class ReadOnlyAuthorizerTest(AuthorizerTestBase):
 
 class ScriptAuthorizerTest(AuthorizerTestBase):
     def test_initialize__with_untrusted_authenticator(self):
-        authenticator = asyncprawcore.UntrustedAuthenticator(
-            self.requestor, CLIENT_ID
-        )
+        authenticator = asyncprawcore.UntrustedAuthenticator(self.requestor, CLIENT_ID)
         self.assertRaises(
             asyncprawcore.InvalidInvocation,
             asyncprawcore.ScriptAuthorizer,

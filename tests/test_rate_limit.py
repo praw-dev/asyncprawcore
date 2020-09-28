@@ -28,9 +28,7 @@ class RateLimiterTest(asynctest.TestCase):
 
     @patch("asyncio.sleep")
     @patch("time.time")
-    async def test_delay__no_sleep_when_time_in_past(
-        self, mock_time, mock_sleep
-    ):
+    async def test_delay__no_sleep_when_time_in_past(self, mock_time, mock_sleep):
         mock_time.return_value = 101
         await self.rate_limiter.delay()
         self.assertTrue(mock_time.called)
@@ -43,9 +41,7 @@ class RateLimiterTest(asynctest.TestCase):
 
     @patch("asyncio.sleep")
     @patch("time.time")
-    async def test_delay__no_sleep_when_times_match(
-        self, mock_time, mock_sleep
-    ):
+    async def test_delay__no_sleep_when_times_match(self, mock_time, mock_sleep):
         mock_time.return_value = 100
         await self.rate_limiter.delay()
         self.assertTrue(mock_time.called)

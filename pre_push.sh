@@ -4,7 +4,7 @@ function exit_error() {
     echo $1
     exit 1
 }
-
+flynt -q -tc -ll  1000 . || exit_error "Please install flynt: pip install flynt"
 black *.py examples asyncprawcore tests || exit_error "Please install black: pip install black"
 
 flake8 --version > /dev/null 2>&1
