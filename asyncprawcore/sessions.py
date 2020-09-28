@@ -310,11 +310,21 @@ class Session(object):
 
         """
         params = deepcopy(params) or {}
+        if params:
+            # this is to ensure consistency with prawcore as requests accepts bool
+            # params while aiohttp does not
+            new_params = {}
+            for k, v in params.items():
+                if isinstance(v, bool):
+                    new_params[k] = str(v).lower()
+                elif v is not None:
+                    new_params[k] = v
+            params = new_params
         params["raw_json"] = 1
+        data = self.validate_data_files(data, files)
         if isinstance(json, dict):
             json = deepcopy(json)
             json["api_type"] = "json"
-        data = self.validate_data_files(data, files)
         url = urljoin(self._requestor.oauth_url, path)
         return await self._request_with_retries(
             data=data,
@@ -329,18 +339,24 @@ class Session(object):
     def validate_data_files(data, files):
         """Transfers the files and data from the arguments into the data.
 
-        This is done to maintain consistency with prawcore :param data dictionary of
-        data :param files dictionary of "file" mapped to file-stream
+        This is done to maintain consistency with prawcore
+
+        :param data dictionary of data
+        :param files dictionary of "file" mapped to file-stream
 
         """
         if isinstance(data, dict):
             data = deepcopy(data)
-            data["api_type"] = "json"
+            # this is to ensure consistency with prawcore as requests drop keys who's
+            # values are None
+            new_data = {}
+            for k, v in data.items():
+                if v is not None:
+                    new_data[k] = v
+            new_data["api_type"] = "json"
             if files is not None:
                 data.update(files)
-            data = sorted(data.items())
-        if isinstance(files, dict):
-            data = files
+            data = sorted(new_data.items())
         return data
 
 
