@@ -36,7 +36,7 @@ placeholders = [
     ("<REFRESH_TOKEN>", REFRESH_TOKEN),
     ("<TEMP_CODE>", TEMPORARY_GRANT_CODE),
     ("<USERNAME>", USERNAME),
-    ("<BASIC_AUTH>", b64_string("{}:{}".format(CLIENT_ID, CLIENT_SECRET))),
+    ("<BASIC_AUTH>", b64_string(f"{CLIENT_ID}:{CLIENT_SECRET}")),
 ]
 
 

@@ -210,7 +210,13 @@ class Session(object):
             retry_strategy_state = self._retry_strategy_class()
         self._log_request(data, method, params, url)
         response, saved_exception = await self._make_request(
-            data, json, method, params, retry_strategy_state, timeout, url,
+            data,
+            json,
+            method,
+            params,
+            retry_strategy_state,
+            timeout,
+            url,
         )
 
         do_retry = False
