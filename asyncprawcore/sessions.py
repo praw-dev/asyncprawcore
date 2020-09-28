@@ -171,7 +171,14 @@ class Session(object):
         )
 
     async def _make_request(
-        self, data, json, method, params, retry_strategy_state, timeout, url,
+        self,
+        data,
+        json,
+        method,
+        params,
+        retry_strategy_state,
+        timeout,
+        url,
     ):
         try:
             response = await self._rate_limiter.call(
@@ -190,8 +197,11 @@ class Session(object):
             )
             return response, None
         except RequestException as exception:
-            if not retry_strategy_state.should_retry_on_failure() or not isinstance(  # noqa: E501
-                exception.original_exception, self.RETRY_EXCEPTIONS
+            if (
+                not retry_strategy_state.should_retry_on_failure()
+                or not isinstance(  # noqa: E501
+                    exception.original_exception, self.RETRY_EXCEPTIONS
+                )
             ):
                 raise
             return None, exception.original_exception
@@ -226,9 +236,7 @@ class Session(object):
                 do_retry = True
 
         if retry_strategy_state.should_retry_on_failure() and (
-            do_retry
-            or response is None
-            or response.status in self.RETRY_STATUSES
+            do_retry or response is None or response.status in self.RETRY_STATUSES
         ):
             return await self._do_retry(
                 data,
@@ -263,9 +271,7 @@ class Session(object):
             raise BadJSON(response)
 
     async def _set_header_callback(self):
-        if not self._authorizer.is_valid() and hasattr(
-            self._authorizer, "refresh"
-        ):
+        if not self._authorizer.is_valid() and hasattr(self._authorizer, "refresh"):
             await self._authorizer.refresh()
         return {"Authorization": f"bearer {self._authorizer.access_token}"}
 
@@ -290,18 +296,17 @@ class Session(object):
         """Return the json content from the resource at ``path``.
 
         :param method: The request verb. E.g., get, post, put.
-        :param path: The path of the request. This path will be combined with
-            the ``oauth_url`` of the Requestor.
-        :param data: Dictionary, bytes, or file-like object to send in the body
-            of the request.
-        :param files: Dictionary, mapping ``filename`` to file-like object.
-        :param json: Object to be serialized to JSON in the body of the
+        :param path: The path of the request. This path will be combined with the
+            ``oauth_url`` of the Requestor.
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
             request.
+        :param files: Dictionary, mapping ``filename`` to file-like object.
+        :param json: Object to be serialized to JSON in the body of the request.
         :param params: The query parameters to send with the request.
 
-        Automatically refreshes the access token if it becomes invalid and a
-        refresh token is available. Raises InvalidInvocation in such a case if
-        a refresh token is not available.
+        Automatically refreshes the access token if it becomes invalid and a refresh
+        token is available. Raises InvalidInvocation in such a case if a refresh token
+        is not available.
 
         """
         params = deepcopy(params) or {}
@@ -324,9 +329,9 @@ class Session(object):
     def validate_data_files(data, files):
         """Transfers the files and data from the arguments into the data.
 
-        This is done to maintain consistency with prawcore
-        :param data dictionary of data
-        :param files dictionary of "file" mapped to file-stream
+        This is done to maintain consistency with prawcore :param data dictionary of
+        data :param files dictionary of "file" mapped to file-stream
+
         """
         if isinstance(data, dict):
             data = deepcopy(data)

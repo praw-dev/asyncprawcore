@@ -2,8 +2,8 @@
 
 """This example outputs a user's list of trophies.
 
-This program demonstrates the use of ``asyncprawcore.ReadOnlyAuthorizer`` that does
-not require an access token to make authenticated requests to reddit.
+This program demonstrates the use of ``asyncprawcore.ReadOnlyAuthorizer`` that does not
+require an access token to make authenticated requests to reddit.
 
 """
 import os

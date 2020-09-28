@@ -14,9 +14,7 @@ class RequestorTest(asynctest.TestCase):
                     await self.requestor.close()
 
     async def test_initialize(self):
-        self.requestor = asyncprawcore.Requestor(
-            "asyncprawcore:test (by /u/bboe)"
-        )
+        self.requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
         self.assertEqual(
             f"asyncprawcore:test (by /u/bboe) asyncprawcore/{asyncprawcore.__version__}",
             self.requestor._http._default_headers["User-Agent"],
@@ -32,21 +30,13 @@ class RequestorTest(asynctest.TestCase):
         exception = Exception("asyncprawcore wrap_request_exceptions")
         session_instance = mock_session.return_value
         session_instance.request.side_effect = exception
-        self.requestor = asyncprawcore.Requestor(
-            "asyncprawcore:test (by /u/bboe)"
-        )
-        with self.assertRaises(
-            asyncprawcore.RequestException
-        ) as context_manager:
+        self.requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+        with self.assertRaises(asyncprawcore.RequestException) as context_manager:
             await self.requestor.request("get", "http://a.b", data="bar")
         self.assertIsInstance(context_manager.exception, RequestException)
         self.assertIs(exception, context_manager.exception.original_exception)
-        self.assertEqual(
-            ("get", "http://a.b"), context_manager.exception.request_args
-        )
-        self.assertEqual(
-            {"data": "bar"}, context_manager.exception.request_kwargs
-        )
+        self.assertEqual(("get", "http://a.b"), context_manager.exception.request_args)
+        self.assertEqual({"data": "bar"}, context_manager.exception.request_kwargs)
 
     async def test_request__use_custom_session(self):
         override = "REQUEST OVERRIDDEN"
@@ -72,6 +62,4 @@ class RequestorTest(asynctest.TestCase):
             self.requestor._http._default_headers["session_header"],
             custom_header,
         )
-        self.assertEqual(
-            await self.requestor.request("https://reddit.com"), override
-        )
+        self.assertEqual(await self.requestor.request("https://reddit.com"), override)

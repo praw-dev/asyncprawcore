@@ -10,9 +10,7 @@ HERE = path.abspath(path.dirname(__file__))
 with open(path.join(HERE, "README.rst"), encoding="utf-8") as fp:
     README = fp.read()
 with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
-    VERSION_LINE = next(
-        line for line in fp.readlines() if "__version__" in line
-    )
+    VERSION_LINE = next(line for line in fp.readlines() if "__version__" in line)
     VERSION = VERSION_LINE.split("=")[-1].strip().replace('"', "")
 
 extras = {
