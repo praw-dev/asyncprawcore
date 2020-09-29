@@ -4,6 +4,16 @@ Change Log
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
 that deprecations will not be announced by a minor release.
 
+1.5.0 (2020-09-28)
+------------------
+
+**Fixed**
+
+* When passing a ``None`` value for a key in ``data`` it is not dropped like it is in
+  ``prawcore`` with ``requests`` package.
+* When passing a bool or ``None`` value for a key in ``params`` it is not dropped like
+  it is in ``prawcore`` with ``requests`` package.
+
 1.4.0.post2 (2020-07-12)
 ------------------------
 
