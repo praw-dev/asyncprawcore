@@ -24,7 +24,7 @@
             "close"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1"
+            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post2"
           ]
         },
         "method": "POST",
@@ -36,20 +36,16 @@
         },
         "headers": {
           "Accept-Ranges": "bytes",
-          "Cache-Control": "max-age=0, must-revalidate",
           "Connection": "close",
           "Content-Length": "118",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Mon, 13 Jul 2020 01:01:31 GMT",
+          "Date": "Tue, 29 Sep 2020 00:32:15 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "edgebucket=eH5q2IaiecvjaPXfnb; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "edgebucket=WXvhRkTXffwp8vvxGN; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
-          "X-Cache": "MISS",
-          "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-mci5943-MCI",
-          "X-Timer": "S1594602091.289113,VS0,VE352",
+          "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
           "x-xss-protection": "1; mode=block"
@@ -63,13 +59,22 @@
     },
     {
       "request": {
-        "body": {},
+        "body": [
+          [
+            "api_type",
+            "json"
+          ],
+          [
+            "test",
+            "data"
+          ]
+        ],
         "headers": {
           "Authorization": [
-            "bearer 266290221070-5ueDVQSTMKC5FW5xOqMZCQj6sa0"
+            "bearer 266290221070-BVJOR7rwiuyuNc2f8q2iriSOw9I"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post1"
+            "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0.post2"
           ]
         },
         "method": "POST",
@@ -77,29 +82,25 @@
       },
       "response": {
         "body": {
-          "string": "{\"errors\": [\"BAD_CSS_NAME\"], \"img_src\": \"\", \"errors_values\": [\"bad image name\"]}"
+          "string": "{\"errors\": [\"BAD_CSS_NAME\", \"IMAGE_ERROR\"], \"img_src\": \"\", \"errors_values\": [\"bad image name\", \"Invalid image or general image error\"]}"
         },
         "headers": {
           "Accept-Ranges": "bytes",
-          "Cache-Control": "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate",
           "Connection": "keep-alive",
-          "Content-Length": "80",
+          "Content-Length": "135",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Mon, 13 Jul 2020 01:01:31 GMT",
-          "Expires": "-1",
+          "Date": "Tue, 29 Sep 2020 00:32:16 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "session_tracker=mbcjgbkgffcaklknmj.0.1594602091872.Z0FBQUFBQmZDN0pyS2doOURsVzd2cG9NbWkwbnNGaGRjU3ZJLTdET0RTczhIa1RkLU1zVVJPbjE4cW1FZXFQcXZVUkpRVFNYTVd2dkd1VEdYYWRxMVpIRVpOVk1uZC1SLS1KdGptQndtVmFDV3FZS2oxVU0wZjkydDl1ejNhekh3RmNBRThSLVRKOWg; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 13-Jul-2020 03:01:31 GMT; secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
-          "X-Cache": "MISS",
-          "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-mci5927-MCI",
-          "X-Timer": "S1594602092.755829,VS0,VE219",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate",
+          "expires": "-1",
+          "set-cookie": "session_tracker=droraddeqhrnhppkdb.0.1601339536246.Z0FBQUFBQmZjb0NRcFRZeHRia2gxUUw4UHZ5SXJlSDRrUmFjVUpCWGZRMnZHenBvT04yQVFad3F2UExJQjB0dFNfZktiX3NsVkVaeEx1Rm5KUUFfUG0tS3Q5TURKUlRoMkVUY3RtN0c4bEV5ZWd3YjdZMEpXem1FQzV4c0Rsajh1amhGcEJGT2xZZUE; Domain=reddit.com; Max-Age=7199; Path=/; expires=Tue, 29-Sep-2020 02:32:16 GMT; secure",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
           "x-ratelimit-remaining": "599.0",
-          "x-ratelimit-reset": "509",
+          "x-ratelimit-reset": "464",
           "x-ratelimit-used": "1",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
@@ -112,6 +113,6 @@
       }
     }
   ],
-  "recorded_at": "2020-07-12T20:01:31",
+  "recorded_at": "2020-09-28T19:32:16",
   "version": 1
 }

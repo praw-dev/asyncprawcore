@@ -12,7 +12,7 @@
                     ],
                     [
                         "refresh_token",
-"fake_refresh_token"
+                        "fake_refresh_token"
                     ]
                 ],
                 "headers": {
