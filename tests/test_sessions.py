@@ -143,10 +143,10 @@ class SessionTest(asynctest.TestCase):
     async def test_request__get(self):
         with VCR.use_cassette("Session_request__get"):
             self.session = asyncprawcore.Session(await readonly_authorizer())
-            params = {"limit": 100}
+            params = {"limit": 100, "bool_param": True}
             response = await self.session.request("GET", "/", params=params)
         self.assertIsInstance(response, dict)
-        self.assertEqual(1, len(params))
+        self.assertEqual(2, len(params))
         self.assertEqual("Listing", response["kind"])
 
     async def test_request__patch(self):
@@ -177,18 +177,13 @@ class SessionTest(asynctest.TestCase):
             self.assertEqual(key_count, len(data))  # Ensure data is untouched
 
     async def test_request__post__with_files(self):
-        with VCR.use_cassette(
-            "Session_request__post__with_files",
-            match_on=["uri"],
-            # serializer="yaml",
-        ):
+        with VCR.use_cassette("Session_request__post__with_files", match_on=["uri"]):
             session = asyncprawcore.Session(await script_authorizer())
             with open("./tests/files/white-square.png", "rb") as fp:
                 files = {"file": fp}
+                data = {"test": "data"}
                 response = await session.request(
-                    "POST",
-                    "/r/asyncpraw/api/upload_sr_img",
-                    files=files,
+                    "POST", "/r/asyncpraw/api/upload_sr_img", files=files, data=data
                 )
             self.assertIn("img_src", response)
 

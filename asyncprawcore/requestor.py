@@ -8,7 +8,7 @@ from .exceptions import InvalidInvocation, RequestException
 class Requestor(object):
     """Requestor provides an interface to HTTP requests."""
 
-    def __getattr__(self, attribute):
+    def __getattr__(self, attribute):  # pragma: no cover
         """Pass all undefined attributes to the _http attribute."""
         if attribute.startswith("__"):
             raise AttributeError
