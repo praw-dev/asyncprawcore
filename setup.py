@@ -44,7 +44,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    description="Low-level asynchronous communication layer for PRAW 4+.",
+    description="Low-level asynchronous communication layer for Async PRAW 7+.",
     extras_require=extras,
     install_requires=["aiohttp", "yarl"],
     python_requires=">=3.6",

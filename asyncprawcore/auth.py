@@ -61,12 +61,12 @@ class BaseAuthenticator(object):
             raise InvalidInvocation("redirect URI not provided")
         if implicit and not isinstance(self, UntrustedAuthenticator):
             raise InvalidInvocation(
-                "Only UntrustedAuthentictor instances can "
+                "Only UntrustedAuthenticator instances can "
                 "use the implicit grant flow."
             )
         if implicit and duration != "temporary":
             raise InvalidInvocation(
-                "The implicit grant flow only supports " "temporary access tokens."
+                "The implicit grant flow only supports temporary access tokens."
             )
 
         params = {

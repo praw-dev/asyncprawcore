@@ -110,7 +110,14 @@ class Redirect(ResponseException):
         path = urlparse(response.headers.get("location")).path
         self.path = path[:-5] if path.endswith(".json") else path
         self.response = response
-        AsyncPrawcoreException.__init__(self, f"Redirect to {self.path}")
+        msg = f"Redirect to {self.path}"
+        msg += (
+            " (You may be trying to perform a non-read-only action via a "
+            "read-only instance.)"
+            if "/login/" in self.path
+            else ""
+        )
+        AsyncPrawcoreException.__init__(self, msg)
 
 
 class ServerError(ResponseException):
@@ -139,4 +146,4 @@ class TooLarge(ResponseException):
 
 
 class UnavailableForLegalReasons(ResponseException):
-    """Indicate that the requested URL is unavilable due to legal reasons."""
+    """Indicate that the requested URL is unavailable due to legal reasons."""
