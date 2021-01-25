@@ -4,6 +4,13 @@ Change Log
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
 that deprecations will not be announced by a minor release.
 
+Unreleased
+----------
+
+**Changed**
+
+* Improved preprocessing for ``data`` and ``params`` in ``Session.request()``.
+
 1.5.0 (2020-09-28)
 ------------------
 
