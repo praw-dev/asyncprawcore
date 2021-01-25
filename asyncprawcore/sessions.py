@@ -3,7 +3,6 @@ import asyncio
 import logging
 import random
 from copy import deepcopy
-from json.decoder import JSONDecodeError
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
@@ -26,7 +25,6 @@ from .exceptions import (
 )
 from .rate_limit import RateLimiter
 from .util import authorization_error_class
-
 
 log = logging.getLogger(__package__)
 
@@ -100,9 +98,7 @@ class Session(object):
         codes["request_entity_too_large"]: TooLarge,
         codes["service_unavailable"]: ServerError,
         codes["unauthorized"]: authorization_error_class,
-        codes[
-            "unavailable_for_legal_reasons"
-        ]: UnavailableForLegalReasons,  # CloudFlare status (not named in requests)
+        codes["unavailable_for_legal_reasons"]: UnavailableForLegalReasons,
         520: ServerError,
         522: ServerError,
     }
@@ -115,7 +111,7 @@ class Session(object):
         log.debug(f"Params: {params}")
 
     def __init__(self, authorizer):
-        """Preprare the connection to reddit's API.
+        """Prepare the connection to reddit's API.
 
         :param authorizer: An instance of :class:`Authorizer`.
 
@@ -130,7 +126,7 @@ class Session(object):
         """Allow this object to be used as a context manager."""
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, *_args):
         """Allow this object to be used as a context manager."""
         await self.close()
 
@@ -243,9 +239,8 @@ class Session(object):
                 url,
             )
         elif response.status in self.STATUS_EXCEPTIONS:
-            if (
-                response.status == codes["media_type"]
-            ):  # since exception class needs response.json
+            if response.status == codes["media_type"]:
+                # since exception class needs response.json
                 raise self.STATUS_EXCEPTIONS[response.status](
                     response, await response.json()
                 )
@@ -260,7 +255,7 @@ class Session(object):
             return ""
         try:
             return await response.json()
-        except (JSONDecodeError, ValueError):
+        except ValueError:
             raise BadJSON(response)
 
     async def _set_header_callback(self):
@@ -296,6 +291,7 @@ class Session(object):
         :param files: Dictionary, mapping ``filename`` to file-like object.
         :param json: Object to be serialized to JSON in the body of the request.
         :param params: The query parameters to send with the request.
+        :param timeout: Specifies a particular timeout, in seconds.
 
         Automatically refreshes the access token if it becomes invalid and a refresh
         token is available. Raises InvalidInvocation in such a case if a refresh token

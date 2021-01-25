@@ -73,6 +73,7 @@ class RateLimiter(object):
         if self.remaining <= 0:
             self.next_request_timestamp = self.reset_timestamp
             return
+
         self.next_request_timestamp = min(
             self.reset_timestamp,
             now + max(min((seconds_to_reset - self.remaining) / 2, 10), 0),

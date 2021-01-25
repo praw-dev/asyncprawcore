@@ -192,7 +192,7 @@ class SessionTest(asynctest.TestCase):
             self.session = asyncprawcore.Session(await readonly_authorizer())
             response = await self.session.request(
                 "GET",
-                ("/r/reddit_api_test/comments/" "45xjdr/want_raw_json_test/"),
+                "/r/reddit_api_test/comments/45xjdr/want_raw_json_test/",
             )
         self.assertEqual(
             "WANT_RAW_JSON test: < > &",
@@ -366,7 +366,6 @@ class SessionTest(asynctest.TestCase):
             match_requests_on=["uri", "method"],  # , serializer="yaml",
         ):
             session = asyncprawcore.Session(await script_authorizer())
-            # with open("./tests/files/too_large.jpg", "rb") as fp:
             with self.assertRaises(asyncprawcore.TooLarge) as context_manager:
                 await session.request(
                     "POST",
