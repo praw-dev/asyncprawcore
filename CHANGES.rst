@@ -4,8 +4,8 @@ Change Log
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
 that deprecations will not be announced by a minor release.
 
-Unreleased
-----------
+1.5.1 (2021-01-25)
+------------------
 
 **Changed**
 
