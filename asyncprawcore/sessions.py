@@ -114,6 +114,58 @@ class Session(object):
         log.debug(f"Data: {data}")
         log.debug(f"Params: {params}")
 
+    @staticmethod
+    def _preprocess_data(data, files):
+        """Preprocess data and files before request.
+
+        This is to convert requests that are formatted for the ``requests`` package to
+        be compatible with the ``aiohttp`` package. The motivation for this is so that
+        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
+        contributions to ``asyncpraw`` simpler.
+
+        This method does the following:
+
+        - Removes keys that have a value of ``None`` from ``data``.
+        - Moves ``files`` into ``data``.
+
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request.
+        :param files: Dictionary, mapping ``filename`` to file-like object to add to
+            ``data``.
+
+        """
+        if isinstance(data, dict):
+            data = {key: value for key, value in data.items() if value is not None}
+            if files is not None:
+                data.update(files)
+        return data
+
+    @staticmethod
+    def _preprocess_params(params):
+        """Preprocess params before request.
+
+        This is to convert requests that are formatted for the ``requests`` package to
+        be compatible with ``aiohttp`` package. The motivation for this is so that
+        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
+        contributions to ``asyncpraw`` simpler.
+
+        This method does the following:
+
+        - Removes keys that have a value of ``None`` from ``params``.
+        - Casts bool values in ``params`` to str.
+
+        :param params: The query parameters to send with the request.
+
+        """
+        new_params = {}
+        for key, value in params.items():
+            if isinstance(value, bool):
+                new_params[key] = str(value).lower()
+            elif value is not None:
+                new_params[key] = value
+        params = new_params
+        return params
+
     def __init__(self, authorizer):
         """Preprare the connection to reddit's API.
 
@@ -302,19 +354,12 @@ class Session(object):
         is not available.
 
         """
-        params = deepcopy(params) or {}
-        if params:
-            # this is to ensure consistency with prawcore as requests accepts bool
-            # params while aiohttp does not
-            new_params = {}
-            for k, v in params.items():
-                if isinstance(v, bool):
-                    new_params[k] = str(v).lower()
-                elif v is not None:
-                    new_params[k] = v
-            params = new_params
+        params = self._preprocess_params(deepcopy(params) or {})
         params["raw_json"] = 1
-        data = self.validate_data_files(data, files)
+        if isinstance(data, dict):
+            data = self._preprocess_data(deepcopy(data), files)
+            data["api_type"] = "json"
+            data = sorted(data.items())
         if isinstance(json, dict):
             json = deepcopy(json)
             json["api_type"] = "json"
@@ -327,30 +372,6 @@ class Session(object):
             timeout=timeout,
             url=url,
         )
-
-    @staticmethod
-    def validate_data_files(data, files):
-        """Transfers the files and data from the arguments into the data.
-
-        This is done to maintain consistency with prawcore
-
-        :param data dictionary of data
-        :param files dictionary of "file" mapped to file-stream
-
-        """
-        if isinstance(data, dict):
-            data = deepcopy(data)
-            # this is to ensure consistency with prawcore as requests drop keys who's
-            # values are None
-            new_data = {}
-            for k, v in data.items():
-                if v is not None:
-                    new_data[k] = v
-            new_data["api_type"] = "json"
-            if files is not None:
-                data.update(files)
-            data = sorted(new_data.items())
-        return data
 
 
 def session(authorizer=None):
