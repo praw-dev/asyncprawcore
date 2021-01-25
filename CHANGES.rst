@@ -7,12 +7,20 @@ that deprecations will not be announced by a minor release.
 1.5.0 (2020-09-28)
 ------------------
 
+**Changed**
+
+* Added preprocessing for ``data`` and ``params`` in ``asyncprawcore.Session.request()``
+  for compatibility with ``aiohttp``.
+
 **Fixed**
 
-* When passing a ``None`` value for a key in ``data`` it is not dropped like it is in
-  ``prawcore`` with ``requests`` package.
-* When passing a bool or ``None`` value for a key in ``params`` it is not dropped like
-  it is in ``prawcore`` with ``requests`` package.
+* Keys with a ``None`` value in the ``data`` or ``params`` parameters for
+  ``asyncprawcore.Session.request()`` are now dropped as
+  ``aiohttp.ClientSession.request()`` does not accept ``None`` values in ``data`` and
+  ``params``.
+* Keys with a boolean value in the ``params`` parameter for
+  ``asyncprawcore.Session.request()`` are now casted to a string as
+  ``aiohttp.ClientSession.request()`` does not accept boolean values in ``params``.
 
 1.4.0.post2 (2020-07-12)
 ------------------------
