@@ -26,8 +26,8 @@ class RateLimiter(object):
         :param request_function: A function call that returns an HTTP response object.
         :param set_header_callback: A callback function used to set the request headers.
             This callback is called after any necessary sleep time occurs.
-        :param *args: The positional arguments to ``request_function``.
-        :param **kwargs: The keyword arguments to ``request_function``.
+        :param args: The positional arguments to ``request_function``.
+        :param kwargs: The keyword arguments to ``request_function``.
 
         """
         await self.delay()
