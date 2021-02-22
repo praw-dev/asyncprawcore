@@ -1,5 +1,6 @@
 """Provides Authentication and Authorization classes."""
 import aiohttp
+import inspect
 import time
 
 from aiohttp import ClientRequest
@@ -194,16 +195,35 @@ class Authorizer(BaseAuthorizer):
 
     AUTHENTICATOR_CLASS = BaseAuthenticator
 
-    def __init__(self, authenticator, refresh_token=None):
+    def __init__(
+        self,
+        authenticator,
+        *,
+        post_refresh_callback=None,
+        pre_refresh_callback=None,
+        refresh_token=None,
+    ):
         """Represent a single authorization to Reddit's API.
 
         :param authenticator: An instance of a subclass of
             :class:`BaseAuthenticator`.
+        :param post_refresh_callback: (Optional) When a single-argument synchronous or
+            asynchronous function is passed, the function will be called prior to
+            refreshing the access and refresh tokens. The argument to the callback is
+            the :class:`Authorizer` instance. This callback can be used to inspect and
+            modify the attributes of the :class:`Authorizer`.
+        :param pre_refresh_callback: (Optional) When a single-argument function
+            synchronous or asynchronous is passed, the function will be called after
+            refreshing the access and refresh tokens. The argument to the callback is
+            the :class:`Authorizer` instance. This callback can be used to inspect and
+            modify the attributes of the :class:`Authorizer`.
         :param refresh_token: (Optional) Enables the ability to refresh the
             authorization.
 
         """
         super(Authorizer, self).__init__(authenticator)
+        self._post_refresh_callback = post_refresh_callback
+        self._pre_refresh_callback = pre_refresh_callback
         self.refresh_token = refresh_token
 
     async def authorize(self, code):
@@ -223,11 +243,19 @@ class Authorizer(BaseAuthorizer):
 
     async def refresh(self):
         """Obtain a new access token from the refresh_token."""
+        if self._pre_refresh_callback:
+            result = self._pre_refresh_callback(self)
+            if inspect.isawaitable(result):
+                await self._pre_refresh_callback(self)
         if self.refresh_token is None:
             raise InvalidInvocation("refresh token not provided")
         await self._request_token(
             grant_type="refresh_token", refresh_token=self.refresh_token
         )
+        if self._post_refresh_callback:
+            result = self._post_refresh_callback(self)
+            if inspect.isawaitable(result):
+                await self._post_refresh_callback(self)
 
     async def revoke(self, only_access=False):
         """Revoke the current Authorization.

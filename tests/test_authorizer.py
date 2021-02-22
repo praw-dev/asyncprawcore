@@ -73,7 +73,9 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     def test_initialize__with_refresh_token(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token=REFRESH_TOKEN
+        )
         self.assertIsNone(authorizer.access_token)
         self.assertIsNone(authorizer.scopes)
         self.assertEqual(REFRESH_TOKEN, authorizer.refresh_token)
@@ -88,7 +90,79 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_refresh(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token=REFRESH_TOKEN
+        )
+        with VCR.use_cassette("Authorizer_refresh"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertIsInstance(authorizer.scopes, set)
+        self.assertTrue(len(authorizer.scopes) > 0)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh__post_refresh_callback(self):
+        def callback(authorizer):
+            self.assertNotEqual(REFRESH_TOKEN, authorizer.refresh_token)
+            authorizer.refresh_token = "manually_updated"
+
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication,
+            post_refresh_callback=callback,
+            refresh_token=REFRESH_TOKEN,
+        )
+        with VCR.use_cassette("Authorizer_refresh"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual("manually_updated", authorizer.refresh_token)
+        self.assertIsInstance(authorizer.scopes, set)
+        self.assertTrue(len(authorizer.scopes) > 0)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh__post_refresh_callback__async(self):
+        async def callback(authorizer):
+            self.assertNotEqual(REFRESH_TOKEN, authorizer.refresh_token)
+            authorizer.refresh_token = "manually_updated"
+
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication,
+            post_refresh_callback=callback,
+            refresh_token=REFRESH_TOKEN,
+        )
+        with VCR.use_cassette("Authorizer_refresh"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual("manually_updated", authorizer.refresh_token)
+        self.assertIsInstance(authorizer.scopes, set)
+        self.assertTrue(len(authorizer.scopes) > 0)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh__pre_refresh_callback(self):
+        def callback(authorizer):
+            self.assertIsNone(authorizer.refresh_token)
+            authorizer.refresh_token = REFRESH_TOKEN
+
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, pre_refresh_callback=callback
+        )
+        with VCR.use_cassette("Authorizer_refresh"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertIsInstance(authorizer.scopes, set)
+        self.assertTrue(len(authorizer.scopes) > 0)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh__pre_refresh_callback__async(self):
+        async def callback(authorizer):
+            self.assertIsNone(authorizer.refresh_token)
+            authorizer.refresh_token = REFRESH_TOKEN
+
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, pre_refresh_callback=callback
+        )
         with VCR.use_cassette("Authorizer_refresh"):
             await authorizer.refresh()
 
@@ -98,7 +172,9 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertTrue(authorizer.is_valid())
 
     async def test_refresh__with_invalid_token(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, "INVALID_TOKEN")
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token="INVALID_TOKEN"
+        )
         with VCR.use_cassette("Authorizer_refresh__with_invalid_token"):
             with self.assertRaises(asyncprawcore.ResponseException):
                 await authorizer.refresh()
@@ -111,7 +187,9 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__access_token_with_refresh_set(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token=REFRESH_TOKEN
+        )
         with VCR.use_cassette("Authorizer_revoke__access_token_with_refresh_set"):
             await authorizer.refresh()
             await authorizer.revoke(only_access=True)
@@ -138,7 +216,9 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__refresh_token_with_access_set(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token=REFRESH_TOKEN
+        )
         with VCR.use_cassette("Authorizer_revoke__refresh_token_with_access_set"):
             await authorizer.refresh()
             await authorizer.revoke()
@@ -149,7 +229,9 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__refresh_token_without_access_set(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token=REFRESH_TOKEN
+        )
         with VCR.use_cassette("Authorizer_revoke__refresh_token_without_access_set"):
             await authorizer.revoke()
 
@@ -159,7 +241,9 @@ class AuthorizerTest(AuthorizerTestBase):
         self.assertFalse(authorizer.is_valid())
 
     async def test_revoke__without_access_token(self):
-        authorizer = asyncprawcore.Authorizer(self.authentication, REFRESH_TOKEN)
+        authorizer = asyncprawcore.Authorizer(
+            self.authentication, refresh_token=REFRESH_TOKEN
+        )
         with self.assertRaises(asyncprawcore.InvalidInvocation):
             await authorizer.revoke(only_access=True)
 
