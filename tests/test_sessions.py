@@ -39,7 +39,7 @@ async def client_authorizer():
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
     )
-    authorizer = asyncprawcore.Authorizer(authenticator, REFRESH_TOKEN)
+    authorizer = asyncprawcore.Authorizer(authenticator, refresh_token=REFRESH_TOKEN)
     await authorizer.refresh()
     return authorizer
 
@@ -401,7 +401,7 @@ class SessionTest(asynctest.TestCase):
                 await session.request("POST", "r/asyncpraw/api/wiki/edit/", data=data)
             self.assertEqual(415, context_manager.exception.response.status)
 
-    async def test_request__with_insufficent_scope(self):
+    async def test_request__with_insufficient_scope(self):
         with VCR.use_cassette("Session_request__with_insufficient_scope"):
             self.session = asyncprawcore.Session(await client_authorizer())
             with self.assertRaises(asyncprawcore.InsufficientScope):

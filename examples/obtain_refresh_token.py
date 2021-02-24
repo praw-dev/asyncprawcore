@@ -49,9 +49,9 @@ async def main():
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
             requestor,
-            os.environ["asyncprawcore_CLIENT_ID"],
-            os.environ["asyncprawcore_CLIENT_SECRET"],
-            os.environ["asyncprawcore_REDIRECT_URI"],
+            os.environ["ASYNCPRAWCORE_CLIENT_ID"],
+            os.environ["ASYNCPRAWCORE_CLIENT_SECRET"],
+            os.environ["ASYNCPRAWCORE_REDIRECT_URI"],
         )
 
         state = str(random.randint(0, 65000))
