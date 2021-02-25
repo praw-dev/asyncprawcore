@@ -4,6 +4,13 @@ Change Log
 asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
 that deprecations will not be announced by a minor release.
 
+Unreleased
+----------
+
+**Fixed**
+
+* Fix ``RuntimeWarning`` when executing pre/post refresh token callbacks.
+
 2.0.0 (2021-02-23)
 ------------------
 

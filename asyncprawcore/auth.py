@@ -244,18 +244,20 @@ class Authorizer(BaseAuthorizer):
     async def refresh(self):
         """Obtain a new access token from the refresh_token."""
         if self._pre_refresh_callback:
-            result = self._pre_refresh_callback(self)
-            if inspect.isawaitable(result):
+            if inspect.iscoroutinefunction(self._pre_refresh_callback):
                 await self._pre_refresh_callback(self)
+            else:
+                self._pre_refresh_callback(self)
         if self.refresh_token is None:
             raise InvalidInvocation("refresh token not provided")
         await self._request_token(
             grant_type="refresh_token", refresh_token=self.refresh_token
         )
         if self._post_refresh_callback:
-            result = self._post_refresh_callback(self)
-            if inspect.isawaitable(result):
+            if inspect.iscoroutinefunction(self._post_refresh_callback):
                 await self._post_refresh_callback(self)
+            else:
+                self._post_refresh_callback(self)
 
     async def revoke(self, only_access=False):
         """Revoke the current Authorization.
