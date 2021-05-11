@@ -7,6 +7,10 @@ that deprecations will not be announced by a minor release.
 Unreleased
 ----------
 
+**Added**
+
+- Add a ``URITooLarge`` exception.
+
 **Fixed**
 
 - Fix ``RuntimeWarning`` when executing pre/post refresh token callbacks.
