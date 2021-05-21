@@ -19,6 +19,7 @@ from .conftest import (
     USERNAME,
     VCR,
     AsyncMock,
+    two_factor_callback,
 )
 
 
@@ -69,7 +70,9 @@ async def script_authorizer():
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
     )
-    authorizer = asyncprawcore.ScriptAuthorizer(authenticator, USERNAME, PASSWORD)
+    authorizer = asyncprawcore.ScriptAuthorizer(
+        authenticator, USERNAME, PASSWORD, two_factor_callback
+    )
     await authorizer.refresh()
     return authorizer
 
