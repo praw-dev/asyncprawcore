@@ -50,8 +50,8 @@ async def client_authorizer():
     return authorizer
 
 
-async def readonly_authorizer(refresh=True):
-    requestor = asyncprawcore.requestor.Requestor(
+async def readonly_authorizer(refresh=True, requestor=None):
+    requestor = requestor or asyncprawcore.requestor.Requestor(
         "asyncprawcore:test (by /u/Lil_SpazJoekp)"
     )
     authenticator = asyncprawcore.TrustedAuthenticator(
@@ -385,6 +385,55 @@ class SessionTest(asynctest.TestCase):
                     files={"file": open("./tests/files/too_large.jpg", "rb")},
                 )
             self.assertEqual(413, context_manager.exception.response.status)
+
+    async def test_request__too__many_requests__with_retry_headers(self):
+        with VCR.use_cassette(
+            "Session_request__too__many_requests__with_retry_headers"
+        ):
+            session = asyncprawcore.Session(await readonly_authorizer())
+            session._requestor._http.headers.update(
+                {"User-Agent": "python-requests/2.25.1"}
+            )
+            with self.assertRaises(asyncprawcore.TooManyRequests) as context_manager:
+                await session.request("GET", "/api/v1/me")
+            self.assertEqual(429, context_manager.exception.response.status)
+            self.assertTrue(
+                context_manager.exception.response.headers.get("retry-after")
+            )
+            self.assertEqual(
+                "Too Many Requests", context_manager.exception.response.reason
+            )
+            self.assertTrue(
+                str(context_manager.exception).startswith(
+                    "received 429 HTTP response. Please wait at least"
+                )
+            )
+            self.assertTrue(
+                (await context_manager.exception.message()).startswith(
+                    "\n<!doctype html>"
+                )
+            )
+
+    async def test_request__too__many_requests__without_retry_headers(self):
+        with VCR.use_cassette(
+            "Session_request__too__many_requests__without_retry_headers"
+        ):
+            requestor = asyncprawcore.Requestor("python-requests/2.25.1")
+            with self.assertRaises(
+                asyncprawcore.exceptions.ResponseException
+            ) as context_manager:
+                asyncprawcore.Session(await readonly_authorizer(requestor=requestor))
+            self.assertEqual(429, context_manager.exception.response.status)
+            self.assertFalse(
+                context_manager.exception.response.headers.get("retry-after")
+            )
+            self.assertEqual(
+                "Too Many Requests", context_manager.exception.response.reason
+            )
+            self.assertEqual(
+                await context_manager.exception.response.json(),
+                {"message": "Too Many Requests", "error": 429},
+            )
 
     async def test_request__unavailable_for_legal_reasons(self):
         with VCR.use_cassette("Session_request__unavailable_for_legal_reasons"):
