@@ -95,7 +95,7 @@ class BaseAuthenticator(object):
         if token_type is not None:
             data["token_type_hint"] = token_type
         url = self._requestor.reddit_url + const.REVOKE_TOKEN_PATH
-        await self._post(url, success_status=codes["no_content"], **data)
+        await self._post(url, **data)
 
 
 class TrustedAuthenticator(BaseAuthenticator):
