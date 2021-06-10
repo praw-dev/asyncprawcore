@@ -111,6 +111,15 @@ class SessionTest(asynctest.TestCase):
         authorizer = asyncprawcore.ImplicitAuthorizer(authenticator, None, 0, "")
         asyncprawcore.Session(authorizer)
 
+    async def test_request__accepted(self):
+        with VCR.use_cassette("Session_request__accepted"):
+            session = asyncprawcore.Session(await script_authorizer())
+            with LogCapture(level=logging.DEBUG) as log_capture:
+                await session.request("POST", "api/read_all_messages")
+            log_capture.check_present(
+                ("asyncprawcore", "DEBUG", "Response: 202 (2 bytes)")
+            )
+
     @patch("aiohttp.ClientSession")
     async def test_request__connection_error_retry(self, mock_session):
         session_instance = mock_session.return_value
