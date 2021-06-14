@@ -15,14 +15,14 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 
 extras = {
     "ci": ["coveralls"],
-    "lint": ["black", "flake8", "pre-commit", "pydocstyle", "flynt"],
+    "lint": ["black", "flake8", "flynt", "pre-commit", "pydocstyle"],
     "test": [
-        "pytest-vcr",
-        "vcrpy==4.0.2",
+        "asynctest >=0.13.0",
         "mock >=0.8",
         "pytest",
+        "pytest-vcr",
         "testfixtures >4.13.2, <7",
-        "asynctest >=0.13.0",
+        "vcrpy==4.0.2",
     ],
 }
 extras["dev"] = extras["lint"] + extras["test"]
