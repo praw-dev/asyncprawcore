@@ -7,11 +7,13 @@ Demonstrates the use of custom sessions with ``Requestor``. It's an adaptation o
 
 """
 
-import aiohttp
-import asyncprawcore
+import asyncio
 import os
 import sys
-import asyncio
+
+import aiohttp
+
+import asyncprawcore
 
 
 class CachingSession(aiohttp.ClientSession):

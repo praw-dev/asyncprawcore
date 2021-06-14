@@ -9,12 +9,13 @@ This tool can be used to conveniently create refresh tokens for later use with y
 application OAuth2 credentials.
 
 """
+import asyncio
 import os
-import asyncprawcore
 import random
 import socket
 import sys
-import asyncio
+
+import asyncprawcore
 
 
 def receive_connection():

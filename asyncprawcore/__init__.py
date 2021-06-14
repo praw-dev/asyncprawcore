@@ -4,8 +4,8 @@ import logging
 from .auth import (  # noqa
     Authorizer,
     DeviceIDAuthorizer,
-    ReadOnlyAuthorizer,
     ImplicitAuthorizer,
+    ReadOnlyAuthorizer,
     ScriptAuthorizer,
     TrustedAuthenticator,
     UntrustedAuthenticator,

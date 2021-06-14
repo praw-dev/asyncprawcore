@@ -1,7 +1,7 @@
 """Provide the RateLimiter class."""
+import asyncio
 import logging
 import time
-import asyncio
 
 log = logging.getLogger(__package__)
 

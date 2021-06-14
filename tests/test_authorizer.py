@@ -1,7 +1,9 @@
 """Test for asyncprawcore.auth.Authorizer classes."""
-import asyncprawcore
 import asynctest
+
+import asyncprawcore
 from asyncprawcore.requestor import Requestor
+
 from .conftest import (
     CLIENT_ID,
     CLIENT_SECRET,

@@ -1,7 +1,9 @@
 """Provides the HTTP request handling interface."""
-import aiohttp
 import asyncio
-from .const import __version__, TIMEOUT
+
+import aiohttp
+
+from .const import TIMEOUT, __version__
 from .exceptions import InvalidInvocation, RequestException
 
 

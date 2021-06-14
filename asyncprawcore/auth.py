@@ -1,8 +1,8 @@
 """Provides Authentication and Authorization classes."""
-import aiohttp
 import inspect
 import time
 
+import aiohttp
 from aiohttp import ClientRequest
 from yarl import URL
 
