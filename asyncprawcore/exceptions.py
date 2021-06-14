@@ -96,8 +96,8 @@ class NotFound(ResponseException):
 class Redirect(ResponseException):
     """Indicate the request resulted in a redirect.
 
-    This class adds the attribute ``path``, which is the path to which the
-    response redirects.
+    This class adds the attribute ``path``, which is the path to which the response
+    redirects.
 
     """
 
