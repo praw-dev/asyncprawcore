@@ -24,7 +24,9 @@ from .conftest import (
 
 class InvalidAuthorizer(asyncprawcore.Authorizer):
     def __init__(self):
-        requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+        requestor = asyncprawcore.requestor.Requestor(
+            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+        )
 
         super(InvalidAuthorizer, self).__init__(
             asyncprawcore.TrustedAuthenticator(requestor, CLIENT_ID, CLIENT_SECRET)
@@ -35,7 +37,9 @@ class InvalidAuthorizer(asyncprawcore.Authorizer):
 
 
 async def client_authorizer():
-    requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+    requestor = asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+    )
 
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
@@ -46,7 +50,9 @@ async def client_authorizer():
 
 
 async def readonly_authorizer(refresh=True):
-    requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+    requestor = asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+    )
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
     )
@@ -57,7 +63,9 @@ async def readonly_authorizer(refresh=True):
 
 
 async def script_authorizer():
-    requestor = asyncprawcore.requestor.Requestor("asyncprawcore:test (by /u/bboe)")
+    requestor = asyncprawcore.requestor.Requestor(
+        "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+    )
     authenticator = asyncprawcore.TrustedAuthenticator(
         requestor, CLIENT_ID, CLIENT_SECRET
     )
@@ -69,7 +77,7 @@ async def script_authorizer():
 class SessionTest(asynctest.TestCase):
     async def setUp(self) -> None:
         self.requestor = asyncprawcore.requestor.Requestor(
-            "asyncprawcore:test (by /u/bboe)"
+            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
         )
 
     async def tearDown(self) -> None:
