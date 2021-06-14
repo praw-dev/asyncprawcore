@@ -410,6 +410,16 @@ class SessionTest(asynctest.TestCase):
                 await session.request("POST", "r/asyncpraw/api/wiki/edit/", data=data)
             self.assertEqual(415, context_manager.exception.response.status)
 
+    async def test_request__uri_too_long(self):
+        with VCR.use_cassette("Session_request__uri_too_long"):
+            self.session = asyncprawcore.Session(await readonly_authorizer())
+            path_start = "/api/morechildren?link_id=t3_n7r3uz&children="
+            with open("tests/files/comment_ids.txt") as fp:
+                ids = fp.read()
+            with self.assertRaises(asyncprawcore.URITooLong) as context_manager:
+                await self.session.request("GET", (path_start + ids)[:9996])
+            self.assertEqual(414, context_manager.exception.response.status)
+
     async def test_request__with_insufficient_scope(self):
         with VCR.use_cassette("Session_request__with_insufficient_scope"):
             self.session = asyncprawcore.Session(await client_authorizer())
