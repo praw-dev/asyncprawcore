@@ -9,7 +9,7 @@ from .conftest import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, VCR
 
 class TrustedAuthenticatorTest(asynctest.TestCase):
     async def setUp(self) -> None:
-        self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = Requestor("asyncprawcore:test (by /u/Lil_SpazJoekp)")
 
     async def tearDown(self) -> None:
         await self.requestor.close()
@@ -78,7 +78,7 @@ class TrustedAuthenticatorTest(asynctest.TestCase):
 
 class UntrustedAuthenticatorTest(asynctest.TestCase):
     async def setUp(self) -> None:
-        self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = Requestor("asyncprawcore:test (by /u/Lil_SpazJoekp)")
 
     async def tearDown(self) -> None:
         await self.requestor.close()

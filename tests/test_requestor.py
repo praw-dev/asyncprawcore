@@ -16,9 +16,11 @@ class RequestorTest(asynctest.TestCase):
                     await self.requestor.close()
 
     async def test_initialize(self):
-        self.requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+        )
         self.assertEqual(
-            f"asyncprawcore:test (by /u/bboe) asyncprawcore/{asyncprawcore.__version__}",
+            f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}",
             self.requestor._http._default_headers["User-Agent"],
         )
 
@@ -32,7 +34,9 @@ class RequestorTest(asynctest.TestCase):
         exception = Exception("asyncprawcore wrap_request_exceptions")
         session_instance = mock_session.return_value
         session_instance.request.side_effect = exception
-        self.requestor = asyncprawcore.Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+        )
         with self.assertRaises(asyncprawcore.RequestException) as context_manager:
             await self.requestor.request("get", "http://a.b", data="bar")
         self.assertIsInstance(context_manager.exception, RequestException)
@@ -53,11 +57,11 @@ class RequestorTest(asynctest.TestCase):
         session = Mock(**attrs)
 
         self.requestor = asyncprawcore.Requestor(
-            "asyncprawcore:test (by /u/bboe)", session=session
+            "asyncprawcore:test (by /u/Lil_SpazJoekp)", session=session
         )
 
         self.assertEqual(
-            f"asyncprawcore:test (by /u/bboe) asyncprawcore/{asyncprawcore.__version__}",
+            f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}",
             self.requestor._http._default_headers["User-Agent"],
         )
         self.assertEqual(

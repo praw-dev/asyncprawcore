@@ -19,7 +19,7 @@ from .conftest import (
 
 class AuthorizerTestBase(asynctest.TestCase):
     async def setUp(self):
-        self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = Requestor("asyncprawcore:test (by /u/Lil_SpazJoekp)")
         self.authentication = asyncprawcore.TrustedAuthenticator(
             self.requestor, CLIENT_ID, CLIENT_SECRET
         )
@@ -257,7 +257,7 @@ class AuthorizerTest(AuthorizerTestBase):
 
 class DeviceIDAuthorizerTest(AuthorizerTestBase):
     async def setUp(self):
-        self.requestor = Requestor("asyncprawcore:test (by /u/bboe)")
+        self.requestor = Requestor("asyncprawcore:test (by /u/Lil_SpazJoekp)")
 
         self.authentication = asyncprawcore.UntrustedAuthenticator(
             self.requestor, CLIENT_ID
