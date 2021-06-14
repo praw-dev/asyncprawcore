@@ -6,10 +6,11 @@ This program demonstrates the use of ``asyncprawcore.DeviceIDAuthorizer``.
 
 """
 
-import os
-import asyncprawcore
-import sys
 import asyncio
+import os
+import sys
+
+import asyncprawcore
 
 
 async def main():

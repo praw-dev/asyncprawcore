@@ -6,10 +6,11 @@ This program demonstrates the use of ``asyncprawcore.ReadOnlyAuthorizer`` that d
 require an access token to make authenticated requests to reddit.
 
 """
-import os
-import asyncprawcore
-import sys
 import asyncio
+import os
+import sys
+
+import asyncprawcore
 
 
 async def main():

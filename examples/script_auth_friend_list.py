@@ -7,10 +7,11 @@ those listed as a developer of the application to authenticate using their usern
 password.
 
 """
-import os
-import asyncprawcore
-import sys
 import asyncio
+import os
+import sys
+
+import asyncprawcore
 
 
 async def main():

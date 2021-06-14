@@ -10,14 +10,15 @@ from testfixtures import LogCapture
 
 import asyncprawcore
 from asyncprawcore.exceptions import RequestException
+
 from .conftest import (
-    AsyncMock,
     CLIENT_ID,
     CLIENT_SECRET,
     PASSWORD,
     REFRESH_TOKEN,
     USERNAME,
     VCR,
+    AsyncMock,
 )
 
 

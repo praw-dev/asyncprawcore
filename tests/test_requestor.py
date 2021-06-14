@@ -1,8 +1,10 @@
 """Test for asyncprawcore.requestor.Requestor class."""
-import asyncprawcore
-import asynctest
 import asyncio
-from mock import patch, Mock
+
+import asynctest
+from mock import Mock, patch
+
+import asyncprawcore
 from asyncprawcore import RequestException
 
 

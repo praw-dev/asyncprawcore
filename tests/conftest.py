@@ -4,10 +4,10 @@ import json
 import os
 from base64 import b64encode
 from datetime import datetime
+
 from vcr import VCR
 from vcr.persisters.filesystem import FilesystemPersister
 from vcr.serialize import deserialize, serialize
-
 
 CLIENT_ID = os.environ.get("PRAWCORE_CLIENT_ID", "fake_client_id")
 CLIENT_SECRET = os.environ.get("PRAWCORE_CLIENT_SECRET", "fake_client_secret")
