@@ -87,7 +87,7 @@ def update_changelog(version):
 
 
 def update_package(version):
-    with open("praw/const.py") as fp:
+    with open("asyncprawcore/const.py") as fp:
         content = fp.read()
 
     updated = re.sub('__version__ = "([^"]+)"', f'__version__ = "{version}"', content)
@@ -95,7 +95,7 @@ def update_package(version):
         sys.stderr.write("Package version string not changed\n")
         return False
 
-    with open("praw/const.py", "w") as fp:
+    with open("asyncprawcore/const.py", "w") as fp:
         fp.write(updated)
 
     print(version)
