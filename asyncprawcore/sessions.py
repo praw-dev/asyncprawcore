@@ -21,6 +21,7 @@ from .exceptions import (
     ServerError,
     SpecialError,
     TooLarge,
+    TooManyRequests,
     UnavailableForLegalReasons,
     URITooLong,
 )
@@ -99,6 +100,7 @@ class Session(object):
         codes["request_entity_too_large"]: TooLarge,
         codes["request_uri_too_large"]: URITooLong,
         codes["service_unavailable"]: ServerError,
+        codes["too_many_requests"]: TooManyRequests,
         codes["unauthorized"]: authorization_error_class,
         codes["unavailable_for_legal_reasons"]: UnavailableForLegalReasons,
         520: ServerError,

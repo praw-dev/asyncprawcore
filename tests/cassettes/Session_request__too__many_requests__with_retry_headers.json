@@ -1,0 +1,106 @@
+{
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "grant_type",
+            "client_credentials"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.0.1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "close",
+          "Content-Length": "109",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 15 Jun 2021 00:48:42 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=kiMKruOkZBeGicnfWl; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Clacks-Overhead": "GNU Terry Pratchett",
+          "X-Moose": "majestic",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "134",
+          "x-ratelimit-reset": "78",
+          "x-ratelimit-used": "166",
+          "x-reddit-loid": "0000000000cqa45jhg.2.1623718122053.Z0FBQUFBQmd4X2pxNkVKV1gxSHVfRkt3VFU5S3EtY05zZGNreDFtTmFId21GOURZZVlYYUpsNEgxbXJjdVFFWXg1dEQ4WklpRHYxZ3JqMGhSUmJZWnZMMlVWVGxTSFFBY2tFaXFEbVM2a01ubzY4LXVRSFNkWG9ka2NBRlNzeER2cHo5bkpaUE1HVjg",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "request": {
+        "body": null,
+        "headers": {
+          "Authorization": [
+            "bearer -wbJvJBJSt3EeMmXBj3qPh4Lj6fJnzQ"
+          ],
+          "User-Agent": [
+            "python-requests/2.25.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/v1/me?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "string": "\n<!doctype html>\n<html>\n  <head>\n    <title>Too Many Requests</title>\n    <style>\n      body {\n          font: small verdana, arial, helvetica, sans-serif;\n          width: 600px;\n          margin: 0 auto;\n      }\n\n      h1 {\n          height: 40px;\n          background: transparent url(//www.redditstatic.com/reddit.com.header.png) no-repeat scroll top right;\n      }\n    </style>\n  </head>\n  <body>\n    <h1>whoa there, pardner!</h1>\n    \n\n\n<p>we're sorry, but you appear to be a bot and we've seen too many requests\nfrom you lately. we enforce a hard speed limit on requests that appear to come\nfrom bots to prevent abuse.</p>\n\n<p>if you are not a bot but are spoofing one via your browser's user agent\nstring: please change your user agent string to avoid seeing this message\nagain.</p>\n\n<p>please wait 4 second(s) and try again.</p>\n\n    <p>as a reminder to developers, we recommend that clients make no\n    more than <a href=\"http://github.com/reddit/reddit/wiki/API\">one\n    request every two seconds</a> to avoid seeing this message.</p>\n  </body>\n</html>\n"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "keep-alive",
+          "Content-Encoding": "gzip",
+          "Content-Length": "592",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Date": "Tue, 15 Jun 2021 00:48:56 GMT",
+          "Retry-After": "4",
+          "Server": "snooserv",
+          "Set-Cookie": "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Clacks-Overhead": "GNU Terry Pratchett",
+          "X-Moose": "majestic",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 429,
+          "message": "Too Many Requests"
+        },
+        "url": "https://oauth.reddit.com/api/v1/me?raw_json=1"
+      }
+    }
+  ],
+  "recorded_at": "2021-06-14T19:48:56",
+  "version": 1
+}
