@@ -18,7 +18,7 @@ pydocstyle --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     exit_error "Please install pydocstyle: pip install pydocstyle"
 fi
-pydocstyle || exit_error "Please correct pydocstyle issues."
+pydocstyle asyncprawcore || exit_error "Please correct pydocstyle issues."
 echo "doc style pass!"
 
 python3 setup.py test || exit_error "Please fix test issues."
