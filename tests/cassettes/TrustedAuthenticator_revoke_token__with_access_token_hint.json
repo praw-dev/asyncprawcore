@@ -1,61 +1,63 @@
 {
-    "version": 1,
-    "interactions": [
-        {
-            "request": {
-                "method": "POST",
-                "uri": "https://www.reddit.com/api/v1/revoke_token",
-                "body": [
-                    [
-                        "token",
-                        "dummy token"
-                    ],
-                    [
-                        "token_type_hint",
-                        "access_token"
-                    ]
-                ],
-                "headers": {
-                    "User-Agent": [
-                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
-                    ],
-                    "Connection": [
-                        "close"
-                    ],
-                    "AUTHORIZATION": [
-                        "Basic <placeholder_auth>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 204,
-                    "message": "No Content"
-                },
-                "headers": {
-                    "Connection": "close",
-                    "Content-Type": "application/json; charset=UTF-8",
-                    "x-frame-options": "SAMEORIGIN",
-                    "x-content-type-options": "nosniff",
-                    "x-xss-protection": "1; mode=block",
-                    "cache-control": "max-age=0, must-revalidate",
-                    "X-Moose": "majestic",
-                    "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 10:37:56 GMT",
-                    "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21057-AMS",
-                    "X-Cache": "MISS",
-                    "X-Cache-Hits": "0",
-                    "X-Timer": "S1592044676.342952,VS0,VE121",
-                    "Set-Cookie": "edgebucket=1zG6QDEfa2FZDwEQY7; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
-                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
-                    "Server": "snooserv"
-                },
-                "body": {
-                    "string": ""
-                },
-                "url": "https://www.reddit.com/api/v1/revoke_token"
-            }
-        }
-    ]
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "token",
+            "dummy token"
+          ],
+          [
+            "token_type_hint",
+            "access_token"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.1.1.dev0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/revoke_token"
+      },
+      "response": {
+        "body": {
+          "string": ""
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "close",
+          "Content-Length": "0",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 15 Jun 2021 17:15:24 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=zoTEOM4ZeVXCvg9txC; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Clacks-Overhead": "GNU Terry Pratchett",
+          "X-Moose": "majestic",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "197",
+          "x-ratelimit-reset": "276",
+          "x-ratelimit-used": "103",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/revoke_token"
+      }
+    }
+  ],
+  "recorded_at": "2021-06-15T12:15:24",
+  "version": 1
 }

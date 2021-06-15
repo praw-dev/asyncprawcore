@@ -55,6 +55,14 @@ def filter_access_token(response):
         placeholders["access_token"] = token
     except (KeyError, TypeError, ValueError):
         pass
+    try:
+        token = json.loads(body)["refresh_token"]
+        response["body"]["string"] = response["body"]["string"].replace(
+            token.encode("utf-8"), b"<REFRESH_TOKEN>"
+        )
+        placeholders["refresh_token"] = token
+    except (KeyError, TypeError, ValueError):
+        pass
     return response
 
 
