@@ -372,14 +372,17 @@ class ScriptAuthorizer(Authorizer):
 
     async def refresh(self):
         """Obtain a new personal-use script type access token."""
+        additional_kwargs = {}
         if self._two_factor_callback:
             if inspect.iscoroutinefunction(self._two_factor_callback):
                 otp = await self._two_factor_callback()
             else:
                 otp = self._two_factor_callback()
+            if otp:
+                additional_kwargs["otp"] = otp
         await self._request_token(
             grant_type="password",
             username=self._username,
             password=self._password,
-            otp=self._two_factor_callback and otp,
+            **additional_kwargs,
         )
