@@ -38,7 +38,7 @@ def handle_version(version):
 
 
 def increment_development_version():
-    with open("praw/const.py") as fp:
+    with open("asyncprawcore/const.py") as fp:
         version = re.search('__version__ = "([^"]+)"', fp.read()).group(1)
 
     parsed_version = valid_version(version)
