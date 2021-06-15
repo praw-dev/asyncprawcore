@@ -7,6 +7,7 @@ import packaging.version
 
 CHANGELOG_HEADER = "Change Log\n==========\n\n"
 UNRELEASED_HEADER = "Unreleased\n----------\n\n"
+MESSAGE = "asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception\nthat deprecations will not be announced by a minor release.\n\n"
 
 
 def add_unreleased_to_changelog():
@@ -71,7 +72,7 @@ def update_changelog(version):
     with open("CHANGES.rst") as fp:
         content = fp.read()
 
-    expected_header = f"{CHANGELOG_HEADER}{UNRELEASED_HEADER}"
+    expected_header = f"{CHANGELOG_HEADER}{MESSAGE}{UNRELEASED_HEADER}"
     if not content.startswith(expected_header):
         sys.stderr.write("CHANGES.rst does not contain Unreleased header.\n")
         return False
