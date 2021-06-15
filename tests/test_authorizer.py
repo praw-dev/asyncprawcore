@@ -4,7 +4,7 @@ import asynctest
 import asyncprawcore
 from asyncprawcore.requestor import Requestor
 
-from .conftest import (
+from .conftest import (  # noqa F401
     CLIENT_ID,
     CLIENT_SECRET,
     PASSWORD,
@@ -12,6 +12,7 @@ from .conftest import (
     REDIRECT_URI,
     REFRESH_TOKEN,
     TEMPORARY_GRANT_CODE,
+    two_factor_callback,
     USERNAME,
     VCR,
 )
@@ -359,6 +360,55 @@ class ScriptAuthorizerTest(AuthorizerTestBase):
         self.assertIsNotNone(authorizer.access_token)
         self.assertEqual({"*"}, authorizer.scopes)
         self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh_with__valid_otp(self):
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            self.authentication, USERNAME, PASSWORD, lambda: "000000"
+        )
+        self.assertIsNone(authorizer.access_token)
+        self.assertIsNone(authorizer.scopes)
+        self.assertFalse(authorizer.is_valid())
+
+        with VCR.use_cassette("ScriptAuthorizer_refresh_with__valid_otp"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual(set(["*"]), authorizer.scopes)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh_with__valid_otp_async(self):
+        async def code():
+            return "000000"
+
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            self.authentication,
+            USERNAME,
+            PASSWORD,
+            code,
+        )
+        self.assertIsNone(authorizer.access_token)
+        self.assertIsNone(authorizer.scopes)
+        self.assertFalse(authorizer.is_valid())
+
+        with VCR.use_cassette("ScriptAuthorizer_refresh_with__valid_otp"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual(set(["*"]), authorizer.scopes)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh_with__invalid_otp(self):
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            self.authentication,
+            USERNAME,
+            PASSWORD,
+            lambda: "fake",
+        )
+
+        with VCR.use_cassette("ScriptAuthorizer_refresh_with__invalid_otp"):
+            with self.assertRaises(asyncprawcore.OAuthException):
+                await authorizer.refresh()
+            self.assertFalse(authorizer.is_valid())
 
     async def test_refresh__with_invalid_username_or_password(self):
         authorizer = asyncprawcore.ScriptAuthorizer(

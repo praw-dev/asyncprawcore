@@ -5,7 +5,7 @@ import os
 from base64 import b64encode
 from datetime import datetime
 
-from vcr import VCR
+from vcr import VCR as _VCR
 from vcr.persisters.filesystem import FilesystemPersister
 from vcr.serialize import deserialize, serialize
 
@@ -22,6 +22,11 @@ USERNAME = os.environ.get("PRAWCORE_USERNAME", "fake_username")
 def b64_string(input_string):
     """Return a base64 encoded string (not bytes) from input_string."""
     return b64encode(input_string.encode("utf-8")).decode("utf-8")
+
+
+def two_factor_callback():
+    """Return an OTP code."""
+    return None
 
 
 placeholders = [
@@ -127,7 +132,7 @@ class CustomPersister(FilesystemPersister):
             f.write(data)
 
 
-class CustomVCR(VCR):
+class CustomVCR(_VCR):
     """Derived from VCR to make setting paths easier."""
 
     def use_cassette(self, path="", **kwargs):
