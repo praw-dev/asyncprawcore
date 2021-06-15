@@ -4,6 +4,9 @@ Change Log
 Unreleased
 ----------
 
+2.2.0 (2021/06/15)
+------------------
+
 **Added**
 
 - Support 202 "Accepted" HTTP responses.
