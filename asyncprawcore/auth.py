@@ -285,22 +285,35 @@ class DeviceIDAuthorizer(BaseAuthorizer):
 
     AUTHENTICATOR_CLASS = UntrustedAuthenticator
 
-    def __init__(self, authenticator, device_id="DO_NOT_TRACK_THIS_DEVICE"):
+    def __init__(
+        self, authenticator, device_id="DO_NOT_TRACK_THIS_DEVICE", scopes=None
+    ):
         """Represent an app-only OAuth2 authorization for 'installed' apps.
 
         :param authenticator: An instance of :class:`UntrustedAuthenticator`.
         :param device_id: (optional) A unique ID (20-30 character ASCII string) (default
             DO_NOT_TRACK_THIS_DEVICE). For more information about this parameter, see:
             https://github.com/reddit/reddit/wiki/OAuth2#application-only-oauth
+        :param scopes: (Optional) A list of OAuth scopes to request authorization for
+            (default: None). The scope ``*`` is requested when the default argument is
+            used.
 
         """
         super(DeviceIDAuthorizer, self).__init__(authenticator)
         self._device_id = device_id
+        self._scopes = scopes
 
     async def refresh(self):
         """Obtain a new access token."""
+        additional_kwargs = {}
+        if self._scopes:
+            additional_kwargs["scope"] = " ".join(self._scopes)
         grant_type = "https://oauth.reddit.com/grants/installed_client"
-        await self._request_token(grant_type=grant_type, device_id=self._device_id)
+        await self._request_token(
+            grant_type=grant_type,
+            device_id=self._device_id,
+            **additional_kwargs,
+        )
 
 
 class ImplicitAuthorizer(BaseAuthorizer):
@@ -339,9 +352,23 @@ class ReadOnlyAuthorizer(Authorizer):
 
     AUTHENTICATOR_CLASS = TrustedAuthenticator
 
+    def __init__(self, authenticator, scopes=None):
+        """Represent a ReadOnly authorization to Reddit's API.
+
+        :param scopes: (Optional) A list of OAuth scopes to request authorization for
+            (default: None). The scope ``*`` is requested when the default argument is
+            used.
+
+        """
+        super().__init__(authenticator)
+        self._scopes = scopes
+
     async def refresh(self):
         """Obtain a new ReadOnly access token."""
-        await self._request_token(grant_type="client_credentials")
+        additional_kwargs = {}
+        if self._scopes:
+            additional_kwargs["scope"] = " ".join(self._scopes)
+        await self._request_token(grant_type="client_credentials", **additional_kwargs)
 
 
 class ScriptAuthorizer(Authorizer):
@@ -354,7 +381,14 @@ class ScriptAuthorizer(Authorizer):
 
     AUTHENTICATOR_CLASS = TrustedAuthenticator
 
-    def __init__(self, authenticator, username, password, two_factor_callback=None):
+    def __init__(
+        self,
+        authenticator,
+        username,
+        password,
+        two_factor_callback=None,
+        scopes=None,
+    ):
         """Represent a single personal-use authorization to Reddit's API.
 
         :param authenticator: An instance of :class:`TrustedAuthenticator`.
@@ -363,16 +397,22 @@ class ScriptAuthorizer(Authorizer):
         :param two_factor_callback: A synchronous or asynchronous function that returns
             OTPs (One-Time Passcodes), also known as 2FA auth codes. If this function is
             provided, prawcore will call it when authenticating.
+        :param scopes: (Optional) A list of OAuth scopes to request authorization for
+            (default: None). The scope ``*`` is requested when the default argument is
+            used.
 
         """
         super(ScriptAuthorizer, self).__init__(authenticator)
-        self._username = username
         self._password = password
+        self._scopes = scopes
         self._two_factor_callback = two_factor_callback
+        self._username = username
 
     async def refresh(self):
         """Obtain a new personal-use script type access token."""
         additional_kwargs = {}
+        if self._scopes:
+            additional_kwargs["scope"] = " ".join(self._scopes)
         if self._two_factor_callback:
             if inspect.iscoroutinefunction(self._two_factor_callback):
                 otp = await self._two_factor_callback()
