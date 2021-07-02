@@ -372,6 +372,13 @@ class SessionTest(asynctest.TestCase):
                 await session.request("GET", "/r/random")
             self.assertTrue(context_manager.exception.path.startswith("/r/"))
 
+    async def test_request__redirect_301(self):
+        with VCR.use_cassette("Session_request__redirect_301"):
+            session = asyncprawcore.Session(await readonly_authorizer())
+            with self.assertRaises(asyncprawcore.Redirect) as context_manager:
+                await session.request("GET", "t/bird")
+            self.assertTrue(context_manager.exception.path == "/r/t:bird/")
+
     async def test_request__service_unavailable(self):
         with VCR.use_cassette("Session_request__service_unavailable"):
             self.session = asyncprawcore.Session(await readonly_authorizer())

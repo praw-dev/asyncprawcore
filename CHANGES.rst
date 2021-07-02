@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+- 301 redirects result in a ``Redirect`` exception.
+
 2.2.1 (2021/07/06)
 ------------------
 
@@ -29,7 +33,7 @@ Unreleased
 **Added**
 
 - Add a ``URITooLarge`` exception.
-- :class:`.ScriptAuthorizer` has a new parameter ``two_factor_callback `` that supplies
+- :class:`.ScriptAuthorizer` has a new parameter ``two_factor_callback`` that supplies
   OTPs (One-Time Passcodes) when :meth:`.ScriptAuthorizer.refresh` is called.
 - Add a ``TooManyRequests`` exception.
 
