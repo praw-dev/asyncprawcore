@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Changed**
+
+- Cast non-string objects to string when preprocessing ``data`` and ``params``.
+
 2.2.0 (2021/06/15)
 ------------------
 
