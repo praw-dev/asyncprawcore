@@ -115,56 +115,14 @@ class Session(object):
         log.debug(f"Params: {params}")
 
     @staticmethod
-    def _preprocess_data(data, files):
-        """Preprocess data and files before request.
-
-        This is to convert requests that are formatted for the ``requests`` package to
-        be compatible with the ``aiohttp`` package. The motivation for this is so that
-        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
-        contributions to ``asyncpraw`` simpler.
-
-        This method does the following:
-
-        - Removes keys that have a value of ``None`` from ``data``.
-        - Moves ``files`` into ``data``.
-
-        :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request.
-        :param files: Dictionary, mapping ``filename`` to file-like object to add to
-            ``data``.
-
-        """
-        if isinstance(data, dict):
-            data = {key: value for key, value in data.items() if value is not None}
-            if files is not None:
-                data.update(files)
-        return data
-
-    @staticmethod
-    def _preprocess_params(params):
-        """Preprocess params before request.
-
-        This is to convert requests that are formatted for the ``requests`` package to
-        be compatible with ``aiohttp`` package. The motivation for this is so that
-        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
-        contributions to ``asyncpraw`` simpler.
-
-        This method does the following:
-
-        - Removes keys that have a value of ``None`` from ``params``.
-        - Casts bool values in ``params`` to str.
-
-        :param params: The query parameters to send with the request.
-
-        """
-        new_params = {}
-        for key, value in params.items():
+    def _preprocess_dict(data):
+        new_data = {}
+        for key, value in data.items():
             if isinstance(value, bool):
-                new_params[key] = str(value).lower()
+                new_data[key] = str(value).lower()
             elif value is not None:
-                new_params[key] = value
-        params = new_params
-        return params
+                new_data[key] = str(value) if not isinstance(value, str) else value
+        return new_data
 
     def __init__(self, authorizer):
         """Prepare the connection to reddit's API.
@@ -248,6 +206,49 @@ class Session(object):
             ):
                 raise
             return None, exception.original_exception
+
+    def _preprocess_data(self, data, files):
+        """Preprocess data and files before request.
+
+        This is to convert requests that are formatted for the ``requests`` package to
+        be compatible with the ``aiohttp`` package. The motivation for this is so that
+        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
+        contributions to ``asyncpraw`` simpler.
+
+        This method does the following:
+
+        - Removes keys that have a value of ``None`` from ``data``.
+        - Moves ``files`` into ``data``.
+
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request.
+        :param files: Dictionary, mapping ``filename`` to file-like object to add to
+            ``data``.
+
+        """
+        if isinstance(data, dict):
+            data = self._preprocess_dict(data)
+            if files is not None:
+                data.update(files)
+        return data
+
+    def _preprocess_params(self, params):
+        """Preprocess params before request.
+
+        This is to convert requests that are formatted for the ``requests`` package to
+        be compatible with ``aiohttp`` package. The motivation for this is so that
+        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
+        contributions to ``asyncpraw`` simpler.
+
+        This method does the following:
+
+        - Removes keys that have a value of ``None`` from ``params``.
+        - Casts bool values in ``params`` to str.
+
+        :param params: The query parameters to send with the request.
+
+        """
+        return self._preprocess_dict(params)
 
     async def _request_with_retries(
         self,
