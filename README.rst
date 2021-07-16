@@ -7,13 +7,13 @@ asyncprawcore
     :alt: Latest asyncprawcore Version
     :target: https://pypi.python.org/pypi/asyncprawcore
 
-.. image:: https://img.shields.io/pypi/pyversions/asyncprawcore
+.. image:: https://img.shields.io/pypi/pyversions/asyncprawcore?branch=main
     :alt: Supported Python Versions
     :target: https://pypi.python.org/pypi/asyncprawcore
 
-.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=master
+.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=main
     :alt: Coveralls Coverage
-    :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=master
+    :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=main
 
 .. image:: https://github.com/praw-dev/asyncprawcore/workflows/CI/badge.svg
     :alt: Github Actions Coverage
@@ -70,7 +70,7 @@ Save the above as ``trophies.py`` and then execute via:
     python trophies.py
 
 Additional examples can be found at:
-https://github.com/praw-dev/asyncprawcore/tree/master/examples
+https://github.com/praw-dev/asyncprawcore/tree/main/examples
 
 Depending on asyncprawcore
 --------------------------
