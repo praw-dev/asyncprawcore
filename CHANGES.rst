@@ -10,6 +10,7 @@ Unreleased
 - ``Requestor`` is now initialzed with a ``timeout`` parameter.
 - ``ScriptAuthorizer``, ``ReadOnlyAuthorizer``, and ``DeviceIDAuthorizer`` have a
   new parameter, ``scopes``, which determines the scope of access requests.
+- Retry 408 "Request Timeout" HTTP responses.
 
 2.2.1 (2021/07/06)
 ------------------
