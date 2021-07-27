@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+asyncprawcore follows `semantic versioning <http://semver.org/>`_.
+
 Unreleased
 ----------
 
