@@ -1,0 +1,64 @@
+{
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "grant_type",
+            "client_credentials"
+          ],
+          [
+            "scope",
+            "adsedit adsread creddits history"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.2.2.dev0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"adsedit adsread creddits history\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "close",
+          "Content-Length": "140",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 27 Jul 2021 17:45:18 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=62aM61ZBcJl9OkULjg; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Clacks-Overhead": "GNU Terry Pratchett",
+          "X-Moose": "majestic",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "297",
+          "x-ratelimit-reset": "282",
+          "x-ratelimit-used": "3",
+          "x-reddit-loid": "0000000000dk3r63pz.2.1627407918395.Z0FBQUFBQmhBRVl1Q2pjdUc1RFkzLV9pby1RekYwVFVKbndjUHJ1OTBaWENtRk9LT21XSmJfaHlmNm9xNnlNWkdfRG1QSWdUWUdZa1dReUZSVEgzTWlmU2VGZ0ZJWFFVRlBNUmJXRVVfc1VVZ0xuQ2lSUGJQdFdpcDZ0eWRnZkFpNGxRNHFkWEZOakw",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    }
+  ],
+  "recorded_at": "2021-07-27T12:45:21",
+  "version": 1
+}

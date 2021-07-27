@@ -284,6 +284,19 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
         self.assertEqual(set(["*"]), authorizer.scopes)
         self.assertTrue(authorizer.is_valid())
 
+    async def test_refresh__with_scopes(self):
+        scope_list = ["adsedit", "adsread", "creddits", "history"]
+        authorizer = asyncprawcore.DeviceIDAuthorizer(
+            self.authentication,
+            scopes=scope_list,
+        )
+        with VCR.use_cassette("DeviceIDAuthorizer_refresh__with_scopes"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual(set(scope_list), authorizer.scopes)
+        self.assertTrue(authorizer.is_valid())
+
     async def test_refresh__with_short_device_id(self):
         authorizer = asyncprawcore.DeviceIDAuthorizer(self.authentication, "a" * 19)
         with VCR.use_cassette("DeviceIDAuthorizer_refresh__with_short_device_id"):
@@ -334,6 +347,22 @@ class ReadOnlyAuthorizerTest(AuthorizerTestBase):
         self.assertEqual(set(["*"]), authorizer.scopes)
         self.assertTrue(authorizer.is_valid())
 
+    async def test_refresh__with_scopes(self):
+        scope_list = ["adsedit", "adsread", "creddits", "history"]
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(
+            self.authentication, scopes=scope_list
+        )
+        self.assertIsNone(authorizer.access_token)
+        self.assertIsNone(authorizer.scopes)
+        self.assertFalse(authorizer.is_valid())
+
+        with VCR.use_cassette("ReadOnlyAuthorizer_refresh__with_scopes"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual(set(scope_list), authorizer.scopes)
+        self.assertTrue(authorizer.is_valid())
+
 
 class ScriptAuthorizerTest(AuthorizerTestBase):
     def test_initialize__with_untrusted_authenticator(self):
@@ -361,15 +390,57 @@ class ScriptAuthorizerTest(AuthorizerTestBase):
         self.assertEqual({"*"}, authorizer.scopes)
         self.assertTrue(authorizer.is_valid())
 
-    async def test_refresh_with__valid_otp(self):
+    async def test_refresh__with_invalid_otp(self):
         authorizer = asyncprawcore.ScriptAuthorizer(
-            self.authentication, USERNAME, PASSWORD, lambda: "000000"
+            self.authentication,
+            USERNAME,
+            PASSWORD,
+            lambda: "fake",
+        )
+
+        with VCR.use_cassette("ScriptAuthorizer_refresh__with_invalid_otp"):
+            with self.assertRaises(asyncprawcore.OAuthException):
+                await authorizer.refresh()
+        self.assertFalse(authorizer.is_valid())
+
+    async def test_refresh__with_invalid_username_or_password(self):
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            self.authentication, USERNAME, "invalidpassword"
+        )
+        with VCR.use_cassette(
+            "ScriptAuthorizer_refresh__with_invalid_username_or_password"
+        ):
+            with self.assertRaises(asyncprawcore.OAuthException):
+                await authorizer.refresh()
+        self.assertFalse(authorizer.is_valid())
+
+    async def test_refresh__with_scopes(self):
+        scope_list = ["adsedit", "adsread", "creddits", "history"]
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            self.authentication, USERNAME, PASSWORD, scopes=scope_list
+        )
+        with VCR.use_cassette("ScriptAuthorizer_refresh__with_scopes"):
+            await authorizer.refresh()
+
+        self.assertIsNotNone(authorizer.access_token)
+        self.assertEqual(set(scope_list), authorizer.scopes)
+        self.assertTrue(authorizer.is_valid())
+
+    async def test_refresh__with_valid_otp(self):
+        def function():
+            return "000000"
+
+        authorizer = asyncprawcore.ScriptAuthorizer(
+            self.authentication,
+            USERNAME,
+            PASSWORD,
+            function,
         )
         self.assertIsNone(authorizer.access_token)
         self.assertIsNone(authorizer.scopes)
         self.assertFalse(authorizer.is_valid())
 
-        with VCR.use_cassette("ScriptAuthorizer_refresh_with__valid_otp"):
+        with VCR.use_cassette("ScriptAuthorizer_refresh__with_valid_otp"):
             await authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
@@ -390,33 +461,9 @@ class ScriptAuthorizerTest(AuthorizerTestBase):
         self.assertIsNone(authorizer.scopes)
         self.assertFalse(authorizer.is_valid())
 
-        with VCR.use_cassette("ScriptAuthorizer_refresh_with__valid_otp"):
+        with VCR.use_cassette("ScriptAuthorizer_refresh__with_valid_otp"):
             await authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
         self.assertEqual(set(["*"]), authorizer.scopes)
         self.assertTrue(authorizer.is_valid())
-
-    async def test_refresh_with__invalid_otp(self):
-        authorizer = asyncprawcore.ScriptAuthorizer(
-            self.authentication,
-            USERNAME,
-            PASSWORD,
-            lambda: "fake",
-        )
-
-        with VCR.use_cassette("ScriptAuthorizer_refresh_with__invalid_otp"):
-            with self.assertRaises(asyncprawcore.OAuthException):
-                await authorizer.refresh()
-            self.assertFalse(authorizer.is_valid())
-
-    async def test_refresh__with_invalid_username_or_password(self):
-        authorizer = asyncprawcore.ScriptAuthorizer(
-            self.authentication, USERNAME, "invalidpassword"
-        )
-        with VCR.use_cassette(
-            "ScriptAuthorizer_refresh__with_invalid_username_or_password"
-        ):
-            with self.assertRaises(asyncprawcore.OAuthException):
-                await authorizer.refresh()
-            self.assertFalse(authorizer.is_valid())

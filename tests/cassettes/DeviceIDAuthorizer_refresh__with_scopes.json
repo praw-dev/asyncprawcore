@@ -1,0 +1,68 @@
+{
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "device_id",
+            "DO_NOT_TRACK_THIS_DEVICE"
+          ],
+          [
+            "grant_type",
+            "https://oauth.reddit.com/grants/installed_client"
+          ],
+          [
+            "scope",
+            "adsedit adsread creddits history"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic UGdwOF91NndWWThFS0E6"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.2.2.dev0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"device_id\": \"DO_NOT_TRACK_THIS_DEVICE\", \"expires_in\": 3600, \"scope\": \"adsedit adsread creddits history\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "max-age=0, must-revalidate",
+          "Connection": "close",
+          "Content-Length": "181",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 27 Jul 2021 17:46:26 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=OzV3zDfwVNAWIt1kbn; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Clacks-Overhead": "GNU Terry Pratchett",
+          "X-Moose": "majestic",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "295",
+          "x-ratelimit-reset": "214",
+          "x-ratelimit-used": "5",
+          "x-reddit-loid": "0000000000dk3rx6vi.2.1627407986872.Z0FBQUFBQmhBRVp5cUNzTnc4d2RxSE1oUUhIcGJTdzl5UmhLak1mQ2djelhoRmtNTGs3Q01tVHFOT2staEhidjJDUzVkWXhTaWVURDltMWkwdFJWbDJLaUppMUVIUEstUlREWnpIOHZWM0pkbi1rdG5tZnY0Qkh2clByaF9YVHNHYTI5b2JkN09qQS0",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    }
+  ],
+  "recorded_at": "2021-07-27T12:46:30",
+  "version": 1
+}
