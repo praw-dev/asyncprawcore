@@ -39,6 +39,6 @@ name: Tag Release
 on:
   push:
     branches:
-      - master
+      - main
       - release_test
 
