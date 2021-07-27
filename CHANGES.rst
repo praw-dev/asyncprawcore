@@ -7,6 +7,7 @@ Unreleased
 **Added**
 
 - 301 redirects result in a ``Redirect`` exception.
+- ``Requestor`` is now initialzed with a ``timeout`` parameter.
 
 2.2.1 (2021/07/06)
 ------------------
