@@ -4,6 +4,9 @@ Change Log
 Unreleased
 ----------
 
+2.3.0 (2021/07/27)
+------------------
+
 **Added**
 
 - 301 redirects result in a ``Redirect`` exception.
