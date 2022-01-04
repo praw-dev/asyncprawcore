@@ -1,33 +1,32 @@
-"""Test for asyncprawcore.requestor.Requestor class."""
+"""Test for asyncprawcore.self.requestor.Requestor class."""
 import asyncio
 
-import asynctest
+import pytest
 from mock import Mock, patch
 
 import asyncprawcore
 from asyncprawcore import RequestException
 
+from . import UnitTest
 
-class RequestorTest(asynctest.TestCase):
+
+class TestRequestor(UnitTest):
     async def tearDown(self) -> None:
         if hasattr(self, "requestor"):
             if isinstance(self.requestor, asyncprawcore.requestor.Requestor):
                 if not isinstance(self.requestor._http, Mock):
                     await self.requestor.close()
 
-    async def test_initialize(self):
-        self.requestor = asyncprawcore.Requestor(
-            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
-        )
-        self.assertEqual(
-            f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}",
-            self.requestor._http._default_headers["User-Agent"],
+    def test_initialize(self):
+        assert (
+            self.requestor._http._default_headers["User-Agent"]
+            == f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}"
         )
 
     def test_initialize__failures(self):
         for agent in [None, "shorty"]:
-            with self.assertRaises(asyncprawcore.InvalidInvocation):
-                self.requestor = asyncprawcore.Requestor(agent)
+            with pytest.raises(asyncprawcore.InvalidInvocation):
+                asyncprawcore.Requestor(agent)
 
     @patch("aiohttp.ClientSession")
     async def test_request__wrap_request_exceptions(self, mock_session):
@@ -37,12 +36,12 @@ class RequestorTest(asynctest.TestCase):
         self.requestor = asyncprawcore.Requestor(
             "asyncprawcore:test (by /u/Lil_SpazJoekp)"
         )
-        with self.assertRaises(asyncprawcore.RequestException) as context_manager:
+        with pytest.raises(asyncprawcore.RequestException) as exception_info:
             await self.requestor.request("get", "http://a.b", data="bar")
-        self.assertIsInstance(context_manager.exception, RequestException)
-        self.assertIs(exception, context_manager.exception.original_exception)
-        self.assertEqual(("get", "http://a.b"), context_manager.exception.request_args)
-        self.assertEqual({"data": "bar"}, context_manager.exception.request_kwargs)
+        assert isinstance(exception_info.value, RequestException)
+        assert exception is exception_info.value.original_exception
+        assert exception_info.value.request_args == ("get", "http://a.b")
+        assert exception_info.value.request_kwargs == {"data": "bar"}
 
     async def test_request__use_custom_session(self):
         override = "REQUEST OVERRIDDEN"
@@ -59,13 +58,10 @@ class RequestorTest(asynctest.TestCase):
         self.requestor = asyncprawcore.Requestor(
             "asyncprawcore:test (by /u/Lil_SpazJoekp)", session=session
         )
+        assert (
+            self.requestor._http._default_headers["User-Agent"]
+            == f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}"
+        )
+        assert self.requestor._http._default_headers["session_header"] == custom_header
 
-        self.assertEqual(
-            f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}",
-            self.requestor._http._default_headers["User-Agent"],
-        )
-        self.assertEqual(
-            self.requestor._http._default_headers["session_header"],
-            custom_header,
-        )
-        self.assertEqual(await self.requestor.request("https://reddit.com"), override)
+        assert await self.requestor.request("https://reddit.com") == override

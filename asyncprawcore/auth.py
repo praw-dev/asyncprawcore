@@ -402,7 +402,7 @@ class ScriptAuthorizer(Authorizer):
         :param password: The password associated with ``username``.
         :param two_factor_callback: A synchronous or asynchronous function that returns
             OTPs (One-Time Passcodes), also known as 2FA auth codes. If this function is
-            provided, prawcore will call it when authenticating.
+            provided, asyncprawcore will call it when authenticating.
         :param scopes: (Optional) A list of OAuth scopes to request authorization for
             (default: None). The scope ``*`` is requested when the default argument is
             used.

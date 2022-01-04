@@ -1,22 +1,22 @@
-"""Constants for the asyncprawcore test suite."""
-
+"""Prepare py.test."""
+import asyncio
 import json
 import os
 from base64 import b64encode
 from datetime import datetime
 
+import pytest
 from vcr import VCR
 from vcr.persisters.filesystem import FilesystemPersister
 from vcr.serialize import deserialize, serialize
 
-CLIENT_ID = os.environ.get("PRAWCORE_CLIENT_ID", "fake_client_id")
-CLIENT_SECRET = os.environ.get("PRAWCORE_CLIENT_SECRET", "fake_client_secret")
-PASSWORD = os.environ.get("PRAWCORE_PASSWORD", "fake_password")
-PERMANENT_GRANT_CODE = os.environ.get("PRAWCORE_PERMANENT_GRANT_CODE", "fake_perm_code")
-REDIRECT_URI = os.environ.get("PRAWCORE_REDIRECT_URI", "http://localhost:8080")
-REFRESH_TOKEN = os.environ.get("PRAWCORE_REFRESH_TOKEN", "fake_refresh_token")
-TEMPORARY_GRANT_CODE = os.environ.get("PRAWCORE_TEMPORARY_GRANT_CODE", "fake_temp_code")
-USERNAME = os.environ.get("PRAWCORE_USERNAME", "fake_username")
+
+# Prevent calls to sleep
+async def _sleep(*args):
+    raise Exception("Call to sleep")
+
+
+asyncio.sleep = _sleep
 
 
 def b64_string(input_string):
@@ -24,22 +24,12 @@ def b64_string(input_string):
     return b64encode(input_string.encode("utf-8")).decode("utf-8")
 
 
-def two_factor_callback():
-    """Return an OTP code."""
-    return None
-
-
-placeholders = [
-    ("<CLIENT_ID>", CLIENT_ID),
-    ("<CLIENT_SECRET>", CLIENT_SECRET),
-    ("<PASSWORD>", PASSWORD),
-    ("<PERM_CODE>", PERMANENT_GRANT_CODE),
-    ("<REFRESH_TOKEN>", REFRESH_TOKEN),
-    ("<TEMP_CODE>", TEMPORARY_GRANT_CODE),
-    ("<USERNAME>", USERNAME),
-    ("<BASIC_AUTH>", b64_string(f"{CLIENT_ID}:{CLIENT_SECRET}")),
-]
-
+def env_default(key):
+    """Return environment variable or placeholder string."""
+    return os.environ.get(
+        f"PRAWCORE_{key.upper()}",
+        "http://localhost:8080" if key == "redirect_uri" else f"fake_{key}",
+    )
 
 def filter_access_token(response):
     """Add VCR callback to filter access token."""
@@ -66,6 +56,26 @@ def filter_access_token(response):
     return response
 
 
+def serialize_dict(data: dict):
+    """This is to filter out buffered readers."""
+    new_dict = {}
+    for key, value in data.items():
+        if key == "file":
+            new_dict[key] = serialize_file(value.name)
+        elif isinstance(value, dict):
+            new_dict[key] = serialize_dict(value)
+        elif isinstance(value, list):
+            new_dict[key] = serialize_list(value)
+        else:
+            new_dict[key] = value
+    return new_dict
+
+
+def serialize_file(file_name):
+    with open(file_name, "rb") as f:
+        return f.read().decode("utf-8", "replace")
+
+
 def serialize_list(data: list):
     """List serializer."""
     new_list = []
@@ -74,24 +84,65 @@ def serialize_list(data: list):
             new_list.append(serialize_dict(item))
         elif isinstance(item, list):
             new_list.append(serialize_list(item))
+        elif isinstance(item, tuple):
+            if item[0] == "file":
+                item = (item[0], serialize_file(item[1].name))
+            new_list.append(item)
         else:
             new_list.append(item)
     return new_list
 
 
-def serialize_dict(data: dict):
-    """Filter out buffered readers."""
-    new_dict = {}
-    for key, value in data.items():
-        if key == "file":
-            continue  # skip files
-        elif isinstance(value, dict):
-            new_dict[key] = serialize_dict(value)
-        elif isinstance(value, list):
-            new_dict[key] = serialize_list(value)
-        else:
-            new_dict[key] = value
-    return new_dict
+def two_factor_callback():
+    """Return an OTP code."""
+    return None
+
+
+
+placeholders = {
+    x: env_default(x)
+    for x in (
+        "client_id client_secret password permanent_grant_code temporary_grant_code"
+        " redirect_uri refresh_token user_agent username"
+    ).split()
+}
+
+placeholders["BASIC_AUTH"] = b64_string(
+    f"{placeholders['client_id']}:{placeholders['client_secret']}"
+)
+
+
+class CustomPersister(FilesystemPersister):
+    """Custom persiter for VCR."""
+
+    @classmethod
+    def load_cassette(cls, cassette_path, serializer):
+        """Load the cassette."""
+        try:
+            with open(cassette_path) as f:
+                cassette_content = f.read()
+        except OSError:
+            raise ValueError("Cassette not found.")
+        for replacement, value in [
+            (v, f"<{k.upper()}>") for k, v in placeholders.items()
+        ]:
+            cassette_content = cassette_content.replace(value, replacement)
+        cassette = deserialize(cassette_content, serializer)
+        return cassette
+
+    @staticmethod
+    def save_cassette(cassette_path, cassette_dict, serializer):
+        """Save the cassette."""
+        data = serialize(cassette_dict, serializer)
+        for replacement, value in [
+            (f"<{k.upper()}>", v) for k, v in placeholders.items()
+        ]:
+            data = data.replace(value, replacement)
+        dirname, filename = os.path.split(cassette_path)
+        if dirname and not os.path.exists(dirname):
+            os.makedirs(dirname)
+        with open(cassette_path, "w") as f:
+            f.write(data)
 
 
 class CustomSerializer(object):
@@ -111,38 +162,9 @@ class CustomSerializer(object):
         return json.loads(cassette_string)
 
 
-class CustomPersister(FilesystemPersister):
-    """Custom persiter for VCR."""
-
-    @classmethod
-    def load_cassette(cls, cassette_path, serializer):
-        """Load the cassette."""
-        try:
-            with open(cassette_path) as f:
-                cassette_content = f.read()
-        except OSError:
-            raise ValueError("Cassette not found.")
-        for replacement, value in placeholders:
-            cassette_content = cassette_content.replace(value, replacement)
-        cassette = deserialize(cassette_content, serializer)
-        return cassette
-
-    @staticmethod
-    def save_cassette(cassette_path, cassette_dict, serializer):
-        """Save the cassette."""
-        data = serialize(cassette_dict, serializer)
-        for replacement, value in placeholders:
-            data = data.replace(value, replacement)
-        dirname, filename = os.path.split(cassette_path)
-        if dirname and not os.path.exists(dirname):
-            os.makedirs(dirname)
-        with open(cassette_path, "w") as f:
-            f.write(data)
-
-
 vcr = VCR(
     before_record_response=filter_access_token,
-    cassette_library_dir="tests/cassettes",
+    cassette_library_dir="tests/integration/cassettes",
     match_on=["uri", "method"],
     path_transformer=VCR.ensure_suffix(".json"),
     serializer="custom_serializer",
@@ -163,3 +185,12 @@ class AsyncMock:
     async def json(self):
         """Mock the json of ClientSession.request."""
         return self.response_dict
+
+
+class Placeholders:
+    def __init__(self, _dict):
+        self.__dict__ = _dict
+
+
+def pytest_configure():
+    pytest.placeholders = Placeholders(placeholders)
