@@ -53,11 +53,14 @@ class Requestor(object):
         """Issue the HTTP request capturing any errors that may occur."""
         if self._http is None:
             self._http = aiohttp.ClientSession(
-                headers=self._headers,
                 timeout=aiohttp.ClientTimeout(total=None),
             )
         if "timeout" not in kwargs:
             kwargs["timeout"] = self.timeout
+        if "headers" in kwargs:
+            kwargs["headers"].update(self._headers)
+        else:
+            kwargs["headers"] = self._headers
         try:
             # NOTE: Due to not using a context manager for the request-response cycle,
             # calling code is expected to call the 'release' method on the returned
