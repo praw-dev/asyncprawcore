@@ -9,10 +9,10 @@ class Requestor(object):
     """Requestor provides an interface to HTTP requests."""
 
     def __getattr__(self, attribute):  # pragma: no cover
-        """Pass all undefined attributes to the _session attribute."""
+        """Pass all undefined attributes to the _http attribute."""
         if attribute.startswith("__"):
             raise AttributeError(attribute)
-        return getattr(self._session, attribute)
+        return getattr(self._http, attribute)
 
     def __init__(
         self,
@@ -38,7 +38,7 @@ class Requestor(object):
         """
         if user_agent is None or len(user_agent) < 7:
             raise InvalidInvocation("user_agent is not descriptive")
-        self._session = session
+        self._http = session
         self._headers = {"User-Agent": f"{user_agent} asyncprawcore/{__version__}"}
         self.oauth_url = oauth_url
         self.reddit_url = reddit_url
@@ -46,13 +46,13 @@ class Requestor(object):
 
     async def close(self):
         """Call close on the underlying session."""
-        if self._session is not None:
-            return await self._session.close()
+        if self._http is not None:
+            return await self._http.close()
 
     async def request(self, *args, **kwargs):
         """Issue the HTTP request capturing any errors that may occur."""
-        if self._session is None:
-            self._session = aiohttp.ClientSession(
+        if self._http is None:
+            self._http = aiohttp.ClientSession(
                 headers=self._headers,
                 timeout=aiohttp.ClientTimeout(total=None),
             )
@@ -63,6 +63,6 @@ class Requestor(object):
             # calling code is expected to call the 'release' method on the returned
             # response object once it's done with it.
             # Reference 'aiohttp.ClientResponse.__aexit__' doing that.
-            return await self._session.request(*args, **kwargs)
+            return await self._http.request(*args, **kwargs)
         except Exception as exc:
             raise RequestException(exc, args, kwargs)
