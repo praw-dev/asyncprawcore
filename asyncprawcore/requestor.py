@@ -44,10 +44,10 @@ class Requestor(object):
         self.reddit_url = reddit_url
         self.timeout = timeout
 
-    def close(self):
+    async def close(self):
         """Call close on the underlying session."""
-        # NOTE: this is a pass-through coroutine
-        return self._session.close()
+        if self._session is not None:
+            return await self._session.close()
 
     async def request(self, *args, **kwargs):
         """Issue the HTTP request capturing any errors that may occur."""
