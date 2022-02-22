@@ -5,6 +5,7 @@ import asynctest
 from mock import Mock, patch
 
 import asyncprawcore
+from asyncprawcore.const import TIMEOUT
 from asyncprawcore import RequestException
 
 
@@ -21,7 +22,7 @@ class RequestorTest(asynctest.TestCase):
         )
         self.assertEqual(
             f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}",
-            self.requestor._http._default_headers["User-Agent"],
+            self.requestor._headers["User-Agent"],
         )
 
     def test_initialize__failures(self):
@@ -42,7 +43,9 @@ class RequestorTest(asynctest.TestCase):
         self.assertIsInstance(context_manager.exception, RequestException)
         self.assertIs(exception, context_manager.exception.original_exception)
         self.assertEqual(("get", "http://a.b"), context_manager.exception.request_args)
-        self.assertEqual({"data": "bar"}, context_manager.exception.request_kwargs)
+        self.assertEqual(
+            {"data": "bar", "timeout": TIMEOUT}, context_manager.exception.request_kwargs
+        )
 
     async def test_request__use_custom_session(self):
         override = "REQUEST OVERRIDDEN"
@@ -62,10 +65,10 @@ class RequestorTest(asynctest.TestCase):
 
         self.assertEqual(
             f"asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}",
-            self.requestor._http._default_headers["User-Agent"],
+            self.requestor._headers["User-Agent"],
         )
         self.assertEqual(
-            self.requestor._http._default_headers["session_header"],
+            self.requestor._headers["session_header"],
             custom_header,
         )
         self.assertEqual(await self.requestor.request("https://reddit.com"), override)
