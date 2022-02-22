@@ -44,7 +44,8 @@ class RequestorTest(asynctest.TestCase):
         self.assertIs(exception, context_manager.exception.original_exception)
         self.assertEqual(("get", "http://a.b"), context_manager.exception.request_args)
         self.assertEqual(
-            {"data": "bar", "timeout": TIMEOUT}, context_manager.exception.request_kwargs
+            {"data": "bar", "timeout": TIMEOUT},
+            context_manager.exception.request_kwargs,
         )
 
     async def test_request__use_custom_session(self):
