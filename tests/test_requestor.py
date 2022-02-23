@@ -44,7 +44,16 @@ class RequestorTest(asynctest.TestCase):
         self.assertIs(exception, context_manager.exception.original_exception)
         self.assertEqual(("get", "http://a.b"), context_manager.exception.request_args)
         self.assertEqual(
-            {"data": "bar", "timeout": TIMEOUT},
+            {
+                "data": "bar",
+                "timeout": TIMEOUT,
+                "headers": {
+                    "User-Agent": (
+                        "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/"
+                        f"{asyncprawcore.__version__}"
+                    ),
+                },
+            },
             context_manager.exception.request_kwargs,
         )
 
