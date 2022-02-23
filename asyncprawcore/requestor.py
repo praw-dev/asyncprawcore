@@ -1,4 +1,6 @@
 """Provides the HTTP request handling interface."""
+from copy import copy
+
 import aiohttp
 
 from .const import TIMEOUT, __version__
@@ -55,10 +57,14 @@ class Requestor(object):
             self._http = aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=None),
             )
+        # include default timeout if one wasn't passed
         if "timeout" not in kwargs:
             kwargs["timeout"] = self.timeout
+        # include our headers - make a copy to not mutate the passed in one
         if "headers" in kwargs:
-            kwargs["headers"].update(self._headers)
+            headers = copy(kwargs["headers"])
+            headers.update(self._headers)
+            kwargs["headers"] = headers
         else:
             kwargs["headers"] = self._headers
         try:
