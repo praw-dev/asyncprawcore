@@ -31,6 +31,7 @@ def env_default(key):
         "http://localhost:8080" if key == "redirect_uri" else f"fake_{key}",
     )
 
+
 def filter_access_token(response):
     """Add VCR callback to filter access token."""
     request_uri = response["url"]
@@ -96,7 +97,6 @@ def serialize_list(data: list):
 def two_factor_callback():
     """Return an OTP code."""
     return None
-
 
 
 placeholders = {

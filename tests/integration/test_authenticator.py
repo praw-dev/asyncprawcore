@@ -2,6 +2,7 @@
 import pytest
 
 import asyncprawcore
+
 from . import IntegrationTest
 
 

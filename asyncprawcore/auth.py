@@ -295,8 +295,8 @@ class DeviceIDAuthorizer(BaseAuthorizer):
     ):
         """Represent an app-only OAuth2 authorization for 'installed' apps.
 
-        :param authenticator: An instance of :class:`UntrustedAuthenticator`
-            or :class:`TrustedAuthenticator`.
+        :param authenticator: An instance of :class:`UntrustedAuthenticator` or
+            :class:`TrustedAuthenticator`.
         :param device_id: (optional) A unique ID (20-30 character ASCII string) (default
             DO_NOT_TRACK_THIS_DEVICE). For more information about this parameter, see:
             https://github.com/reddit/reddit/wiki/OAuth2#application-only-oauth

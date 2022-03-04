@@ -65,7 +65,6 @@ class TestAuthorizer(AuthorizerBase):
         assert len(authorizer.scopes) > 0
         assert authorizer.is_valid()
 
-
     async def test_refresh__post_refresh_callback(self):
         def callback(authorizer):
             assert authorizer.refresh_token != pytest.placeholders.refresh_token
@@ -256,7 +255,9 @@ class TestReadOnlyAuthorizer(AuthorizerBase):
 
     async def test_refresh__with_scopes(self):
         scope_list = {"adsedit", "adsread", "creddits", "history"}
-        authorizer = asyncprawcore.ReadOnlyAuthorizer(self.authentication, scopes=scope_list)
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(
+            self.authentication, scopes=scope_list
+        )
         assert authorizer.access_token is None
         assert authorizer.scopes is None
         assert not authorizer.is_valid()

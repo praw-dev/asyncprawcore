@@ -7,6 +7,7 @@ from asyncprawcore.rate_limit import RateLimiter
 
 from . import UnitTest
 
+
 class RateLimiterTest(UnitTest):
     def _headers(self, remaining, used, reset):
         return {

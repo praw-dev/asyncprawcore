@@ -5,8 +5,8 @@ import logging
 import asynctest
 
 from asyncprawcore import Requestor
-
 from tests.conftest import vcr
+
 
 class IntegrationTest(asynctest.TestCase):
     """Base class for asyncprawcore integration tests."""

@@ -70,7 +70,9 @@ class TestSession(IntegrationTest):
             session = asyncprawcore.Session(await self.script_authorizer())
             with LogCapture(level=logging.DEBUG) as log_capture:
                 await session.request("POST", "api/read_all_messages")
-            log_capture.check_present(("asyncprawcore", "DEBUG", "Response: 202 (2 bytes)"))
+            log_capture.check_present(
+                ("asyncprawcore", "DEBUG", "Response: 202 (2 bytes)")
+            )
 
     async def test_request__get(self):
         with self.use_cassette():
@@ -82,7 +84,9 @@ class TestSession(IntegrationTest):
         assert response["kind"] == "Listing"
 
     async def test_request__patch(self):
-        with self.use_cassette(match_requests_on=["method", "uri", "body"],):
+        with self.use_cassette(
+            match_requests_on=["method", "uri", "body"],
+        ):
             session = asyncprawcore.Session(await self.script_authorizer())
             json = {"lang": "ja", "num_comments": 123}
             response = await session.request("PATCH", "/api/v1/me/prefs", json=json)
@@ -104,7 +108,9 @@ class TestSession(IntegrationTest):
             assert key_count == len(data)  # Ensure data is untouched
 
     async def test_request__post__with_files(self):
-        with self.use_cassette(match_requests_on=["uri", "method"],):
+        with self.use_cassette(
+            match_requests_on=["uri", "method"],
+        ):
             session = asyncprawcore.Session(await self.script_authorizer())
             data = {"upload_type": "header"}
             with open("tests/integration/files/white-square.png", "rb") as fp:
@@ -193,7 +199,9 @@ class TestSession(IntegrationTest):
     async def test_request__created(self):
         with self.use_cassette():
             session = asyncprawcore.Session(await self.script_authorizer())
-            response = await session.request("PUT", "/api/v1/me/friends/spez", data="{}")
+            response = await session.request(
+                "PUT", "/api/v1/me/friends/spez", data="{}"
+            )
             assert "name" in response
 
     async def test_request__forbidden(self):
@@ -277,7 +285,9 @@ class TestSession(IntegrationTest):
                     "POST",
                     "/r/asyncpraw/api/upload_sr_img",
                     data=data,
-                    files={"file": open("./tests/integration/files/too_large.jpg", "rb")},
+                    files={
+                        "file": open("./tests/integration/files/too_large.jpg", "rb")
+                    },
                 )
             assert exception_info.value.response.status == 413
 
@@ -297,14 +307,20 @@ class TestSession(IntegrationTest):
             assert str(exception_info.value).startswith(
                 "received 429 HTTP response. Please wait at least"
             )
-            assert (await exception_info.value.message()).startswith("\n<!doctype html>")
+            assert (await exception_info.value.message()).startswith(
+                "\n<!doctype html>"
+            )
 
     async def test_request__too__many_requests__without_retry_headers(self):
         requestor = asyncprawcore.Requestor("python-requests/2.25.1")
 
         with self.use_cassette():
-            with pytest.raises(asyncprawcore.exceptions.ResponseException) as exception_info:
-                asyncprawcore.Session(await self.readonly_authorizer(requestor=requestor))
+            with pytest.raises(
+                asyncprawcore.exceptions.ResponseException
+            ) as exception_info:
+                asyncprawcore.Session(
+                    await self.readonly_authorizer(requestor=requestor)
+                )
             assert exception_info.value.response.status == 429
             assert not exception_info.value.response.headers.get("retry-after")
             assert exception_info.value.response.reason == "Too Many Requests"
@@ -315,7 +331,9 @@ class TestSession(IntegrationTest):
 
     async def test_request__unavailable_for_legal_reasons(self):
         with self.use_cassette():
-            authenticator = asyncprawcore.UntrustedAuthenticator(self.requestor, pytest.placeholders.client_id)
+            authenticator = asyncprawcore.UntrustedAuthenticator(
+                self.requestor, pytest.placeholders.client_id
+            )
             authorizer = asyncprawcore.ImplicitAuthorizer(authenticator, None, 0, "")
             session = asyncprawcore.Session(authorizer)
             exception_class = asyncprawcore.UnavailableForLegalReasons
@@ -324,7 +342,9 @@ class TestSession(IntegrationTest):
             assert exception_info.value.response.status == 451
 
     async def test_request__unsupported_media_type(self):
-        with self.use_cassette(match_requests_on=["uri", "method"],):
+        with self.use_cassette(
+            match_requests_on=["uri", "method"],
+        ):
             session = asyncprawcore.Session(await self.script_authorizer())
             exception_class = asyncprawcore.SpecialError
             data = {

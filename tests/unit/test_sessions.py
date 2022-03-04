@@ -1,16 +1,16 @@
 """Test for asyncprawcore.Sessions module."""
-import logging
 import asyncio
+import logging
 
 import pytest
-from mock import patch
-from ..conftest import AsyncMock
 from aiohttp.web import HTTPRequestTimeout
+from mock import patch
 from testfixtures import LogCapture
 
 import asyncprawcore
 from asyncprawcore.exceptions import RequestException
 
+from ..conftest import AsyncMock
 from . import UnitTest
 
 
@@ -41,10 +41,14 @@ class TestSession(UnitTest):
         return authorizer
 
     async def test_close(self):
-        await asyncprawcore.Session(await self.readonly_authorizer(refresh=False)).close()
+        await asyncprawcore.Session(
+            await self.readonly_authorizer(refresh=False)
+        ).close()
 
     async def test_context_manager(self):
-        async with asyncprawcore.Session(await self.readonly_authorizer(refresh=False)) as session:
+        async with asyncprawcore.Session(
+            await self.readonly_authorizer(refresh=False)
+        ) as session:
             assert isinstance(session, asyncprawcore.Session)
 
     def test_init__without_authenticator(self):
@@ -161,5 +165,6 @@ class TestSession(UnitTest):
 class TestSessionFunction(UnitTest):
     def test_session(self):
         assert isinstance(
-            asyncprawcore.session(InvalidAuthorizer(self.requestor)), asyncprawcore.Session
+            asyncprawcore.session(InvalidAuthorizer(self.requestor)),
+            asyncprawcore.Session,
         )
