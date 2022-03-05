@@ -270,8 +270,10 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
         self.assertIsNone(authorizer.scopes)
         self.assertFalse(authorizer.is_valid())
 
-    async def test_initialize__with_trusted_authenticator(self):
-        authenticator = asyncprawcore.TrustedAuthenticator(None, None, None)
+    async def test_initialize__with_base_authenticator(self):
+        authenticator = asyncprawcore.Authorizer(
+            asyncprawcore.auth.BaseAuthenticator(None, None, None)
+        )
         with self.assertRaises(asyncprawcore.InvalidInvocation):
             asyncprawcore.DeviceIDAuthorizer(authenticator)
 
@@ -284,13 +286,17 @@ class DeviceIDAuthorizerTest(AuthorizerTestBase):
         self.assertEqual(set(["*"]), authorizer.scopes)
         self.assertTrue(authorizer.is_valid())
 
-    async def test_refresh__with_scopes(self):
+    async def test_refresh__with_scopes_and_trusted_authenticator(self):
         scope_list = ["adsedit", "adsread", "creddits", "history"]
         authorizer = asyncprawcore.DeviceIDAuthorizer(
-            self.authentication,
+            asyncprawcore.TrustedAuthenticator(
+                self.requestor, CLIENT_ID, CLIENT_SECRET
+            ),
             scopes=scope_list,
         )
-        with vcr.use_cassette("DeviceIDAuthorizer_refresh__with_scopes"):
+        with vcr.use_cassette(
+            "DeviceIDAuthorizer_refresh__with_scopes_and_trusted_authenticator"
+        ):
             await authorizer.refresh()
 
         self.assertIsNotNone(authorizer.access_token)
