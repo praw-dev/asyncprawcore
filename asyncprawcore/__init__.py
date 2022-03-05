@@ -1,6 +1,7 @@
 """asyncprawcore: Low-level asynchronous communication layer for Async PRAW 7+."""
 
 import logging
+
 from .auth import (  # noqa
     Authorizer,
     DeviceIDAuthorizer,

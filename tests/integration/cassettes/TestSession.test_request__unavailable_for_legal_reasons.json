@@ -1,0 +1,54 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://oauth.reddit.com/?raw_json=1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Authorization": [
+                        "bearer <beaerer_token>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 451,
+                    "message": "LEGAL REASONS"
+                },
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Content-Length": "10590",
+                    "Content-Type": "text/html; charset=UTF-8",
+                    "www-authenticate": "bearer <beaerer_token>, reddit\", error=\"invalid_token\"",
+                    "x-ua-compatible": "IE=edge",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "Content-Encoding": "gzip",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 10:24:00 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21076-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592043840.083475,VS0,VE164",
+                    "Vary": "accept-encoding",
+                    "Set-Cookie": "edgebucket=aZWu0ZLk6xDoWAr137; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": ""
+                },
+                "url": "https://oauth.reddit.com/?raw_json=1"
+            }
+        }
+    ]
+}

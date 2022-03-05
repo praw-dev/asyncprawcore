@@ -1,0 +1,103 @@
+{
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "device_id",
+            "DO_NOT_TRACK_THIS_DEVICE"
+          ],
+          [
+            "grant_type",
+            "https://oauth.reddit.com/grants/installed_client"
+          ],
+          [
+            "scope",
+            "adsedit adsread creddits history"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"device_id\": \"DO_NOT_TRACK_THIS_DEVICE\", \"expires_in\": 3600, \"scope\": \"adsread creddits adsedit history\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Cache-Control": [
+            "max-age=0, must-revalidate"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "181"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 04 Mar 2022 18:53:22 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=e0cA7bnup8qSTpAm3e; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "299"
+          ],
+          "x-ratelimit-reset": [
+            "398"
+          ],
+          "x-ratelimit-used": [
+            "1"
+          ],
+          "x-reddit-loid": [
+            "0000000000kc5f4a8h.2.1646420002958.Z0FBQUFBQmlJbUFpTkVseG1sT0lqUDRjSXg3dUlGcU9TUGlYTUdsTWppSEdTaUdhWEd5dEQ0Vm5yQU0ta2NYWFcweE95NHphWGVxNW9rbVFWUHZ2YkhDaV9hSEFxWWtDRmdhZWg4UTFIc1hPaFRIcDdTM29xa1gwa3dRVXl2U01XVXBSakVMbGxJM0w"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    }
+  ],
+  "recorded_at": "2022-03-04T12:53:22",
+  "version": 1
+}

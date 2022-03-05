@@ -15,7 +15,7 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 
 extras = {
     "ci": ["coveralls"],
-    "lint": ["black", "flake8", "flynt", "pre-commit", "pydocstyle"],
+    "lint": ["black", "flake8", "isort", "pre-commit", "pydocstyle", "flynt"],
     "test": [
         "asynctest >=0.13.0",
         "mock >=0.8",

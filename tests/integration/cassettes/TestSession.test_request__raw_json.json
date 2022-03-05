@@ -1,0 +1,109 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.reddit.com/api/v1/access_token",
+                "body": [
+                    [
+                        "grant_type",
+                        "client_credentials"
+                    ]
+                ],
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Connection": [
+                        "close"
+                    ],
+                    "AUTHORIZATION": [
+                        "Basic <placeholder_auth>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Connection": "close",
+                    "Content-Length": "106",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-reddit-loid": "00000000006wsa6ud9.2.1592044234554.Z0FBQUFBQmU1S3JLTEc4RUJfRFpZQ1Y5UnpGV1BWV00ycHdWZ2FRVVdYd0FQUEE5aTBONVlEVjJGQ3hrQ1lZOGZ0Q1pOMzRIZGhmdllTY3liZFV3YVp1WXBKb1J6SHR4VDJITkFPVUZxbG1aS3BhUDIycEZPZVVXQTZFWGc2V3JfbThUcE80WUFydlM",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 10:30:34 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21050-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592044234.485801,VS0,VE130",
+                    "Set-Cookie": "edgebucket=IVwMv9NT9pAJ1eUFpR; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": "{\"access_token\": \"fake_access_Token\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+                },
+                "url": "https://www.reddit.com/api/v1/access_token"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://oauth.reddit.com/r/reddit_api_test/comments/45xjdr/want_raw_json_test/?raw_json=1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Authorization": [
+                        "bearer <beaerer_token>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Content-Length": "1485",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-ua-compatible": "IE=edge",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "access-control-allow-origin": "*",
+                    "access-control-expose-headers": "X-Moose",
+                    "Content-Encoding": "gzip",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 10:30:35 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21066-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592044235.815986,VS0,VE200",
+                    "Vary": "accept-encoding",
+                    "Set-Cookie": "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": "[{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"dist\": 1, \"children\": [{\"kind\": \"t3\", \"data\": {\"approved_at_utc\": null, \"subreddit\": \"reddit_api_test\", \"selftext\": \"\", \"user_reports\": [], \"saved\": false, \"mod_reason_title\": null, \"gilded\": 0, \"clicked\": false, \"title\": \"WANT_RAW_JSON test: \\u003C \\u003E \\u0026\", \"link_flair_richtext\": [{\"e\": \"text\", \"t\": \"OTHER\"}], \"subreddit_name_prefixed\": \"r/reddit_api_test\", \"hidden\": false, \"pwls\": null, \"link_flair_css_class\": null, \"downs\": 0, \"top_awarded_type\": null, \"parent_whitelist_status\": null, \"hide_score\": false, \"name\": \"t3_45xjdr\", \"quarantine\": false, \"link_flair_text_color\": \"dark\", \"upvote_ratio\": 0.99, \"author_flair_background_color\": null, \"subreddit_type\": \"public\", \"ups\": 1, \"total_awards_received\": 0, \"media_embed\": {}, \"author_flair_template_id\": null, \"is_original_content\": false, \"author_fullname\": \"t2_4cixf\", \"secure_media\": null, \"is_reddit_media_domain\": false, \"is_meta\": false, \"category\": null, \"secure_media_embed\": {}, \"link_flair_text\": \"OTHER\", \"can_mod_post\": false, \"score\": 1, \"approved_by\": null, \"author_premium\": false, \"thumbnail\": \"\", \"edited\": false, \"author_flair_css_class\": null, \"author_flair_richtext\": [], \"gildings\": {}, \"content_categories\": null, \"is_self\": true, \"mod_note\": null, \"created\": 1455585736.0, \"link_flair_type\": \"richtext\", \"wls\": null, \"removed_by_category\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"domain\": \"self.reddit_api_test\", \"allow_live_comments\": false, \"selftext_html\": null, \"likes\": null, \"suggested_sort\": null, \"banned_at_utc\": null, \"view_count\": null, \"archived\": true, \"no_follow\": true, \"is_crosspostable\": false, \"pinned\": false, \"over_18\": false, \"all_awardings\": [], \"awarders\": [], \"media_only\": false, \"can_gild\": false, \"spoiler\": false, \"locked\": false, \"author_flair_text\": null, \"treatment_tags\": [], \"visited\": false, \"removed_by\": null, \"num_reports\": null, \"distinguished\": null, \"subreddit_id\": \"t5_2t5o6\", \"mod_reason_by\": null, \"removal_reason\": null, \"link_flair_background_color\": \"\", \"id\": \"45xjdr\", \"is_robot_indexable\": true, \"num_duplicates\": 0, \"report_reasons\": null, \"author\": \"PyAPITestUser2\", \"discussion_type\": null, \"num_comments\": 2, \"send_replies\": true, \"media\": null, \"contest_mode\": false, \"author_patreon_flair\": false, \"author_flair_text_color\": null, \"permalink\": \"/r/reddit_api_test/comments/45xjdr/want_raw_json_test/\", \"whitelist_status\": null, \"stickied\": false, \"url\": \"https://www.reddit.com/r/reddit_api_test/comments/45xjdr/want_raw_json_test/\", \"subreddit_subscribers\": 57, \"created_utc\": 1455556936.0, \"num_crossposts\": 0, \"mod_reports\": [], \"is_video\": false}}], \"after\": null, \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"dist\": null, \"children\": [{\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 1, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_45xjdr\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"d0335z3\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": true, \"no_follow\": true, \"author\": \"PyAPITestUser2\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t3_45xjdr\", \"score\": 1, \"author_fullname\": \"t2_4cixf\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2t5o6\", \"body\": \"bboe\", \"edited\": 1479367947.0, \"downs\": 0, \"author_flair_css_class\": null, \"is_submitter\": true, \"collapsed\": false, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Ebboe\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"top_awarded_type\": null, \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/reddit_api_test/comments/45xjdr/want_raw_json_test/d0335z3/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_d0335z3\", \"created\": 1455738551.0, \"subreddit\": \"reddit_api_test\", \"author_flair_text\": null, \"treatment_tags\": [], \"created_utc\": 1455709751.0, \"subreddit_name_prefixed\": \"r/reddit_api_test\", \"controversiality\": 0, \"depth\": 0, \"author_flair_background_color\": null, \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}, {\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 1, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_45xjdr\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"d5z7qu5\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": true, \"no_follow\": true, \"author\": \"PyAPITestUser2\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t3_45xjdr\", \"score\": 1, \"author_fullname\": \"t2_4cixf\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2t5o6\", \"body\": \"bboe\", \"edited\": 1479367934.0, \"downs\": 0, \"author_flair_css_class\": null, \"is_submitter\": true, \"collapsed\": false, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Ebboe\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"top_awarded_type\": null, \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/reddit_api_test/comments/45xjdr/want_raw_json_test/d5z7qu5/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_d5z7qu5\", \"created\": 1470055077.0, \"subreddit\": \"reddit_api_test\", \"author_flair_text\": null, \"treatment_tags\": [], \"created_utc\": 1470026277.0, \"subreddit_name_prefixed\": \"r/reddit_api_test\", \"controversiality\": 0, \"depth\": 0, \"author_flair_background_color\": null, \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}]"
+                },
+                "url": "https://oauth.reddit.com/r/reddit_api_test/comments/45xjdr/want_raw_json_test/?raw_json=1"
+            }
+        }
+    ]
+}

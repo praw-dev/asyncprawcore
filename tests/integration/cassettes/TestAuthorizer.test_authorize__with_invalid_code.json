@@ -1,0 +1,66 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.reddit.com/api/v1/access_token",
+                "body": [
+                    [
+                        "code",
+                        "invalid code"
+                    ],
+                    [
+                        "grant_type",
+                        "authorization_code"
+                    ],
+                    [
+                        "redirect_uri",
+                        "http://localhost:8080"
+                    ]
+                ],
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Connection": [
+                        "close"
+                    ],
+                    "AUTHORIZATION": [
+                        "Basic <placeholder_auth>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Connection": "close",
+                    "Content-Length": "26",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 10:40:31 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21074-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592044831.196827,VS0,VE113",
+                    "Set-Cookie": "edgebucket=mZThOISlilCSAzPaBm; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": "{\"error\": \"invalid_grant\"}"
+                },
+                "url": "https://www.reddit.com/api/v1/access_token"
+            }
+        }
+    ]
+}

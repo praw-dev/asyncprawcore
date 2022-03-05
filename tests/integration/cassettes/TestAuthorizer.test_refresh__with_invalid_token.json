@@ -1,0 +1,64 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.reddit.com/api/v1/access_token",
+                "body": [
+                    [
+                        "grant_type",
+                        "refresh_token"
+                    ],
+                    [
+                        "refresh_token",
+                        "fake_refresh_token"
+                    ]
+                ],
+                "headers": {
+                    "User-Agent": [
+                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
+                    ],
+                    "Connection": [
+                        "close"
+                    ],
+                    "AUTHORIZATION": [
+                        "Basic <placeholder_auth>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Connection": "close",
+                    "Content-Length": "40",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "x-frame-options": "SAMEORIGIN",
+                    "x-content-type-options": "nosniff",
+                    "x-xss-protection": "1; mode=block",
+                    "x-ua-compatible": "IE=edge",
+                    "set-cookie": "session_tracker=yUFj1D3V0JtiKJG91i.0.1592045156545.Z0FBQUFBQmU1SzVrem4wUGpjYnNFaVFZWEs1cmdDX3hlTlh3SWJhRGVCVWdacnM3ZDJReEJyUjJJcUgzTUpEU0ZPc01yb0ljbEo5cG5pZmFHZG13dWxyNXh2d0J5Wk9nNG8wbnpBNnktYVIyeXUtNVBrQkdFcEZXWmNNLXFDb1piY21mR3JfcVRRZG0; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 12:45:56 GMT; secure",
+                    "cache-control": "max-age=0, must-revalidate",
+                    "X-Moose": "majestic",
+                    "Accept-Ranges": "bytes",
+                    "Date": "Sat, 13 Jun 2020 10:45:56 GMT",
+                    "Via": "1.1 varnish",
+                    "X-Served-By": "cache-ams21036-AMS",
+                    "X-Cache": "MISS",
+                    "X-Cache-Hits": "0",
+                    "X-Timer": "S1592045156.456979,VS0,VE139",
+                    "Set-Cookie": "edgebucket=0erA4nvSMnbUxQUpQj; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+                    "Server": "snooserv"
+                },
+                "body": {
+                    "string": "{\"message\": \"Bad Request\", \"error\": 400}"
+                },
+                "url": "https://www.reddit.com/api/v1/access_token"
+            }
+        }
+    ]
+}

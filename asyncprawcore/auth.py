@@ -295,8 +295,8 @@ class DeviceIDAuthorizer(BaseAuthorizer):
     ):
         """Represent an app-only OAuth2 authorization for 'installed' apps.
 
-        :param authenticator: An instance of :class:`UntrustedAuthenticator`
-            or :class:`TrustedAuthenticator`.
+        :param authenticator: An instance of :class:`UntrustedAuthenticator` or
+            :class:`TrustedAuthenticator`.
         :param device_id: (optional) A unique ID (20-30 character ASCII string) (default
             DO_NOT_TRACK_THIS_DEVICE). For more information about this parameter, see:
             https://github.com/reddit/reddit/wiki/OAuth2#application-only-oauth
@@ -402,7 +402,7 @@ class ScriptAuthorizer(Authorizer):
         :param password: The password associated with ``username``.
         :param two_factor_callback: A synchronous or asynchronous function that returns
             OTPs (One-Time Passcodes), also known as 2FA auth codes. If this function is
-            provided, prawcore will call it when authenticating.
+            provided, asyncprawcore will call it when authenticating.
         :param scopes: (Optional) A list of OAuth scopes to request authorization for
             (default: None). The scope ``*`` is requested when the default argument is
             used.

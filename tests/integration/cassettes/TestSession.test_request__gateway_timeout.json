@@ -32,20 +32,20 @@
                     "Connection": "close",
                     "Content-Length": "106",
                     "Content-Type": "application/json; charset=UTF-8",
-                    "x-reddit-loid": "00000000006wrw7w8p.2.1592041222022.Z0FBQUFBQmU1SjhHRUlOdWdkVGVzQXdZUnJyZFFZMFdsOVliODNWdi1CVVlkSjEtR1dmZmpiNGgzU2pjR251VDZLVG8xNVh4RmNEVjVWcWRQd3BpYWFVeEFUNzg4RGRRM1hfWUQyUGpXTXJIZEpqd1hIODc2a3FILXZVbEZfZ1Z6cW85MXZsM2duanM",
+                    "x-reddit-loid": "00000000006ws5rnuy.2.1592043212912.Z0FBQUFBQmU1S2JNYmdyb2x0MGxJM2xkdzc2TmxSODJ4bTBWMHZlb1pWSi1fN0RMODk5YV9DZkxBSFI2Q29DM3lQX1lBbi1OQW93aThQNC1teXkydlNxcERDTXotNXFUNkZtUGhNWG9DN1F3cXBrbEhFeVh5RnNMOU52Y3Fkcmp6cVJPblQ5cGRrS2k",
                     "x-frame-options": "SAMEORIGIN",
                     "x-content-type-options": "nosniff",
                     "x-xss-protection": "1; mode=block",
                     "cache-control": "max-age=0, must-revalidate",
                     "X-Moose": "majestic",
                     "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 09:40:22 GMT",
+                    "Date": "Sat, 13 Jun 2020 10:13:32 GMT",
                     "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21024-AMS",
+                    "X-Served-By": "cache-ams21047-AMS",
                     "X-Cache": "MISS",
                     "X-Cache-Hits": "0",
-                    "X-Timer": "S1592041222.961421,VS0,VE125",
-                    "Set-Cookie": "edgebucket=CGDzbl0TO4ItVFOpuU; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+                    "X-Timer": "S1592043213.846832,VS0,VE122",
+                    "Set-Cookie": "edgebucket=IbvFeiDivVOYVZF5Rh; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
                     "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
                     "Server": "snooserv"
                 },
@@ -71,12 +71,12 @@
             },
             "response": {
                 "status": {
-                    "code": 522,
-                    "message": "CLOUDFLARE TIMEOUT"
+                    "code": 504,
+                    "message": "GATEWAY TIMEOUT"
                 },
                 "headers": {
                     "Connection": "keep-alive",
-                    "Content-Length": "49696",
+                    "Content-Length": "44175",
                     "Content-Type": "application/json; charset=UTF-8",
                     "x-ua-compatible": "IE=edge",
                     "x-frame-options": "SAMEORIGIN",
@@ -88,12 +88,12 @@
                     "cache-control": "max-age=0, must-revalidate",
                     "X-Moose": "majestic",
                     "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 09:40:23 GMT",
+                    "Date": "Sat, 13 Jun 2020 10:13:37 GMT",
                     "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21035-AMS",
+                    "X-Served-By": "cache-ams21068-AMS",
                     "X-Cache": "MISS",
                     "X-Cache-Hits": "0",
-                    "X-Timer": "S1592041222.249128,VS0,VE979",
+                    "X-Timer": "S1592043216.081036,VS0,VE976",
                     "Vary": "accept-encoding",
                     "Set-Cookie": "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None",
                     "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
@@ -121,12 +121,12 @@
             },
             "response": {
                 "status": {
-                    "code": 522,
-                    "message": "CLOUDFLARE TIMEOUT"
+                    "code": 504,
+                    "message": "GATEWAY TIMEOUT"
                 },
                 "headers": {
                     "Connection": "keep-alive",
-                    "Content-Length": "49710",
+                    "Content-Length": "44174",
                     "Content-Type": "application/json; charset=UTF-8",
                     "x-ua-compatible": "IE=edge",
                     "x-frame-options": "SAMEORIGIN",
@@ -138,14 +138,14 @@
                     "cache-control": "max-age=0, must-revalidate",
                     "X-Moose": "majestic",
                     "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 09:40:24 GMT",
+                    "Date": "Sat, 13 Jun 2020 10:13:44 GMT",
                     "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21035-AMS",
+                    "X-Served-By": "cache-ams21068-AMS",
                     "X-Cache": "MISS",
                     "X-Cache-Hits": "0",
-                    "X-Timer": "S1592041223.350620,VS0,VE1141",
+                    "X-Timer": "S1592043224.784435,VS0,VE713",
                     "Vary": "accept-encoding",
-                    "Set-Cookie": "session_tracker=ckirohpqnjrmedgqnn.0.1592041223428.Z0FBQUFBQmU1SjhJeEhlNUZYMHVXOUMzSXRhdXZZbld1Skt6VXhxQ29paGg1bVNhMWJ5US1VRVhKNzN6UTRTTEc3RVpFVldxbXRXQ0p6d0pSeFJmSGNfTlVNVVhqUlhobVZFQzZJbVhvUUlVT2Z2bjNVX05zcHdUeXhCaXZWNUxSaElNV1lQRTdGaVU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 11:40:24 GMT; secure; SameSite=None; Secure",
+                    "Set-Cookie": "session_tracker=rpoqnqajkhrlhqbhcp.0.1592043223870.Z0FBQUFBQmU1S2JZV2pYR2pLcmt4UWl5SzlqUEdKUEJ1RllfZmRYV3I2OG8ySHR4RUFBSXFHX0ZEQm5oTlNOSmJ5Q2k2UGRtdlpXZlE2QkJ4NllxTmhPdU1lX28tdlowS050dEVMaG9tM24wanZ1aUlOT0dwdTcyazdjM20yMDd6eG9EWEUyc3hOVWI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 12:13:44 GMT; secure; SameSite=None; Secure",
                     "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
                     "Server": "snooserv"
                 },
@@ -171,12 +171,12 @@
             },
             "response": {
                 "status": {
-                    "code": 522,
-                    "message": "CLOUDFLARE TIMEOUT"
+                    "code": 504,
+                    "message": "GATEWAY TIMEOUT"
                 },
                 "headers": {
                     "Connection": "keep-alive",
-                    "Content-Length": "49688",
+                    "Content-Length": "44183",
                     "Content-Type": "application/json; charset=UTF-8",
                     "x-ua-compatible": "IE=edge",
                     "x-frame-options": "SAMEORIGIN",
@@ -188,14 +188,14 @@
                     "cache-control": "max-age=0, must-revalidate",
                     "X-Moose": "majestic",
                     "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 09:40:25 GMT",
+                    "Date": "Sat, 13 Jun 2020 10:13:52 GMT",
                     "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21035-AMS",
+                    "X-Served-By": "cache-ams21068-AMS",
                     "X-Cache": "MISS",
                     "X-Cache-Hits": "0",
-                    "X-Timer": "S1592041225.653837,VS0,VE999",
+                    "X-Timer": "S1592043231.429221,VS0,VE774",
                     "Vary": "accept-encoding",
-                    "Set-Cookie": "session_tracker=ckirohpqnjrmedgqnn.0.1592041224723.Z0FBQUFBQmU1SjhKbVd6eVV0bTl2T1FSRTlKa1hZVG4zQWl2NWdnMU5hbHB3VDBmcFNKRGpjYzllNXVLRWstcFhrTzY5UDhLQ3pleFd6VXZmdDk2SE85dFJKbGhaazZpbmVaYy1MOTV4UWNPWHVxUEd2SEZ2Zm44QnBxOW02WjhjUmJSTUk5czZ3djk; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 11:40:25 GMT; secure; SameSite=None; Secure",
+                    "Set-Cookie": "session_tracker=rpoqnqajkhrlhqbhcp.0.1592043231505.Z0FBQUFBQmU1S2Jnd3JDQVllbGEwQ2ZMdWVzSDQ1NkdMcVFwNU1rTmYwdEtsN3hCaW1pLVhpYVVJMzJyaVU5UXFwYzZ5Zk94ZTEtdHV6ZldWQnc1TzAzUEpIUm9SZk1NakZyMVlyUmJseEhjNTlLQ1ZMMWVyOXJTclExbmxKVTRiOV9GcjBWTEdtbk4; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 12:13:52 GMT; secure; SameSite=None; Secure",
                     "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
                     "Server": "snooserv"
                 },
