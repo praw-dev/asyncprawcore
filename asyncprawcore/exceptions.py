@@ -65,7 +65,7 @@ class OAuthException(AsyncPrawcoreException):
         """Intialize a OAuthException instance.
 
         :param response: The response returned from an aiohttp request.
-        :param error: The error type returned by reddit.
+        :param error: The error type returned by Reddit.
         :param description: A description of the error when provided.
 
         """
@@ -166,8 +166,8 @@ class TooManyRequests(ResponseException):
     def __init__(self, response: "ClientResponse") -> None:
         """Initialize a TooManyRequests exception instance.
 
-        :param response: A requests.response instance that may contain a retry-after
-            header and a message.
+        :param response: A ``aiohttp.ClientResponse`` instance that may contain a
+            retry-after header and a message.
 
         """
         self.response = response
@@ -177,8 +177,8 @@ class TooManyRequests(ResponseException):
         msg = f"received {response.status} HTTP response"
         if self.retry_after:
             msg += (
-                f". Please wait at least {float(self.retry_after)} seconds "
-                "before re-trying this request."
+                f". Please wait at least {float(self.retry_after)} seconds before"
+                f" re-trying this request."
             )
         AsyncPrawcoreException.__init__(self, msg)
 

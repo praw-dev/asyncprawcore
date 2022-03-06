@@ -71,7 +71,7 @@ class FiniteRetryStrategy(RetryStrategy):
     def __init__(self, retries: int = 3) -> None:
         """Initialize the strategy.
 
-        :param retries: Number of times to attempt a request.
+        :param retries: Number of times to attempt a request (default: ``3``).
 
         """
         self._retries = retries
@@ -86,7 +86,7 @@ class FiniteRetryStrategy(RetryStrategy):
 
 
 class Session(object):
-    """The low-level connection interface to reddit's API."""
+    """The low-level connection interface to Reddit's API."""
 
     RETRY_EXCEPTIONS = (ConnectionError, HTTPRequestTimeout)
     RETRY_STATUSES = {
@@ -142,9 +142,9 @@ class Session(object):
         return new_data
 
     def __init__(self, authorizer: Optional["Authorizer"]) -> None:
-        """Prepare the connection to reddit's API.
+        """Prepare the connection to Reddit's API.
 
-        :param authorizer: An instance of :class:`Authorizer`.
+        :param authorizer: An instance of :class:`.Authorizer`.
 
         """
         if not isinstance(authorizer, BaseAuthorizer):
@@ -366,7 +366,7 @@ class Session(object):
     ) -> Optional[Union[Dict[str, Any], str]]:
         """Return the json content from the resource at ``path``.
 
-        :param method: The request verb. E.g., get, post, put.
+        :param method: The request verb. E.g., ``"GET"``, ``"POST"``, ``"PUT"``.
         :param path: The path of the request. This path will be combined with the
             ``oauth_url`` of the Requestor.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
@@ -377,8 +377,10 @@ class Session(object):
         :param timeout: Specifies a particular timeout, in seconds.
 
         Automatically refreshes the access token if it becomes invalid and a refresh
-        token is available. Raises InvalidInvocation in such a case if a refresh token
-        is not available.
+        token is available.
+
+        :raises: :class:`.InvalidInvocation` in such a case if a refresh token is not
+            available.
 
         """
         params = self._preprocess_params(deepcopy(params) or {})
@@ -402,9 +404,9 @@ class Session(object):
 
 
 def session(authorizer: "Authorizer" = None) -> Session:
-    """Return a :class:`Session` instance.
+    """Return a :class:`.Session` instance.
 
-    :param authorizer: An instance of :class:`Authorizer`.
+    :param authorizer: An instance of :class:`.Authorizer`.
 
     """
     return Session(authorizer=authorizer)

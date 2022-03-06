@@ -11,13 +11,25 @@ asyncprawcore
     :alt: Supported Python Versions
     :target: https://pypi.python.org/pypi/asyncprawcore
 
+.. image:: https://img.shields.io/pypi/dm/asyncprawcore
+    :alt: PyPI - Downloads - Monthly
+    :target: https://pypi.python.org/pypi/asyncprawcore
+
 .. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=main
     :alt: Coveralls Coverage
     :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=main
 
 .. image:: https://github.com/praw-dev/asyncprawcore/workflows/CI/badge.svg
-    :alt: Github Actions Coverage
-    :target: https://github.com/praw-dev/asyncprawcore/actions?query=branch%3Amaster
+    :alt: GitHub Actions Status
+    :target: https://github.com/praw-dev/asyncprawcore/actions?query=branch%3Amain
+
+.. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
+    :alt: Contributor Covenant
+    :target: https://github.com/praw-dev/.github/blob/main/CODE_OF_CONDUCT.md
+
+.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    :target: https://github.com/pre-commit/pre-commit
+    :alt: pre-commit
 
 asyncprawcore is a low-level communication layer for PRAW 4+.
 

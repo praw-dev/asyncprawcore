@@ -2,7 +2,7 @@
 
 """This example shows how simple in-memory caching can be used.
 
-Demonstrates the use of custom sessions with ``Requestor``. It's an adaptation of
+Demonstrates the use of custom sessions with :class:`.Requestor`. It's an adaptation of
 ``read_only_auth_trophies.py``.
 
 """
@@ -20,7 +20,7 @@ class CachingSession(aiohttp.ClientSession):
     """Cache GETs in memory.
 
     Toy example of custom session to showcase the ``session`` parameter of
-    ``Requestor``.
+    :class:`.Requestor`.
 
     """
 

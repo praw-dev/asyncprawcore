@@ -3,7 +3,7 @@
 """This example outputs a user's list of trophies.
 
 This program demonstrates the use of ``asyncprawcore.ReadOnlyAuthorizer`` that does not
-require an access token to make authenticated requests to reddit.
+require an access token to make authenticated requests to Reddit.
 
 """
 import asyncio

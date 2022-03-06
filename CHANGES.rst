@@ -9,7 +9,7 @@ Unreleased
 **Changed**
 
 - Drop support for Python 3.6, which is end-of-life on 2021-12-23.
-- ``DeviceIDAuthorizer`` can be now used with ``TrustedAuthenticator``.
+- :class:`DeviceIDAuthorizer` can be now used with :class:`TrustedAuthenticator`.
 
 2.3.0 (2021/07/27)
 ------------------
@@ -17,9 +17,10 @@ Unreleased
 **Added**
 
 - 301 redirects result in a ``Redirect`` exception.
-- ``Requestor`` is now initialized with a ``timeout`` parameter.
-- ``ScriptAuthorizer``, ``ReadOnlyAuthorizer``, and ``DeviceIDAuthorizer`` have a new
-  parameter, ``scopes``, which determines the scope of access requests.
+- :class:`Requestor` is now initialized with a ``timeout`` parameter.
+- :class:`ScriptAuthorizer`, :class:`ReadOnlyAuthorizer`, and
+  :class:`DeviceIDAuthorizer` have a new parameter, ``scopes``, which determines the
+  scope of access requests.
 - Retry 408 "Request Timeout" HTTP responses.
 
 2.2.1 (2021/07/06)
@@ -46,10 +47,10 @@ Unreleased
 
 **Added**
 
-- Add a ``URITooLarge`` exception.
-- :class:`.ScriptAuthorizer` has a new parameter ``two_factor_callback`` that supplies
+- Add a :class:`URITooLarge` exception.
+- :class:`ScriptAuthorizer` has a new parameter ``two_factor_callback`` that supplies
   OTPs (One-Time Passcodes) when :meth:`.ScriptAuthorizer.refresh` is called.
-- Add a ``TooManyRequests`` exception.
+- Add a :class:`TooManyRequests` exception.
 
 **Fixed**
 
@@ -60,17 +61,17 @@ Unreleased
 
 **Added**
 
-- ``Authorizer`` optionally takes a ``pre_refresh_callback`` keyword argument. If
-  provided, the function will called with the instance of ``Authorizer`` prior to
+- :class:`Authorizer` optionally takes a ``pre_refresh_callback`` keyword argument. If
+  provided, the function will called with the instance of :class:`Authorizer` prior to
   refreshing the access and refresh tokens.
-- ``Authorizer`` optionally takes a ``post_refresh_callback`` keyword argument. If
-  provided, the function will called with the instance of ``Authorizer`` after
+- :class:`Authorizer` optionally takes a ``post_refresh_callback`` keyword argument. If
+  provided, the function will called with the instance of :class:`Authorizer` after
   refreshing the access and refresh tokens.
 
 **Changed**
 
-- The ``refresh_token`` argument to ``Authorizer`` must now be passed by keyword, and
-  cannot be passed as a positional argument.
+- The ``refresh_token`` argument to :class:`Authorizer` must now be passed by keyword,
+  and cannot be passed as a positional argument.
 
 1.5.1 (2021-01-25)
 ------------------
@@ -82,10 +83,19 @@ Unreleased
 1.5.0 (2020-09-28)
 ------------------
 
+**Added**
+
+- :meth:`.Requestor.request` can be given a timeout parameter to control the amount of
+  time to wait for a request to succeed.
+
 **Changed**
 
 - Added preprocessing for ``data`` and ``params`` in ``asyncprawcore.Session.request()``
   for compatibility with ``aiohttp``.
+
+**Fixed**
+
+:class:`RateLimiter` will not sleep longer than ``next_request_timestamp``.
 
 **Fixed**
 
