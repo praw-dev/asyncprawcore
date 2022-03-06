@@ -1,7 +1,8 @@
-"""Use our own codes instead of requiring Aiohttp."""
+"""Use our own codes instead of importing them."""
+from typing import Dict, Tuple
 
 
-def _make_into_dict(tupledict):
+def _make_into_dict(tupledict: Dict[int, Tuple[str, ...]]) -> Dict[str, int]:
     """Transform a ``value, keys`` tupledict."""
     newdict = {}
     for value, keys in tupledict.items():

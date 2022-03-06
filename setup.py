@@ -17,6 +17,7 @@ extras = {
     "ci": ["coveralls"],
     "lint": ["black", "flake8", "isort", "pre-commit", "pydocstyle", "flynt"],
     "test": [
+        "aiofiles",
         "asynctest >=0.13.0",
         "mock >=0.8",
         "pytest",
