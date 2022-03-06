@@ -2,6 +2,7 @@
 import logging
 from json import dumps
 
+import aiofiles as aiofiles
 import pytest
 from mock import patch
 from testfixtures import LogCapture
@@ -107,8 +108,28 @@ class TestSession(IntegrationTest):
             assert "a_test_from_asyncprawcore" in response["json"]["data"]["url"]
             assert key_count == len(data)  # Ensure data is untouched
 
+    async def test_request__post__with_aiofiles(self):
+        with self.use_cassette(
+            "TestSession.test_request__post__with_files",
+            match_requests_on=["uri", "method"],
+        ):
+            session = asyncprawcore.Session(await self.script_authorizer())
+            data = {"upload_type": "header"}
+            async with aiofiles.open(
+                "tests/integration/files/white-square.png", "rb"
+            ) as fp:
+                files = {"file": fp}
+                response = await session.request(
+                    "POST",
+                    "/r/asyncpraw/api/upload_sr_img",
+                    data=data,
+                    files=files,
+                )
+            assert "img_src" in response
+
     async def test_request__post__with_files(self):
         with self.use_cassette(
+            "TestSession.test_request__post__with_files",
             match_requests_on=["uri", "method"],
         ):
             session = asyncprawcore.Session(await self.script_authorizer())
