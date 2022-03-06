@@ -1,6 +1,7 @@
 """Provides Authentication and Authorization classes."""
 import inspect
 import time
+from abc import ABC, abstractmethod
 from typing import (
     TYPE_CHECKING,
     Awaitable,
@@ -25,7 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from asyncprawcore.requestor import Requestor
 
 
-class BaseAuthenticator(object):
+class BaseAuthenticator(ABC):
     """Provide the base authenticator object that stores OAuth2 credentials."""
 
     def __init__(
@@ -45,6 +46,10 @@ class BaseAuthenticator(object):
         self._requestor = requestor
         self.client_id = client_id
         self.redirect_uri = redirect_uri
+
+    @abstractmethod
+    def _auth(self):
+        pass
 
     async def _post(
         self, url: str, success_status: int = codes["ok"], **data
@@ -164,7 +169,7 @@ class UntrustedAuthenticator(BaseAuthenticator):
         return BasicAuth(self.client_id, "")
 
 
-class BaseAuthorizer(object):
+class BaseAuthorizer(ABC):
     """Superclass for OAuth2 authorization tokens and scopes."""
 
     AUTHENTICATOR_CLASS: Union[Tuple, Type] = BaseAuthenticator

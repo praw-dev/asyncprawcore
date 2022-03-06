@@ -1,5 +1,10 @@
 """Provide utility for the asyncprawcore package."""
+from typing import TYPE_CHECKING, Union
+
 from .exceptions import Forbidden, InsufficientScope, InvalidToken
+
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse
 
 _auth_error_mapping = {
     403: Forbidden,
@@ -8,7 +13,9 @@ _auth_error_mapping = {
 }
 
 
-def authorization_error_class(response):
+def authorization_error_class(
+    response: "ClientResponse",
+) -> Union[InvalidToken, Forbidden, InsufficientScope]:
     """Return an exception instance that maps to the OAuth Error.
 
     :param response: The HTTP response containing a www-authenticate error.
