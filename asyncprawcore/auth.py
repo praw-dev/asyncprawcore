@@ -22,7 +22,7 @@ from . import const
 from .codes import codes
 from .exceptions import InvalidInvocation, OAuthException, ResponseException
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from asyncprawcore.requestor import Requestor
 
 

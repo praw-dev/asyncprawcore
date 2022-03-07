@@ -4,7 +4,7 @@ import logging
 import time
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Mapping, Optional
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from aiohttp import ClientResponse
 
 log = logging.getLogger(__package__)
