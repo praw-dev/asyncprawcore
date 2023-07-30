@@ -24,6 +24,7 @@ extras = {
         "pytest-vcr",
         "testfixtures >4.13.2, <7",
         "vcrpy==4.1.1",
+        "urllib3 ==1.26.*, <2",
     ],
 }
 extras["dev"] = extras["lint"] + extras["test"]
