@@ -239,10 +239,16 @@ class Authorizer(BaseAuthorizer):
         authenticator: BaseAuthenticator,
         *,
         post_refresh_callback: Optional[
-            Callable[["Authorizer"], Awaitable[None]]
+            Union[
+                Callable[["Authorizer"], Awaitable[None]],
+                Callable[["Authorizer"], None],
+            ]
         ] = None,
         pre_refresh_callback: Optional[
-            Callable[["Authorizer"], Awaitable[None]]
+            Union[
+                Callable[["Authorizer"], Awaitable[None]],
+                Callable[["Authorizer"], None],
+            ]
         ] = None,
         refresh_token: Optional[str] = None,
     ) -> None:

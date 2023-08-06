@@ -97,9 +97,8 @@ class RateLimiter(object):
                 max(
                     seconds_to_reset
                     - (
-                            self.window_size
-                            - (self.window_size / (
-                                self.remaining + self.used) * self.used)
+                        self.window_size
+                        - (self.window_size / (self.remaining + self.used) * self.used)
                     ),
                     0,
                 ),

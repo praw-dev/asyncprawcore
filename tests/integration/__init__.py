@@ -1,48 +1,76 @@
 """asyncprawcore Integration test suite."""
-import inspect
-import logging
+import os
 
-import asynctest
+import pytest
+from vcr import VCR
 
-from asyncprawcore import Requestor
-from tests.conftest import vcr
+from .utils import (
+    CustomPersister,
+    CustomSerializer,
+    ensure_environment_variables,
+    ensure_integration_test,
+    filter_access_token,
+)
+
+CASSETTES_PATH = "tests/integration/cassettes"
+existing_cassettes = set()
+used_cassettes = set()
 
 
-class IntegrationTest(asynctest.TestCase):
-    """Base class for asyncprawcore integration tests."""
+class IntegrationTest:
+    """Base class for Async PRAW integration tests."""
 
-    logger = logging.getLogger(__name__)
-
-    def get_cassette_name(self) -> str:
-        function_name = inspect.currentframe().f_back.f_back.f_code.co_name
-        return f"{type(self).__name__}.{function_name}"
-
-    async def setUp(self):
-        """Setup runs before all test cases."""
-        self.requestor = Requestor("asyncprawcore:test (by /u/Lil_SpazJoekp)")
-        self.recorder = vcr
-
-    async def teardown(self) -> None:
-        await self.requestor.close()
-
-    def use_cassette(self, cassette_name=None, **kwargs):
-        """Use a cassette. The cassette name is dynamically generated.
-
-        :param cassette_name: (Deprecated) The name to use for the cassette. All names
-            that are not equal to the dynamically generated name will be logged.
-        :param kwargs: All keyword arguments for the main function
-            (``VCR.use_cassette``).
-
-        """
-        dynamic_name = self.get_cassette_name()
-        if cassette_name:
-            self.logger.debug(
-                f"Static cassette name provided by {dynamic_name}. The following name "
-                f"was provided: {cassette_name}"
+    @pytest.fixture(autouse=True, scope="session")
+    def cassette_tracker(self):
+        """Track cassettes to ensure unused cassettes are not uploaded."""
+        global existing_cassettes
+        for cassette in os.listdir(CASSETTES_PATH):
+            existing_cassettes.add(cassette[: cassette.rindex(".")])
+        yield
+        unused_cassettes = existing_cassettes - used_cassettes
+        if unused_cassettes and os.getenv("ENSURE_NO_UNUSED_CASSETTES", "0") == "1":
+            raise AssertionError(
+                f"The following cassettes are unused: {', '.join(unused_cassettes)}."
             )
-            if cassette_name != dynamic_name:
-                self.logger.warning(
-                    f"Dynamic cassette name for function {dynamic_name} does not match"
-                    f" the provided cassette name: {cassette_name}"
-                )
-        return self.recorder.use_cassette(cassette_name or dynamic_name, **kwargs)
+
+    @pytest.fixture(autouse=True)
+    def cassette(self, request, recorder, cassette_name):
+        """Wrap a test in a VCR cassette."""
+        global used_cassettes
+        kwargs = {}
+        for marker in request.node.iter_markers("add_placeholder"):
+            recorder.persister.add_additional_placeholders(marker.kwargs)
+        for marker in request.node.iter_markers("recorder_kwargs"):
+            for key, value in marker.kwargs.items():
+                #  Don't overwrite existing values since function markers are provided
+                #  before class markers.
+                kwargs.setdefault(key, value)
+        with recorder.use_cassette(cassette_name, **kwargs) as cassette:
+            if not cassette.write_protected:
+                ensure_environment_variables()
+            yield cassette
+            ensure_integration_test(cassette)
+            used_cassettes.add(cassette_name)
+
+    @pytest.fixture(autouse=True)
+    def recorder(self):
+        """Configure VCR."""
+        vcr = VCR()
+        vcr.before_record_response = filter_access_token
+        vcr.cassette_library_dir = CASSETTES_PATH
+        vcr.decode_compressed_response = True
+        vcr.match_on = ["uri", "method"]
+        vcr.path_transformer = VCR.ensure_suffix(".json")
+        vcr.register_persister(CustomPersister)
+        vcr.register_serializer("custom_serializer", CustomSerializer)
+        vcr.serializer = "custom_serializer"
+        yield vcr
+        CustomPersister.additional_placeholders = {}
+
+    @pytest.fixture
+    def cassette_name(self, request, vcr_cassette_name):
+        """Return the name of the cassette to use."""
+        marker = request.node.get_closest_marker("cassette_name")
+        if marker is None:
+            return vcr_cassette_name
+        return marker.args[0]
