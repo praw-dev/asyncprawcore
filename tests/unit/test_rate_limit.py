@@ -50,24 +50,6 @@ class RateLimiterTest(UnitTest):
         assert not mock_sleep.called
 
     @patch("time.time")
-    def test_update__delay_full_time_with_negative_remaining(self, mock_time):
-        mock_time.return_value = 37
-        self.rate_limiter.remaining = -1
-        self.rate_limiter.update(self._headers(0, 100, 13))
-        assert self.rate_limiter.remaining == 0
-        assert self.rate_limiter.used == 100
-        assert self.rate_limiter.next_request_timestamp == 50
-
-    @patch("time.time")
-    def test_update__delay_full_time_with_zero_remaining(self, mock_time):
-        mock_time.return_value = 37
-        self.rate_limiter.remaining = 0
-        self.rate_limiter.update(self._headers(0, 100, 13))
-        assert self.rate_limiter.remaining == 0
-        assert self.rate_limiter.used == 100
-        assert self.rate_limiter.next_request_timestamp == 50
-
-    @patch("time.time")
     def test_update__compute_delay_with_no_previous_info(self, mock_time):
         mock_time.return_value = 100
         self.rate_limiter.update(self._headers(60, 100, 60))
@@ -101,6 +83,24 @@ class RateLimiterTest(UnitTest):
         assert self.rate_limiter.remaining == 599
         assert self.rate_limiter.used == 1
         assert self.rate_limiter.next_request_timestamp == 101
+
+    @patch("time.time")
+    def test_update__delay_full_time_with_negative_remaining(self, mock_time):
+        mock_time.return_value = 37
+        self.rate_limiter.remaining = -1
+        self.rate_limiter.update(self._headers(0, 100, 13))
+        assert self.rate_limiter.remaining == 0
+        assert self.rate_limiter.used == 100
+        assert self.rate_limiter.next_request_timestamp == 50
+
+    @patch("time.time")
+    def test_update__delay_full_time_with_zero_remaining(self, mock_time):
+        mock_time.return_value = 37
+        self.rate_limiter.remaining = 0
+        self.rate_limiter.update(self._headers(0, 100, 13))
+        assert self.rate_limiter.remaining == 0
+        assert self.rate_limiter.used == 100
+        assert self.rate_limiter.next_request_timestamp == 50
 
     def test_update__no_change_without_headers(self):
         prev = copy(self.rate_limiter)

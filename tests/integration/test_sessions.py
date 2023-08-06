@@ -75,87 +75,6 @@ class TestSession(IntegrationTest):
                 ("asyncprawcore", "DEBUG", "Response: 202 (2 bytes)")
             )
 
-    async def test_request__get(self):
-        with self.use_cassette():
-            session = asyncprawcore.Session(await self.readonly_authorizer())
-            params = {"limit": 100, "bool_param": True}
-            response = await session.request("GET", "/", params=params)
-        assert isinstance(response, dict)
-        assert len(params) == 2
-        assert response["kind"] == "Listing"
-
-    async def test_request__patch(self):
-        with self.use_cassette(
-            match_requests_on=["method", "uri", "body"],
-        ):
-            session = asyncprawcore.Session(await self.script_authorizer())
-            json = {"lang": "ja", "num_comments": 123}
-            response = await session.request("PATCH", "/api/v1/me/prefs", json=json)
-            assert response["lang"] == "ja"
-            assert response["num_comments"] == 123
-
-    async def test_request__post(self):
-        with self.use_cassette():
-            session = asyncprawcore.Session(await self.script_authorizer())
-            data = {
-                "kind": "self",
-                "sr": "asyncpraw",
-                "text": "Test!",
-                "title": "A Test from asyncprawcore.",
-            }
-            key_count = len(data)
-            response = await session.request("POST", "/api/submit", data=data)
-            assert "a_test_from_asyncprawcore" in response["json"]["data"]["url"]
-            assert key_count == len(data)  # Ensure data is untouched
-
-    async def test_request__post__with_aiofiles(self):
-        with self.use_cassette(
-            "TestSession.test_request__post__with_files",
-            match_requests_on=["uri", "method"],
-        ):
-            session = asyncprawcore.Session(await self.script_authorizer())
-            data = {"upload_type": "header"}
-            async with aiofiles.open(
-                "tests/integration/files/white-square.png", "rb"
-            ) as fp:
-                files = {"file": fp}
-                response = await session.request(
-                    "POST",
-                    "/r/asyncpraw/api/upload_sr_img",
-                    data=data,
-                    files=files,
-                )
-            assert "img_src" in response
-
-    async def test_request__post__with_files(self):
-        with self.use_cassette(
-            "TestSession.test_request__post__with_files",
-            match_requests_on=["uri", "method"],
-        ):
-            session = asyncprawcore.Session(await self.script_authorizer())
-            data = {"upload_type": "header"}
-            with open("tests/integration/files/white-square.png", "rb") as fp:
-                files = {"file": fp}
-                response = await session.request(
-                    "POST",
-                    "/r/asyncpraw/api/upload_sr_img",
-                    data=data,
-                    files=files,
-                )
-            assert "img_src" in response
-
-    async def test_request__raw_json(self):
-        with self.use_cassette():
-            session = asyncprawcore.Session(await self.readonly_authorizer())
-            response = await session.request(
-                "GET",
-                "/r/reddit_api_test/comments/45xjdr/want_raw_json_test/",
-            )
-        assert (
-            "WANT_RAW_JSON test: < > &"
-            == response[0]["data"]["children"][0]["data"]["title"]
-        )
-
     @patch("asyncio.sleep", return_value=None)
     async def test_request__bad_gateway(self, _):
         with self.use_cassette():
@@ -242,6 +161,15 @@ class TestSession(IntegrationTest):
                 await session.request("GET", "/")
             assert exception_info.value.response.status == 504
 
+    async def test_request__get(self):
+        with self.use_cassette():
+            session = asyncprawcore.Session(await self.readonly_authorizer())
+            params = {"limit": 100, "bool_param": True}
+            response = await session.request("GET", "/", params=params)
+        assert isinstance(response, dict)
+        assert len(params) == 2
+        assert response["kind"] == "Listing"
+
     @patch("asyncio.sleep", return_value=None)
     async def test_request__internal_server_error(self, _):
         with self.use_cassette():
@@ -273,6 +201,78 @@ class TestSession(IntegrationTest):
             response = await session.request("DELETE", path, data=data)
             assert response == ""
 
+    async def test_request__patch(self):
+        with self.use_cassette(
+            match_requests_on=["method", "uri", "body"],
+        ):
+            session = asyncprawcore.Session(await self.script_authorizer())
+            json = {"lang": "ja", "num_comments": 123}
+            response = await session.request("PATCH", "/api/v1/me/prefs", json=json)
+            assert response["lang"] == "ja"
+            assert response["num_comments"] == 123
+
+    async def test_request__post(self):
+        with self.use_cassette():
+            session = asyncprawcore.Session(await self.script_authorizer())
+            data = {
+                "kind": "self",
+                "sr": "asyncpraw",
+                "text": "Test!",
+                "title": "A Test from asyncprawcore.",
+            }
+            key_count = len(data)
+            response = await session.request("POST", "/api/submit", data=data)
+            assert "a_test_from_asyncprawcore" in response["json"]["data"]["url"]
+            assert key_count == len(data)  # Ensure data is untouched
+
+    async def test_request__post__with_aiofiles(self):
+        with self.use_cassette(
+            "TestSession.test_request__post__with_files",
+            match_requests_on=["uri", "method"],
+        ):
+            session = asyncprawcore.Session(await self.script_authorizer())
+            data = {"upload_type": "header"}
+            async with aiofiles.open(
+                "tests/integration/files/white-square.png", "rb"
+            ) as fp:
+                files = {"file": fp}
+                response = await session.request(
+                    "POST",
+                    "/r/asyncpraw/api/upload_sr_img",
+                    data=data,
+                    files=files,
+                )
+            assert "img_src" in response
+
+    async def test_request__post__with_files(self):
+        with self.use_cassette(
+            "TestSession.test_request__post__with_files",
+            match_requests_on=["uri", "method"],
+        ):
+            session = asyncprawcore.Session(await self.script_authorizer())
+            data = {"upload_type": "header"}
+            with open("tests/integration/files/white-square.png", "rb") as fp:
+                files = {"file": fp}
+                response = await session.request(
+                    "POST",
+                    "/r/asyncpraw/api/upload_sr_img",
+                    data=data,
+                    files=files,
+                )
+            assert "img_src" in response
+
+    async def test_request__raw_json(self):
+        with self.use_cassette():
+            session = asyncprawcore.Session(await self.readonly_authorizer())
+            response = await session.request(
+                "GET",
+                "/r/reddit_api_test/comments/45xjdr/want_raw_json_test/",
+            )
+        assert (
+            "WANT_RAW_JSON test: < > &"
+            == response[0]["data"]["children"][0]["data"]["title"]
+        )
+
     async def test_request__redirect(self):
         with self.use_cassette():
             session = asyncprawcore.Session(await self.readonly_authorizer())
@@ -296,21 +296,6 @@ class TestSession(IntegrationTest):
                 await session.request("GET", "/")
                 await session.request("GET", "/")
             assert exception_info.value.response.status == 503
-
-    async def test_request__too_large(self):
-        with self.use_cassette(match_requests_on=["uri", "method"]):
-            session = asyncprawcore.Session(await self.script_authorizer())
-            data = {"upload_type": "header"}
-            with pytest.raises(asyncprawcore.TooLarge) as exception_info:
-                await session.request(
-                    "POST",
-                    "/r/asyncpraw/api/upload_sr_img",
-                    data=data,
-                    files={
-                        "file": open("./tests/integration/files/too_large.jpg", "rb")
-                    },
-                )
-            assert exception_info.value.response.status == 413
 
     async def test_request__too__many_requests__with_retry_headers(self):
         with self.use_cassette():
@@ -349,6 +334,21 @@ class TestSession(IntegrationTest):
                 "message": "Too Many Requests",
                 "error": 429,
             }
+
+    async def test_request__too_large(self):
+        with self.use_cassette(match_requests_on=["uri", "method"]):
+            session = asyncprawcore.Session(await self.script_authorizer())
+            data = {"upload_type": "header"}
+            with pytest.raises(asyncprawcore.TooLarge) as exception_info:
+                await session.request(
+                    "POST",
+                    "/r/asyncpraw/api/upload_sr_img",
+                    data=data,
+                    files={
+                        "file": open("./tests/integration/files/too_large.jpg", "rb")
+                    },
+                )
+            assert exception_info.value.response.status == 413
 
     async def test_request__unavailable_for_legal_reasons(self):
         with self.use_cassette():

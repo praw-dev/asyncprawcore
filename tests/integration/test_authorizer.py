@@ -21,6 +21,14 @@ class AuthorizerBase(IntegrationTest):
 
 
 class TestAuthorizer(AuthorizerBase):
+    async def test_authorize__with_invalid_code(self):
+        self.authentication.redirect_uri = pytest.placeholders.redirect_uri
+        authorizer = asyncprawcore.Authorizer(self.authentication)
+        with self.use_cassette():
+            with pytest.raises(asyncprawcore.OAuthException):
+                await authorizer.authorize("invalid code")
+        assert not authorizer.is_valid()
+
     async def test_authorize__with_permanent_grant(self):
         self.authentication.redirect_uri = pytest.placeholders.redirect_uri
         authorizer = asyncprawcore.Authorizer(self.authentication)
@@ -44,14 +52,6 @@ class TestAuthorizer(AuthorizerBase):
         assert isinstance(authorizer.scopes, set)
         assert len(authorizer.scopes) > 0
         assert authorizer.is_valid()
-
-    async def test_authorize__with_invalid_code(self):
-        self.authentication.redirect_uri = pytest.placeholders.redirect_uri
-        authorizer = asyncprawcore.Authorizer(self.authentication)
-        with self.use_cassette():
-            with pytest.raises(asyncprawcore.OAuthException):
-                await authorizer.authorize("invalid code")
-        assert not authorizer.is_valid()
 
     async def test_refresh(self):
         authorizer = asyncprawcore.Authorizer(

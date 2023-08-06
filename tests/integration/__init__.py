@@ -13,6 +13,10 @@ class IntegrationTest(asynctest.TestCase):
 
     logger = logging.getLogger(__name__)
 
+    def get_cassette_name(self) -> str:
+        function_name = inspect.currentframe().f_back.f_back.f_code.co_name
+        return f"{type(self).__name__}.{function_name}"
+
     async def setUp(self):
         """Setup runs before all test cases."""
         self.requestor = Requestor("asyncprawcore:test (by /u/Lil_SpazJoekp)")
@@ -42,7 +46,3 @@ class IntegrationTest(asynctest.TestCase):
                     f" the provided cassette name: {cassette_name}"
                 )
         return self.recorder.use_cassette(cassette_name or dynamic_name, **kwargs)
-
-    def get_cassette_name(self) -> str:
-        function_name = inspect.currentframe().f_back.f_back.f_code.co_name
-        return f"{type(self).__name__}.{function_name}"

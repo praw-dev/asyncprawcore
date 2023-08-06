@@ -57,6 +57,10 @@ def filter_access_token(response):
     return response
 
 
+def pytest_configure():
+    pytest.placeholders = Placeholders(placeholders)
+
+
 def serialize_dict(data: dict):
     """This is to filter out buffered readers."""
     new_dict = {}
@@ -94,11 +98,6 @@ def serialize_list(data: list):
     return new_list
 
 
-def two_factor_callback():
-    """Return an OTP code."""
-    return None
-
-
 placeholders = {
     x: env_default(x)
     for x in (
@@ -112,65 +111,9 @@ placeholders["BASIC_AUTH"] = b64_string(
 )
 
 
-class CustomPersister(FilesystemPersister):
-    """Custom persiter for VCR."""
-
-    @classmethod
-    def load_cassette(cls, cassette_path, serializer):
-        """Load the cassette."""
-        try:
-            with open(cassette_path) as f:
-                cassette_content = f.read()
-        except OSError:
-            raise ValueError("Cassette not found.")
-        for replacement, value in [
-            (v, f"<{k.upper()}>") for k, v in placeholders.items()
-        ]:
-            cassette_content = cassette_content.replace(value, replacement)
-        cassette = deserialize(cassette_content, serializer)
-        return cassette
-
-    @staticmethod
-    def save_cassette(cassette_path, cassette_dict, serializer):
-        """Save the cassette."""
-        data = serialize(cassette_dict, serializer)
-        for replacement, value in [
-            (f"<{k.upper()}>", v) for k, v in placeholders.items()
-        ]:
-            data = data.replace(value, replacement)
-        dirname, filename = os.path.split(cassette_path)
-        if dirname and not os.path.exists(dirname):
-            os.makedirs(dirname)
-        with open(cassette_path, "w") as f:
-            f.write(data)
-
-
-class CustomSerializer(object):
-    """Custom serializer for cassettes."""
-
-    @staticmethod
-    def serialize(cassette_dict):
-        """Serialize cassette dict."""
-        cassette_dict["recorded_at"] = datetime.now().isoformat()[:-7]
-        return (
-            f"{json.dumps(serialize_dict(cassette_dict), sort_keys=True, indent=2)}\n"
-        )
-
-    @staticmethod
-    def deserialize(cassette_string):
-        """Deserialize cassette string."""
-        return json.loads(cassette_string)
-
-
-vcr = VCR(
-    before_record_response=filter_access_token,
-    cassette_library_dir="tests/integration/cassettes",
-    match_on=["uri", "method"],
-    path_transformer=VCR.ensure_suffix(".json"),
-    serializer="custom_serializer",
-)
-vcr.register_serializer("custom_serializer", CustomSerializer)
-vcr.register_persister(CustomPersister)
+def two_factor_callback():
+    """Return an OTP code."""
+    return None
 
 
 class AsyncMock:
@@ -187,10 +130,67 @@ class AsyncMock:
         return self.response_dict
 
 
+vcr = VCR(
+    before_record_response=filter_access_token,
+    cassette_library_dir="tests/integration/cassettes",
+    match_on=["uri", "method"],
+    path_transformer=VCR.ensure_suffix(".json"),
+    serializer="custom_serializer",
+)
+vcr.register_serializer("custom_serializer", CustomSerializer)
+vcr.register_persister(CustomPersister)
+
+
+class CustomPersister(FilesystemPersister):
+    """Custom persiter for VCR."""
+
+    @staticmethod
+    def save_cassette(cassette_path, cassette_dict, serializer):
+        """Save the cassette."""
+        data = serialize(cassette_dict, serializer)
+        for replacement, value in [
+            (f"<{k.upper()}>", v) for k, v in placeholders.items()
+        ]:
+            data = data.replace(value, replacement)
+        dirname, filename = os.path.split(cassette_path)
+        if dirname and not os.path.exists(dirname):
+            os.makedirs(dirname)
+        with open(cassette_path, "w") as f:
+            f.write(data)
+
+    @classmethod
+    def load_cassette(cls, cassette_path, serializer):
+        """Load the cassette."""
+        try:
+            with open(cassette_path) as f:
+                cassette_content = f.read()
+        except OSError:
+            raise ValueError("Cassette not found.")
+        for replacement, value in [
+            (v, f"<{k.upper()}>") for k, v in placeholders.items()
+        ]:
+            cassette_content = cassette_content.replace(value, replacement)
+        cassette = deserialize(cassette_content, serializer)
+        return cassette
+
+
+class CustomSerializer(object):
+    """Custom serializer for cassettes."""
+
+    @staticmethod
+    def deserialize(cassette_string):
+        """Deserialize cassette string."""
+        return json.loads(cassette_string)
+
+    @staticmethod
+    def serialize(cassette_dict):
+        """Serialize cassette dict."""
+        cassette_dict["recorded_at"] = datetime.now().isoformat()[:-7]
+        return (
+            f"{json.dumps(serialize_dict(cassette_dict), sort_keys=True, indent=2)}\n"
+        )
+
+
 class Placeholders:
     def __init__(self, _dict):
         self.__dict__ = _dict
-
-
-def pytest_configure():
-    pytest.placeholders = Placeholders(placeholders)

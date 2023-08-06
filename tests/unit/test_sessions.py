@@ -51,10 +51,6 @@ class TestSession(UnitTest):
         ) as session:
             assert isinstance(session, asyncprawcore.Session)
 
-    def test_init__without_authenticator(self):
-        with pytest.raises(asyncprawcore.InvalidInvocation):
-            asyncprawcore.Session(None)
-
     def test_init__with_device_id_authorizer(self):
         authenticator = asyncprawcore.UntrustedAuthenticator(
             self.requestor, pytest.placeholders.client_id
@@ -68,6 +64,10 @@ class TestSession(UnitTest):
         )
         authorizer = asyncprawcore.ImplicitAuthorizer(authenticator, None, 0, "")
         asyncprawcore.Session(authorizer)
+
+    def test_init__without_authenticator(self):
+        with pytest.raises(asyncprawcore.InvalidInvocation):
+            asyncprawcore.Session(None)
 
     @patch("asyncio.sleep", return_value=None)
     @patch("aiohttp.ClientSession")

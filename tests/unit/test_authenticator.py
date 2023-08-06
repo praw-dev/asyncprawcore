@@ -65,16 +65,6 @@ class TestUntrustedAuthenticator(UnitTest):
         assert "scope=identity+read" in url
         assert "state=a_state" in url
 
-    def test_authorize_url__token(self):
-        url = self.authenticator.authorize_url(
-            "temporary", ["identity", "read"], "a_state", implicit=True
-        )
-        assert f"client_id={pytest.placeholders.client_id}" in url
-        assert "duration=temporary" in url
-        assert "response_type=token" in url
-        assert "scope=identity+read" in url
-        assert "state=a_state" in url
-
     def test_authorize_url__fail_with_token_and_permanent(self):
         with pytest.raises(asyncprawcore.InvalidInvocation):
             self.authenticator.authorize_url(
@@ -94,3 +84,13 @@ class TestUntrustedAuthenticator(UnitTest):
                 ["identity"],
                 "...",
             )
+
+    def test_authorize_url__token(self):
+        url = self.authenticator.authorize_url(
+            "temporary", ["identity", "read"], "a_state", implicit=True
+        )
+        assert f"client_id={pytest.placeholders.client_id}" in url
+        assert "duration=temporary" in url
+        assert "response_type=token" in url
+        assert "scope=identity+read" in url
+        assert "state=a_state" in url

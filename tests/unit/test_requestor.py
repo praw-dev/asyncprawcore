@@ -28,21 +28,6 @@ class TestRequestor(UnitTest):
             with pytest.raises(asyncprawcore.InvalidInvocation):
                 asyncprawcore.Requestor(agent)
 
-    @patch("aiohttp.ClientSession")
-    async def test_request__wrap_request_exceptions(self, mock_session):
-        exception = Exception("asyncprawcore wrap_request_exceptions")
-        session_instance = mock_session.return_value
-        session_instance.request.side_effect = exception
-        self.requestor = asyncprawcore.Requestor(
-            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
-        )
-        with pytest.raises(asyncprawcore.RequestException) as exception_info:
-            await self.requestor.request("get", "http://a.b", data="bar")
-        assert isinstance(exception_info.value, RequestException)
-        assert exception is exception_info.value.original_exception
-        assert exception_info.value.request_args == ("get", "http://a.b")
-        assert exception_info.value.request_kwargs == {"data": "bar"}
-
     async def test_request__use_custom_session(self):
         override = "REQUEST OVERRIDDEN"
         custom_header = "CUSTOM SESSION HEADER"
@@ -65,3 +50,18 @@ class TestRequestor(UnitTest):
         assert self.requestor._http._default_headers["session_header"] == custom_header
 
         assert await self.requestor.request("https://reddit.com") == override
+
+    @patch("aiohttp.ClientSession")
+    async def test_request__wrap_request_exceptions(self, mock_session):
+        exception = Exception("asyncprawcore wrap_request_exceptions")
+        session_instance = mock_session.return_value
+        session_instance.request.side_effect = exception
+        self.requestor = asyncprawcore.Requestor(
+            "asyncprawcore:test (by /u/Lil_SpazJoekp)"
+        )
+        with pytest.raises(asyncprawcore.RequestException) as exception_info:
+            await self.requestor.request("get", "http://a.b", data="bar")
+        assert isinstance(exception_info.value, RequestException)
+        assert exception is exception_info.value.original_exception
+        assert exception_info.value.request_args == ("get", "http://a.b")
+        assert exception_info.value.request_kwargs == {"data": "bar"}
