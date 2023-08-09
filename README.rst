@@ -31,6 +31,10 @@ asyncprawcore
     :target: https://github.com/pre-commit/pre-commit
     :alt: pre-commit
 
+.. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw/badge
+    :alt: OpenSSF Scorecard
+    :target: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw
+
 asyncprawcore is a low-level communication layer for PRAW 4+.
 
 Installation
