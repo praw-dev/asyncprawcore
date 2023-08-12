@@ -35,11 +35,15 @@ class TestSession(IntegrationTest):
         caplog.set_level(logging.DEBUG)
         session = asyncprawcore.Session(script_authorizer)
         await session.request("POST", "api/read_all_messages")
-        assert (
-            "asyncprawcore",
-            logging.DEBUG,
-            "Response: 202 (2 bytes)",
-        ) in caplog.record_tuples
+        found_message = False
+        for package, level, message in caplog.record_tuples:
+            if (
+                package == "asyncprawcore"
+                and level == logging.DEBUG
+                and "Response: 202 (2 bytes)" in message
+            ):
+                found_message = True
+        assert found_message, f"'Response: 202 (2 bytes)' in {caplog.record_tuples}"
 
     async def test_request__bad_gateway(
         self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer
