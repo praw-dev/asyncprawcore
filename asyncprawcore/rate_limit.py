@@ -1,8 +1,10 @@
 """Provide the RateLimiter class."""
+from __future__ import annotations
+
 import asyncio
 import logging
 import time
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Mapping
 
 if TYPE_CHECKING:
     from aiohttp import ClientResponse
@@ -10,28 +12,31 @@ if TYPE_CHECKING:
 log = logging.getLogger(__package__)
 
 
-class RateLimiter(object):
+class RateLimiter:
     """Facilitates the rate limiting of requests to Reddit.
 
     Rate limits are controlled based on feedback from requests to Reddit.
 
     """
 
-    def __init__(self, *, window_size: int) -> None:
+    def __init__(self, *, window_size: int):
         """Create an instance of the RateLimit class."""
-        self.remaining: Optional[float] = None
-        self.next_request_timestamp: Optional[float] = None
-        self.reset_timestamp: Optional[float] = None
-        self.used: Optional[int] = None
+        self.remaining: float | None = None
+        self.next_request_timestamp: float | None = None
+        self.reset_timestamp: float | None = None
+        self.used: int | None = None
         self.window_size: int = window_size
 
     async def call(
         self,
-        request_function: Callable[[Any], Awaitable["ClientResponse"]],
-        set_header_callback: Callable[[], Awaitable[Dict[str, str]]],
-        *args,
-        **kwargs,
-    ) -> "ClientResponse":
+        request_function: Callable[
+            [Any],
+            Awaitable[ClientResponse],
+        ],
+        set_header_callback: Callable[[], Awaitable[dict[str, str]]],
+        *args: Any,
+        **kwargs: Any,
+    ) -> ClientResponse:
         """Rate limit the call to ``request_function``.
 
         :param request_function: A function call that returns an HTTP response object.
@@ -47,7 +52,7 @@ class RateLimiter(object):
         self.update(response.headers)
         return response
 
-    async def delay(self) -> None:
+    async def delay(self):
         """Sleep for an amount of time to remain under the rate limit."""
         if self.next_request_timestamp is None:
             return
@@ -58,7 +63,7 @@ class RateLimiter(object):
         log.debug(message)
         await asyncio.sleep(sleep_seconds)
 
-    def update(self, response_headers: Mapping[str, str]) -> None:
+    def update(self, response_headers: Mapping[str, str]):
         """Update the state of the rate limiter based on the response headers.
 
         This method should only be called following an HTTP request to Reddit.

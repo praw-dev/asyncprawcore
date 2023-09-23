@@ -2,7 +2,6 @@
 import logging
 from json import dumps
 
-import aiofiles
 import pytest
 
 import asyncprawcore
@@ -111,7 +110,7 @@ class TestSession(IntegrationTest):
         self, script_authorizer: asyncprawcore.ScriptAuthorizer
     ):
         session = asyncprawcore.Session(script_authorizer)
-        response = await session.request("PUT", "/api/v1/me/friends/spez", data="{}")
+        response = await session.request("PUT", "/api/v1/me/friends/spez", data={})
         assert "name" in response
 
     async def test_request__forbidden(
@@ -201,9 +200,7 @@ class TestSession(IntegrationTest):
     ):
         session = asyncprawcore.Session(script_authorizer)
         data = {"upload_type": "header"}
-        async with aiofiles.open(
-            "tests/integration/files/white-square.png", "rb"
-        ) as fp:
+        with open("tests/integration/files/white-square.png", "rb") as fp:
             files = {"file": fp}
             response = await session.request(
                 "POST",
@@ -296,7 +293,7 @@ class TestSession(IntegrationTest):
     ):
         session = asyncprawcore.Session(script_authorizer)
         data = {"upload_type": "header"}
-        async with aiofiles.open("tests/integration/files/too_large.jpg", "rb") as fp:
+        with open("tests/integration/files/too_large.jpg", "rb") as fp:
             files = {"file": fp}
             with pytest.raises(asyncprawcore.TooLarge) as exception_info:
                 await session.request(
@@ -334,8 +331,8 @@ class TestSession(IntegrationTest):
     ):
         session = asyncprawcore.Session(readonly_authorizer)
         path_start = "/api/morechildren?link_id=t3_n7r3uz&children="
-        async with aiofiles.open("tests/integration/files/comment_ids.txt") as fp:
-            ids = await fp.read()
+        with open("tests/integration/files/comment_ids.txt") as fp:
+            ids = fp.read()
         with pytest.raises(asyncprawcore.URITooLong) as exception_info:
             await session.request("GET", (path_start + ids)[:9996])
         assert exception_info.value.response.status == 414
@@ -347,10 +344,7 @@ class TestSession(IntegrationTest):
         await authorizer.refresh()
         session = asyncprawcore.Session(authorizer)
         with pytest.raises(asyncprawcore.InsufficientScope):
-            await session.request(
-                "GET",
-                "/api/v1/me",
-            )
+            await session.request("GET", "/api/v1/me")
 
     async def test_request__with_invalid_access_token(self, untrusted_authenticator):
         authorizer = asyncprawcore.ImplicitAuthorizer(

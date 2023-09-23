@@ -4,7 +4,7 @@ import os
 import pytest
 from vcr import VCR
 
-from .utils import (
+from ..utils import (
     CustomPersister,
     CustomSerializer,
     ensure_environment_variables,

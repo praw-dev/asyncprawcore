@@ -1,13 +1,14 @@
 """Provide exception classes for the asyncprawcore package."""
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 if TYPE_CHECKING:
     from aiohttp import ClientResponse
 
 
-class AsyncPrawcoreException(Exception):
+class AsyncPrawcoreException(Exception):  # noqa: N818
     """Base exception class for exceptions that occur within this package."""
 
 
@@ -19,11 +20,11 @@ class OAuthException(AsyncPrawcoreException):
     """Indicate that there was an OAuth2 related error with the request."""
 
     def __init__(
-        self, response: "ClientResponse", error: str, description: Optional[str]
-    ) -> None:
-        """Intialize a OAuthException instance.
+        self, response: ClientResponse, error: str, description: str | None = None
+    ):
+        """Initialize a OAuthException instance.
 
-        :param response: The response returned from an aiohttp request.
+        :param response: A ``aiohttp.ClientResponse`` instance.
         :param error: The error type returned by Reddit.
         :param description: A description of the error when provided.
 
@@ -43,11 +44,11 @@ class RequestException(AsyncPrawcoreException):
     def __init__(
         self,
         original_exception: Exception,
-        request_args: Tuple[Any, ...],
-        request_kwargs: Dict[
-            str, Optional[Union[bool, Dict[str, int], Dict[str, str], str]]
+        request_args: tuple[Any, ...],
+        request_kwargs: dict[
+            str, bool | (dict[str, int] | (dict[str, str] | str)) | None
         ],
-    ) -> None:
+    ):
         """Initialize a RequestException instance.
 
         :param original_exception: The original exception that occurred.
@@ -58,24 +59,20 @@ class RequestException(AsyncPrawcoreException):
         self.original_exception = original_exception
         self.request_args = request_args
         self.request_kwargs = request_kwargs
-        super(RequestException, self).__init__(
-            f"error with request {original_exception}"
-        )
+        super().__init__(f"error with request {original_exception}")
 
 
 class ResponseException(AsyncPrawcoreException):
     """Indicate that there was an error with the completed HTTP request."""
 
-    def __init__(self, response: "ClientResponse") -> None:
+    def __init__(self, response: ClientResponse):
         """Initialize a ResponseException instance.
 
-        :param response: The response returned from an aiohttp request.
+        :param response: A ``aiohttp.ClientResponse`` instance.
 
         """
         self.response = response
-        super(ResponseException, self).__init__(
-            f"received {response.status} HTTP response"
-        )
+        super().__init__(f"received {response.status} HTTP response")
 
 
 class BadJSON(ResponseException):
@@ -114,10 +111,10 @@ class Redirect(ResponseException):
 
     """
 
-    def __init__(self, response: "ClientResponse") -> None:
+    def __init__(self, response: ClientResponse):
         """Initialize a Redirect exception instance.
 
-        :param response: The response returned from an aiohttp request.
+        :param response: A ``aiohttp.ClientResponse`` instance.
 
         """
         path: str = urlparse(response.headers.get("location")).path
@@ -140,12 +137,11 @@ class ServerError(ResponseException):
 class SpecialError(ResponseException):
     """Indicate syntax or spam-prevention issues."""
 
-    def __init__(
-        self, response: "ClientResponse", resp_dict: Dict[str, Union[List[str], str]]
-    ) -> None:
+    def __init__(self, response: ClientResponse, resp_dict: dict[str, Any]):
         """Initialize a SpecialError exception instance.
 
-        :param response: The response returned from an aiohttp request.
+        :param response: A ``aiohttp.ClientResponse`` instance containing a message and
+            a list of special errors.
 
         """
         self.response = response
@@ -163,7 +159,7 @@ class TooLarge(ResponseException):
 class TooManyRequests(ResponseException):
     """Indicate that the user has sent too many requests in a given amount of time."""
 
-    def __init__(self, response: "ClientResponse") -> None:
+    def __init__(self, response: ClientResponse):
         """Initialize a TooManyRequests exception instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance that may contain a

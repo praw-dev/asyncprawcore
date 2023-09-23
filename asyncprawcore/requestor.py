@@ -1,8 +1,11 @@
 """Provides the HTTP request handling interface."""
+from __future__ import annotations
+
 import asyncio
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
+from aiohttp import ClientSession
 
 from .const import TIMEOUT, __version__
 from .exceptions import InvalidInvocation, RequestException
@@ -10,10 +13,10 @@ from .exceptions import InvalidInvocation, RequestException
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
 
-    from .sessions import Session
+    from aiohttp import ClientResponse
 
 
-class Requestor(object):
+class Requestor:
     """Requestor provides an interface to HTTP requests."""
 
     def __getattr__(self, attribute: str) -> Any:  # pragma: no cover
@@ -27,10 +30,10 @@ class Requestor(object):
         user_agent: str,
         oauth_url: str = "https://oauth.reddit.com",
         reddit_url: str = "https://www.reddit.com",
-        session: Optional["Session"] = None,
-        loop: Optional["AbstractEventLoop"] = None,
+        session: ClientSession | None = None,
+        loop: AbstractEventLoop = None,
         timeout: float = TIMEOUT,
-    ) -> None:
+    ):
         """Create an instance of the Requestor class.
 
         :param user_agent: The user-agent for your application. Please follow Reddit's
@@ -39,14 +42,15 @@ class Requestor(object):
             (default: ``"https://oauth.reddit.com"``).
         :param reddit_url: The URL used when obtaining access tokens (default:
             ``"https://www.reddit.com"``).
-        :param session: A session to handle requests, compatible with
+        :param session: A session instance to handle requests, compatible with
             ``aiohttp.ClientSession()`` (default: ``None``).
         :param timeout: How many seconds to wait for the server to send data before
             giving up (default: ``asyncprawcore.const.TIMEOUT``).
 
         """
         if user_agent is None or len(user_agent) < 7:
-            raise InvalidInvocation("user_agent is not descriptive")
+            msg = "user_agent is not descriptive"
+            raise InvalidInvocation(msg)
 
         self.loop = loop or asyncio.get_event_loop()
         self._http = session or aiohttp.ClientSession(
@@ -60,17 +64,17 @@ class Requestor(object):
         self.reddit_url = reddit_url
         self.timeout = timeout
 
-    async def close(self) -> None:
+    async def close(self):
         """Call close on the underlying session."""
-        return await self._http.close()
+        await self._http.close()
 
     async def request(
-        self, *args, timeout: Optional[float] = None, **kwargs
-    ) -> Union[Dict[str, Any], str, None]:
+        self, *args: Any, timeout: float | None = None, **kwargs: Any
+    ) -> ClientResponse:
         """Issue the HTTP request capturing any errors that may occur."""
         try:
             return await self._http.request(
                 *args, timeout=timeout or self.timeout, **kwargs
             )
-        except Exception as exc:
-            raise RequestException(exc, args, kwargs)
+        except Exception as exc:  # noqa: BLE001
+            raise RequestException(exc, args, kwargs) from None
