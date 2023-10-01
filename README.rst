@@ -7,7 +7,7 @@ asyncprawcore
     :alt: Latest asyncprawcore Version
     :target: https://pypi.python.org/pypi/asyncprawcore
 
-.. image:: https://img.shields.io/pypi/pyversions/asyncprawcore?branch=main
+.. image:: https://img.shields.io/pypi/pyversions/asyncprawcore
     :alt: Supported Python Versions
     :target: https://pypi.python.org/pypi/asyncprawcore
 
@@ -15,25 +15,29 @@ asyncprawcore
     :alt: PyPI - Downloads - Monthly
     :target: https://pypi.python.org/pypi/asyncprawcore
 
-.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg?branch=main
-    :alt: Coveralls Coverage
-    :target: https://coveralls.io/github/praw-dev/asyncprawcore?branch=main
-
-.. image:: https://github.com/praw-dev/asyncprawcore/workflows/CI/badge.svg
+.. image:: https://github.com/praw-dev/asyncprawcore/actions/workflows/ci.yml/badge.svg?event=push
     :alt: GitHub Actions Status
-    :target: https://github.com/praw-dev/asyncprawcore/actions?query=branch%3Amain
+    :target: https://github.com/praw-dev/asyncprawcore/actions/workflows/ci.yml
+
+.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg
+    :alt: Coveralls Coverage
+    :target: https://coveralls.io/github/praw-dev/asyncprawcore
+
+.. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/asyncprawcore/badge
+    :alt: OpenSSF Scorecard
+    :target: https://api.securityscorecards.dev/projects/github.com/praw-dev/asyncprawcore
 
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
     :alt: Contributor Covenant
     :target: https://github.com/praw-dev/.github/blob/main/CODE_OF_CONDUCT.md
 
 .. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-    :target: https://github.com/pre-commit/pre-commit
     :alt: pre-commit
+    :target: https://github.com/pre-commit/pre-commit
 
-.. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw/badge
-    :alt: OpenSSF Scorecard
-    :target: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :alt: Black code style
+    :target: https://github.com/psf/black
 
 asyncprawcore is a low-level communication layer for PRAW 4+.
 
