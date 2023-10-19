@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 import aiohttp
 from aiohttp import ClientSession
 
-from .const import TIMEOUT, __version__
+from .const import TIMEOUT
 from .exceptions import InvalidInvocation, RequestException
 
 if TYPE_CHECKING:
@@ -48,6 +48,9 @@ class Requestor:
             giving up (default: ``asyncprawcore.const.TIMEOUT``).
 
         """
+        # Imported locally to avoid an import cycle, with __init__
+        from . import __version__
+
         if user_agent is None or len(user_agent) < 7:
             msg = "user_agent is not descriptive"
             raise InvalidInvocation(msg)
