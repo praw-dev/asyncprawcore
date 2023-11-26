@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import random
+import time
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
@@ -11,7 +12,7 @@ from aiohttp.web import HTTPRequestTimeout
 
 from .auth import BaseAuthorizer
 from .codes import codes
-from .const import TIMEOUT
+from .const import TIMEOUT, WINDOW_SIZE
 from .exceptions import (
     BadJSON,
     BadRequest,
@@ -134,7 +135,7 @@ class Session(object):
         params: Dict[str, int],
         url: str,
     ):
-        log.debug(f"Fetching: {method} {url}")
+        log.debug(f"Fetching: {method} {url} at {time.time()}")
         log.debug(f"Data: {data}")
         log.debug(f"Params: {params}")
 
@@ -148,16 +149,21 @@ class Session(object):
                 new_data[key] = str(value) if not isinstance(value, str) else value
         return new_data
 
-    def __init__(self, authorizer: Optional["Authorizer"]) -> None:
+    def __init__(
+        self,
+        authorizer: Optional[BaseAuthorizer],
+        window_size: int = WINDOW_SIZE,
+    ) -> None:
         """Prepare the connection to Reddit's API.
 
         :param authorizer: An instance of :class:`.Authorizer`.
+        :param window_size: The size of the rate limit reset window in seconds.
 
         """
         if not isinstance(authorizer, BaseAuthorizer):
             raise InvalidInvocation(f"invalid Authorizer: {authorizer}")
         self._authorizer = authorizer
-        self._rate_limiter = RateLimiter()
+        self._rate_limiter = RateLimiter(window_size=window_size)
         self._retry_strategy_class = FiniteRetryStrategy
 
     async def __aenter__(self) -> "Session":
@@ -221,6 +227,9 @@ class Session(object):
             log.debug(
                 f"Response: {response.status}"
                 f" ({response.headers.get('content-length')} bytes)"
+                f" (rst-{response.headers.get('x-ratelimit-reset')}:"
+                f"rem-{response.headers.get('x-ratelimit-remaining')}:"
+                f"used-{response.headers.get('x-ratelimit-used')} ratelimit) at {time.time()}"
             )
             return response, None
         except RequestException as exception:
@@ -410,10 +419,14 @@ class Session(object):
         )
 
 
-def session(authorizer: "Authorizer" = None) -> Session:
+def session(
+    authorizer: "Authorizer" = None,
+    window_size: int = WINDOW_SIZE,
+) -> Session:
     """Return a :class:`.Session` instance.
 
     :param authorizer: An instance of :class:`.Authorizer`.
+    :param window_size: The size of the rate limit reset window in seconds.
 
     """
-    return Session(authorizer=authorizer)
+    return Session(authorizer=authorizer, window_size=window_size)
