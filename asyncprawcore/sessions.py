@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import random
+from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
@@ -29,7 +30,7 @@ from .exceptions import (
 from .rate_limit import RateLimiter
 from .util import authorization_error_class
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from io import BufferedReader
 
     from aiofiles.threadpool.binary import AsyncBufferedReader
@@ -41,7 +42,7 @@ if TYPE_CHECKING:  # pragma: no cover
 log = logging.getLogger(__package__)
 
 
-class RetryStrategy(object):
+class RetryStrategy(ABC):
     """An abstract class for scheduling request retries.
 
     The strategy controls both the number and frequency of retry attempts.
@@ -49,6 +50,10 @@ class RetryStrategy(object):
     Instances of this class are immutable.
 
     """
+
+    @abstractmethod
+    def _sleep_seconds(self) -> Optional[float]:
+        pass
 
     async def sleep(self) -> None:
         """Sleep until we are ready to attempt the request."""
@@ -114,7 +119,9 @@ class Session(object):
         codes["service_unavailable"]: ServerError,
         codes["too_many_requests"]: TooManyRequests,
         codes["unauthorized"]: authorization_error_class,
-        codes["unavailable_for_legal_reasons"]: UnavailableForLegalReasons,
+        codes[
+            "unavailable_for_legal_reasons"
+        ]: UnavailableForLegalReasons,  # Cloudflare's status (not named in requests)
         520: ServerError,
         522: ServerError,
     }
