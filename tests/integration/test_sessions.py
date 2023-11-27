@@ -6,7 +6,6 @@ import pytest
 
 import asyncprawcore
 
-from ..conftest import two_factor_callback
 from . import IntegrationTest
 
 
@@ -23,7 +22,6 @@ class TestSession(IntegrationTest):
             trusted_authenticator,
             pytest.placeholders.username,
             pytest.placeholders.password,
-            two_factor_callback,
         )
         await authorizer.refresh()
         yield authorizer
@@ -58,7 +56,7 @@ class TestSession(IntegrationTest):
         session = asyncprawcore.Session(script_authorizer)
         with pytest.raises(asyncprawcore.BadJSON) as exception_info:
             await session.request("GET", "/")
-        assert exception_info.value.response.content_length == 17512
+        assert exception_info.value.response.content_length == 1
 
     async def test_request__bad_request(
         self, script_authorizer: asyncprawcore.ScriptAuthorizer
@@ -110,15 +108,15 @@ class TestSession(IntegrationTest):
         self, script_authorizer: asyncprawcore.ScriptAuthorizer
     ):
         session = asyncprawcore.Session(script_authorizer)
-        response = await session.request("PUT", "/api/v1/me/friends/spez", data={})
+        response = await session.request("PUT", "/api/v1/me/friends/spez", data="{}")
         assert "name" in response
 
     async def test_request__forbidden(
-        self, script_authorizer: asyncprawcore.ScriptAuthorizer
+        self, script_authorizer: asyncprawcore.Authorizer
     ):
         session = asyncprawcore.Session(script_authorizer)
         with pytest.raises(asyncprawcore.Forbidden):
-            await session.request("GET", "/user/spez/gilded/given")
+            await session.request("GET", "/user/spez/upvoted")
 
     async def test_request__gateway_timeout(
         self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer
@@ -161,9 +159,9 @@ class TestSession(IntegrationTest):
             await session.request("GET", "/r/pics/wiki/invalid")
 
     async def test_request__okay_with_0_byte_content(
-        self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer
+        self, script_authorizer: asyncprawcore.ScriptAuthorizer
     ):
-        session = asyncprawcore.Session(readonly_authorizer)
+        session = asyncprawcore.Session(script_authorizer)
         data = {"model": dumps({"name": "redditdev"})}
         path = f"/api/multi/user/{pytest.placeholders.username}/m/test"
         response = await session.request("DELETE", path, data=data)
@@ -180,9 +178,9 @@ class TestSession(IntegrationTest):
         assert response["num_comments"] == 123
 
     async def test_request__post(
-        self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer
+        self, script_authorizer: asyncprawcore.ScriptAuthorizer
     ):
-        session = asyncprawcore.Session(readonly_authorizer)
+        session = asyncprawcore.Session(script_authorizer)
         data = {
             "kind": "self",
             "sr": "asyncpraw",

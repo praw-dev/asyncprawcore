@@ -7,7 +7,6 @@ from vcr import VCR
 from ..utils import (
     CustomPersister,
     CustomSerializer,
-    ensure_environment_variables,
     ensure_integration_test,
     filter_access_token,
 )
@@ -46,8 +45,6 @@ class IntegrationTest:
                 #  before class markers.
                 kwargs.setdefault(key, value)
         with recorder.use_cassette(cassette_name, **kwargs) as cassette:
-            if not cassette.write_protected:
-                ensure_environment_variables()
             yield cassette
             ensure_integration_test(cassette)
             used_cassettes.add(cassette_name)

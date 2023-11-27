@@ -3,7 +3,6 @@ import pytest
 
 import asyncprawcore
 
-from ..conftest import two_factor_callback  # noqa F401
 from ..integration import IntegrationTest
 
 
@@ -11,7 +10,7 @@ class TestAuthorizer(IntegrationTest):
     async def test_authorize__with_invalid_code(self, trusted_authenticator):
         trusted_authenticator.redirect_uri = pytest.placeholders.redirect_uri
         authorizer = asyncprawcore.Authorizer(trusted_authenticator)
-        with pytest.raises(asyncprawcore.OAuthException):
+        with pytest.raises(asyncprawcore.ResponseException):
             await authorizer.authorize("invalid code")
         assert not authorizer.is_valid()
 

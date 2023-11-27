@@ -13,18 +13,21 @@
           ],
           [
             "scope",
-            "adsedit adsread creddits history"
+            "history creddits adsedit adsread"
           ]
         ],
         "headers": {
           "AUTHORIZATION": [
             "Basic <BASIC_AUTH>"
           ],
+          "Accept-Encoding": [
+            "identity"
+          ],
           "Connection": [
             "close"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
+            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
           ]
         },
         "method": "POST",
@@ -32,62 +35,59 @@
       },
       "response": {
         "body": {
-          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"device_id\": \"DO_NOT_TRACK_THIS_DEVICE\", \"expires_in\": 3600, \"scope\": \"adsread creddits adsedit history\"}"
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"device_id\": \"DO_NOT_TRACK_THIS_DEVICE\", \"expires_in\": 86400, \"scope\": \"adsread creddits adsedit history\"}"
         },
         "headers": {
           "Accept-Ranges": [
             "bytes"
           ],
           "Cache-Control": [
-            "max-age=0, must-revalidate"
+            "private, max-age=3600"
           ],
           "Connection": [
             "close"
           ],
           "Content-Length": [
-            "181"
+            "971"
           ],
           "Content-Type": [
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 04 Mar 2022 18:53:22 GMT"
+            "Mon, 27 Nov 2023 00:52:07 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
           ],
           "Server": [
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=e0cA7bnup8qSTpAm3e; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=F1Gmy366djErMNmpdS; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
-            "max-age=15552000; includeSubDomains; preload"
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "accept-encoding, Accept-Encoding"
           ],
           "Via": [
             "1.1 varnish"
           ],
-          "X-Moose": [
-            "majestic"
-          ],
-          "x-content-type-options": [
+          "X-Content-Type-Options": [
             "nosniff"
           ],
-          "x-frame-options": [
+          "X-Frame-Options": [
             "SAMEORIGIN"
           ],
-          "x-ratelimit-remaining": [
-            "299"
-          ],
-          "x-ratelimit-reset": [
-            "398"
-          ],
-          "x-ratelimit-used": [
-            "1"
+          "X-XSS-Protection": [
+            "1; mode=block"
           ],
           "x-reddit-loid": [
-            "0000000000kc5f4a8h.2.1646420002958.Z0FBQUFBQmlJbUFpTkVseG1sT0lqUDRjSXg3dUlGcU9TUGlYTUdsTWppSEdTaUdhWEd5dEQ0Vm5yQU0ta2NYWFcweE95NHphWGVxNW9rbVFWUHZ2YkhDaV9hSEFxWWtDRmdhZWg4UTFIc1hPaFRIcDdTM29xa1gwa3dRVXl2U01XVXBSakVMbGxJM0w"
-          ],
-          "x-xss-protection": [
-            "1; mode=block"
+            "000000000oqfwo1jd7.2.1701046327690.Z0FBQUFBQmxZLWczUWtsQ19EbjVLT2xlTk9jU3lGRHE2eEtPejVuWmhQckNad1FiUUQzb1A3TVhFSi13aHBjVmgtakJTMXA5c0wtMVZvSzNwTkxPSTlqb3pkNVZhcnVDQUxVMXdrSUk3RVNNbmRHYWFQaW9ndURIM3h2cUtaOHZuVjdQUXFUbHZGVWQ"
           ]
         },
         "status": {
@@ -98,6 +98,6 @@
       }
     }
   ],
-  "recorded_at": "2022-03-04T12:53:22",
+  "recorded_at": "2023-11-27T00:52:07",
   "version": 1
 }

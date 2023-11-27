@@ -39,7 +39,7 @@ asyncprawcore
     :alt: Black code style
     :target: https://github.com/psf/black
 
-asyncprawcore is a low-level communication layer for PRAW 4+.
+asyncprawcore is a low-level communication layer used by Async PRAW 7+.
 
 Installation
 ------------
@@ -55,8 +55,8 @@ Execution Example
 
 The following example demonstrates how to use asyncprawcore to obtain the list of
 trophies for a given user using the script-app type. This example assumes you have the
-environment variables ``asyncprawcore_CLIENT_ID`` and ``asyncprawcore_CLIENT_SECRET``
-set to the appropriate values for your application.
+environment variables ``PRAWCORE_CLIENT_ID`` and ``PRAWCORE_CLIENT_SECRET`` set to the
+appropriate values for your application.
 
 .. code-block:: python
 
@@ -69,8 +69,8 @@ set to the appropriate values for your application.
     async def main():
         authenticator = asyncprawcore.TrustedAuthenticator(
             asyncprawcore.Requestor("YOUR_VALID_USER_AGENT"),
-            os.environ["asyncprawcore_CLIENT_ID"],
-            os.environ["asyncprawcore_CLIENT_SECRET"],
+            os.environ["PRAWCORE_CLIENT_ID"],
+            os.environ["PRAWCORE_CLIENT_SECRET"],
         )
         authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
         await authorizer.refresh()
@@ -80,8 +80,7 @@ set to the appropriate values for your application.
 
 
     if __name__ == "__main__":
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+        asyncio.run(main())
 
 Save the above as ``trophies.py`` and then execute via:
 
@@ -95,7 +94,7 @@ https://github.com/praw-dev/asyncprawcore/tree/main/examples
 Depending on asyncprawcore
 --------------------------
 
-asyncprawcore follows `semantic versioning <http://semver.org/>`_ with the exception
+asyncprawcore follows `semantic versioning <https://semver.org/>`_ with the exception
 that deprecations will not be preceded by a minor release. In essence, expect only major
 versions to introduce breaking changes to asyncprawcore's public interface. As a result,
 if you depend on asyncprawcore then it is a good idea to specify not only the minimum

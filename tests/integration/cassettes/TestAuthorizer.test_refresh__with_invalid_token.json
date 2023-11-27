@@ -1,64 +1,101 @@
 {
-    "version": 1,
-    "interactions": [
-        {
-            "request": {
-                "method": "POST",
-                "uri": "https://www.reddit.com/api/v1/access_token",
-                "body": [
-                    [
-                        "grant_type",
-                        "refresh_token"
-                    ],
-                    [
-                        "refresh_token",
-                        "fake_refresh_token"
-                    ]
-                ],
-                "headers": {
-                    "User-Agent": [
-                        "asyncprawcore:test (by /u/bboe) asyncprawcore/1.4.0"
-                    ],
-                    "Connection": [
-                        "close"
-                    ],
-                    "AUTHORIZATION": [
-                        "Basic <placeholder_auth>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 400,
-                    "message": "Bad Request"
-                },
-                "headers": {
-                    "Connection": "close",
-                    "Content-Length": "40",
-                    "Content-Type": "application/json; charset=UTF-8",
-                    "x-frame-options": "SAMEORIGIN",
-                    "x-content-type-options": "nosniff",
-                    "x-xss-protection": "1; mode=block",
-                    "x-ua-compatible": "IE=edge",
-                    "set-cookie": "session_tracker=yUFj1D3V0JtiKJG91i.0.1592045156545.Z0FBQUFBQmU1SzVrem4wUGpjYnNFaVFZWEs1cmdDX3hlTlh3SWJhRGVCVWdacnM3ZDJReEJyUjJJcUgzTUpEU0ZPc01yb0ljbEo5cG5pZmFHZG13dWxyNXh2d0J5Wk9nNG8wbnpBNnktYVIyeXUtNVBrQkdFcEZXWmNNLXFDb1piY21mR3JfcVRRZG0; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 13-Jun-2020 12:45:56 GMT; secure",
-                    "cache-control": "max-age=0, must-revalidate",
-                    "X-Moose": "majestic",
-                    "Accept-Ranges": "bytes",
-                    "Date": "Sat, 13 Jun 2020 10:45:56 GMT",
-                    "Via": "1.1 varnish",
-                    "X-Served-By": "cache-ams21036-AMS",
-                    "X-Cache": "MISS",
-                    "X-Cache-Hits": "0",
-                    "X-Timer": "S1592045156.456979,VS0,VE139",
-                    "Set-Cookie": "edgebucket=0erA4nvSMnbUxQUpQj; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
-                    "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
-                    "Server": "snooserv"
-                },
-                "body": {
-                    "string": "{\"message\": \"Bad Request\", \"error\": 400}"
-                },
-                "url": "https://www.reddit.com/api/v1/access_token"
-            }
-        }
-    ]
+  "interactions": [
+    {
+      "request": {
+        "body": [
+          [
+            "grant_type",
+            "refresh_token"
+          ],
+          [
+            "refresh_token",
+            "INVALID_TOKEN"
+          ]
+        ],
+        "headers": {
+          "AUTHORIZATION": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "User-Agent": [
+            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"message\": \"Bad Request\", \"error\": 400}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Cache-Control": [
+            "private, max-age=3600"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "40"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 27 Nov 2023 00:32:13 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=000000000oqeoddwst.2.1701045133606.Z0FBQUFBQmxZLU9OTVpzU1YxZVZKczFRUTlHNlZ0bkxUaG5HdDk5VThRU2I1N21OMmlYN1EwU042Z09YUjNOS3NFZU50R2syUngtQ2Jid1hGSlJZWjJ4b09EZkFCUVotYWRHWXJDU3pZaEFoYzdNTTRQVHhJZDVLZTRPc0dBZUlJdEs3S2xVQkE5dVA; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Wed, 26-Nov-2025 00:32:13 GMT; secure",
+            "session_tracker=6gzQPCK0iCnhrl8ZkU.0.1701045133608.Z0FBQUFBQmxZLU9OZ0lrTldmcTZmb25NSm5UcWYyd3BLN3Z1NjJqRGNmLTBwRW50OE1ZT25lNnVBQTJkalBXMEFabjNPUVVYU3dTdEhONUNpTFlCT2picXR6SU1RaUJRQl81Z05HUjhBTW45WG5oVW5BeXV2dXBrMlN2OHJGbnlqUDBlWEsyMDhqNjc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 27-Nov-2023 02:32:13 GMT; secure",
+            "edgebucket=AhLzC54j8HSb4OsnBG; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ]
+        },
+        "status": {
+          "code": 400,
+          "message": "Bad Request"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    }
+  ],
+  "recorded_at": "2023-11-27T00:32:13",
+  "version": 1
 }

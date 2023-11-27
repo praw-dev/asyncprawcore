@@ -12,11 +12,14 @@
           "AUTHORIZATION": [
             "Basic <BASIC_AUTH>"
           ],
+          "Accept-Encoding": [
+            "identity"
+          ],
           "Connection": [
             "close"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by /u/Lil_SpazJoekp) asyncprawcore/2.0.1"
+            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
           ]
         },
         "method": "POST",
@@ -24,28 +27,60 @@
       },
       "response": {
         "body": {
-          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"scope\": \"*\"}"
         },
         "headers": {
-          "Accept-Ranges": "bytes",
-          "Cache-Control": "max-age=0, must-revalidate",
-          "Connection": "close",
-          "Content-Length": "109",
-          "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Tue, 15 Jun 2021 00:48:42 GMT",
-          "Server": "snooserv",
-          "Set-Cookie": "edgebucket=kiMKruOkZBeGicnfWl; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
-          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
-          "Via": "1.1 varnish",
-          "X-Clacks-Overhead": "GNU Terry Pratchett",
-          "X-Moose": "majestic",
-          "x-content-type-options": "nosniff",
-          "x-frame-options": "SAMEORIGIN",
-          "x-ratelimit-remaining": "134",
-          "x-ratelimit-reset": "78",
-          "x-ratelimit-used": "166",
-          "x-reddit-loid": "0000000000cqa45jhg.2.1623718122053.Z0FBQUFBQmd4X2pxNkVKV1gxSHVfRkt3VFU5S3EtY05zZGNreDFtTmFId21GOURZZVlYYUpsNEgxbXJjdVFFWXg1dEQ4WklpRHYxZ3JqMGhSUmJZWnZMMlVWVGxTSFFBY2tFaXFEbVM2a01ubzY4LXVRSFNkWG9ka2NBRlNzeER2cHo5bkpaUE1HVjg",
-          "x-xss-protection": "1; mode=block"
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Cache-Control": [
+            "private, max-age=3600"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "809"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 27 Nov 2023 02:10:38 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=AMyRqTsLo81HCcKGC4; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "accept-encoding, Accept-Encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ],
+          "x-reddit-loid": [
+            "000000000oqkq713rf.2.1701051038881.Z0FBQUFBQmxZX3FlQkcteTliNktTbEpILU9mX1o5Q1g4YjlneDctMndGeVI4RmdxdFNyblplcHpfWUFWSEdQT2xvY1hWNWZHWUZaWVZtRTk5cmlpZHppVlVtQVZ3cmJHUHB5VVFyRDV2YkFYbnZLemFJczdiM2dDREJCb2RzNXM1Ym1nRS03TXJPR2w"
+          ]
         },
         "status": {
           "code": 200,
@@ -58,8 +93,14 @@
       "request": {
         "body": null,
         "headers": {
+          "Accept-Encoding": [
+            "identity"
+          ],
           "Authorization": [
-            "bearer -wbJvJBJSt3EeMmXBj3qPh4Lj6fJnzQ"
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Cookie": [
+            "edgebucket=AMyRqTsLo81HCcKGC4"
           ],
           "User-Agent": [
             "python-requests/2.25.1"
@@ -70,28 +111,65 @@
       },
       "response": {
         "body": {
-          "string": "\n<!doctype html>\n<html>\n  <head>\n    <title>Too Many Requests</title>\n    <style>\n      body {\n          font: small verdana, arial, helvetica, sans-serif;\n          width: 600px;\n          margin: 0 auto;\n      }\n\n      h1 {\n          height: 40px;\n          background: transparent url(//www.redditstatic.com/reddit.com.header.png) no-repeat scroll top right;\n      }\n    </style>\n  </head>\n  <body>\n    <h1>whoa there, pardner!</h1>\n    \n\n\n<p>we're sorry, but you appear to be a bot and we've seen too many requests\nfrom you lately. we enforce a hard speed limit on requests that appear to come\nfrom bots to prevent abuse.</p>\n\n<p>if you are not a bot but are spoofing one via your browser's user agent\nstring: please change your user agent string to avoid seeing this message\nagain.</p>\n\n<p>please wait 4 second(s) and try again.</p>\n\n    <p>as a reminder to developers, we recommend that clients make no\n    more than <a href=\"http://github.com/reddit/reddit/wiki/API\">one\n    request every two seconds</a> to avoid seeing this message.</p>\n  </body>\n</html>\n"
+          "string": "\n<!doctype html>\n<html>\n  <head>\n    <title>Too Many Requests</title>\n    <style>\n      body {\n          font: small verdana, arial, helvetica, sans-serif;\n          width: 600px;\n          margin: 0 auto;\n      }\n\n      h1 {\n          height: 40px;\n          background: transparent url(//www.redditstatic.com/reddit.com.header.png) no-repeat scroll top right;\n      }\n    </style>\n  </head>\n  <body>\n    <h1>whoa there, pardner!</h1>\n    \n\n\n<p>we're sorry, but you appear to be a bot and we've seen too many requests\nfrom you lately. we enforce a hard speed limit on requests that appear to come\nfrom bots to prevent abuse.</p>\n\n<p>if you are not a bot but are spoofing one via your browser's user agent\nstring: please change your user agent string to avoid seeing this message\nagain.</p>\n\n<p>please wait 2 second(s) and try again.</p>\n\n    <p>as a reminder to developers, please take care to respect our\n    <a href=\"https://support.reddithelp.com/hc/en-us/articles/16160319875092-Reddit-Data-API-Wiki\">\n    API access rules</a> to avoid seeing this message.</p>\n  </body>\n</html>\n"
         },
         "headers": {
-          "Accept-Ranges": "bytes",
-          "Cache-Control": "max-age=0, must-revalidate",
-          "Connection": "keep-alive",
-          "Content-Encoding": "gzip",
-          "Content-Length": "592",
-          "Content-Type": "text/html; charset=UTF-8",
-          "Date": "Tue, 15 Jun 2021 00:48:56 GMT",
-          "Retry-After": "4",
-          "Server": "snooserv",
-          "Set-Cookie": "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None",
-          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
-          "Vary": "accept-encoding",
-          "Via": "1.1 varnish",
-          "X-Clacks-Overhead": "GNU Terry Pratchett",
-          "X-Moose": "majestic",
-          "x-content-type-options": "nosniff",
-          "x-frame-options": "SAMEORIGIN",
-          "x-ua-compatible": "IE=edge",
-          "x-xss-protection": "1; mode=block"
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Cache-Control": [
+            "private, max-age=3600"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1084"
+          ],
+          "Content-Type": [
+            "text/html; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 27 Nov 2023 02:10:39 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
+          ],
+          "Retry-After": [
+            "2"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=000000000oqkqa5gdn.2.1701051039007.Z0FBQUFBQmxZX3FmNjg1bzZoUllSdDRBWjJ2UnNvUzBlMklyTXliRmRKbkY1UVQwYUlRVF91dFRLWGF2YnpmR2tieDd4a0FSQlpyMzdHTUlvMWN1cFVFbWtoWVBjaWNvei1wY0NKMGRYT2hqUDlyWng3R0VYWXlTdm9EdVpQZXcwaEdrck52OW9OclA; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Wed, 26-Nov-2025 02:10:39 GMT; secure; SameSite=None; Secure",
+            "session_tracker=YukxTeWdZ0BbFFEJKF.0.1701051039008.Z0FBQUFBQmxZX3FmMThVeHZHM0Nha0RLU2xtdW1GLXJDQm5kQjUzVFlYODFwcnVyeTZDZXMzaGhwa0R1bEt5SFBJck9UWXpLT2xoNW42ODRQY2d0NVRzQ1dpbm0yMXE2dkVXR25tSTZweW45ZG9XaGhIOXMyRkhlSEo0d29TTFJseE9WeEFCNmVaTHY; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 27-Nov-2023 04:10:39 GMT; secure; SameSite=None; Secure",
+            "csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "accept-encoding, Accept-Encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ]
         },
         "status": {
           "code": 429,
@@ -101,6 +179,6 @@
       }
     }
   ],
-  "recorded_at": "2021-06-14T19:48:56",
+  "recorded_at": "2023-11-27T02:10:38",
   "version": 1
 }

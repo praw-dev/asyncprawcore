@@ -114,10 +114,11 @@ class Redirect(ResponseException):
     def __init__(self, response: ClientResponse):
         """Initialize a Redirect exception instance.
 
-        :param response: A ``aiohttp.ClientResponse`` instance.
+        :param response: A ``aiohttp.ClientResponse`` instance containing a location
+            header.
 
         """
-        path: str = urlparse(response.headers.get("location")).path
+        path = urlparse(response.headers.get("location")).path
         self.path = path[:-5] if path.endswith(".json") else path
         self.response = response
         msg = f"Redirect to {self.path}"

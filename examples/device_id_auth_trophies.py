@@ -21,7 +21,7 @@ async def main():
 
     authenticator = asyncprawcore.UntrustedAuthenticator(
         asyncprawcore.Requestor("asyncprawcore_device_id_auth_example"),
-        os.environ["asyncprawcore_CLIENT_ID"],
+        os.environ["PRAWCORE_CLIENT_ID"],
     )
     authorizer = asyncprawcore.DeviceIDAuthorizer(authenticator)
     await authorizer.refresh()
@@ -38,5 +38,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    sys.exit(loop.run_until_complete(main()))
+    sys.exit(asyncio.run(main()))
