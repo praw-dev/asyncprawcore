@@ -3,6 +3,9 @@ Change Log
 
 asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
+Unreleased
+----------
+
 2.4.0 (2023/11/27)
 ------------------
 
