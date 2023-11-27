@@ -46,7 +46,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sun, 06 Aug 2023 18:32:26 GMT"
+            "Mon, 27 Nov 2023 01:44:56 GMT"
           ],
           "NEL": [
             "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
@@ -58,13 +58,13 @@
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=iYKL7DyFJD5jIDZuh9; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=dOAZ6NCNPO62No8SeM; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubdomains"
           ],
           "Vary": [
-            "accept-encoding"
+            "accept-encoding, Accept-Encoding"
           ],
           "Via": [
             "1.1 varnish"
@@ -78,11 +78,8 @@
           "X-XSS-Protection": [
             "1; mode=block"
           ],
-          "x-moose": [
-            "majestic"
-          ],
           "x-reddit-loid": [
-            "000000000h1k5lkdvu.2.1691346746799.Z0FBQUFBQmt6LWM2RDB2ODI0aFBOSENvdUFLT1ZmSUVfOUxnSDRFd0lSX3JqUGV3dkhDQ1F3SFVfSWV2Y0txcTVkZ05EZm5RQkdiUlVORDNZOXMxT0tPeVlYQlU0MU4zNnRkMGlQYmx6c2dHaHRaRXpHN0llMzhUUTM4ZmYyWVFDTlFCUG9JM2F3dlk"
+            "000000000oqj51oy8d.2.1701049496810.Z0FBQUFBQmxZX1NZcXNMRG5sc016bExBOHdLMFdfWFBTbmZKa1NrWk0ya1V6WHpaX0E5VXpSMkNUUi1pMFFmOWtsLWZrWkxmQmsyREI2aDdtRXVUdXhsLXc0MGpyN2NsQWkyd1QzRGd1dmUzZ2dtazBmTXFuUzQtdUI0RmZEemhSMGtyYzluczAzSTI"
           ]
         },
         "status": {
@@ -103,7 +100,7 @@
             "bearer <ACCESS_TOKEN>"
           ],
           "Cookie": [
-            "edgebucket=iYKL7DyFJD5jIDZuh9"
+            "edgebucket=dOAZ6NCNPO62No8SeM"
           ],
           "User-Agent": [
             "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
@@ -139,7 +136,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sun, 06 Aug 2023 18:32:27 GMT"
+            "Mon, 27 Nov 2023 01:44:57 GMT"
           ],
           "NEL": [
             "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
@@ -151,12 +148,15 @@
             "snooserv"
           ],
           "Set-Cookie": [
-            "loid=000000000h1k5lkdvu.2.1691346746799.Z0FBQUFBQmt6LWM2QkgxZzhrVzl4MmRyellVaXFfdHlmT2dDbEJmT3FMdk1sWTFmd1M4YUFnTW5tS0RTUnBDTDY4Qk9tN0ZPa3dfVEJ1LW93WFppTGxBbVdCSWs0cnZnVFF1RXBUM1ZjVTdNbTJyZ2p6S0dDZU5Pb1ZaaVZhaVVyaWt6ek5tWW5YNWY; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Tue, 05-Aug-2025 18:32:26 GMT; secure; SameSite=None; Secure",
-            "session_tracker=opdqaqbkdaqobbhpgd.0.1691346746967.Z0FBQUFBQmt6LWM2cFowVDk1OTV2QWpaNnZlTmZKSEVrNUlYUkFzenVZMVJHa0plN0hMYmRnZlpKa1c0TmFvaTdxNVBiVnRzbWZUb0piNHFlU0RZYmpwLWUycHBEOXVLZTM4bjNHcDQ1cnNnX1VmUjhoRWZIRW5lQms1VGthUjc2Vy1aek9RVEJ6dlM; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sun, 06-Aug-2023 20:32:26 GMT; secure; SameSite=None; Secure",
+            "loid=000000000oqj51oy8d.2.1701049496810.Z0FBQUFBQmxZX1NZY180ZjcwdU9TQk9CamhvVnBETHFzUnBZRGN6eEtwVFVKb3JhT3hDNzQ3akpfYjNuakFpMTNMeVBlV2NXdGdxdWdOSTFjRzc4bkttX3JqcGpaN2s2TGY2WkZrREdHaWlPbF9maEN6OWFoTEQxdHFXUTBBRnpSVXE1N3dkSWo2YnE; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Wed, 26-Nov-2025 01:44:56 GMT; secure; SameSite=None; Secure",
+            "session_tracker=mrilgcopaaraoehpdp.0.1701049496950.Z0FBQUFBQmxZX1NZS3Z2Z2x0NFMzVE50OWhzdkFTY0czWGJCelgwUDFNd093dU80Sms1c2IxNkkweU1oRGx1QnRuMlQxOEkwOWx1YmJsdUE5ZzNrQjh2QkR1SXp0dTFVX2lEeHMxX2lCMFNJbmtFamFQWlFuVnhnMGdlWTYtUEZ2eGtKTFN2Z0hYV0E; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 27-Nov-2023 03:44:56 GMT; secure; SameSite=None; Secure",
             "csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
           ],
           "Via": [
             "1.1 varnish"
@@ -170,17 +170,14 @@
           "X-XSS-Protection": [
             "1; mode=block"
           ],
-          "x-moose": [
-            "majestic"
-          ],
           "x-ratelimit-remaining": [
-            "599.0"
+            "593.0"
           ],
           "x-ratelimit-reset": [
-            "454"
+            "304"
           ],
           "x-ratelimit-used": [
-            "1"
+            "7"
           ],
           "x-ua-compatible": [
             "IE=edge"
@@ -194,6 +191,6 @@
       }
     }
   ],
-  "recorded_at": "2023-08-06T18:32:26",
+  "recorded_at": "2023-11-27T01:44:56",
   "version": 1
 }

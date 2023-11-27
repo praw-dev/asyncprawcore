@@ -1,8 +1,8 @@
-"""asyncprawcore: Low-level asynchronous communication layer for Async PRAW 7+."""
+"""Low-level asynchronous communication layer for Async PRAW 7+."""
 
 import logging
 
-from .auth import (  # noqa
+from .auth import (
     Authorizer,
     DeviceIDAuthorizer,
     ImplicitAuthorizer,
@@ -11,9 +11,9 @@ from .auth import (  # noqa
     TrustedAuthenticator,
     UntrustedAuthenticator,
 )
-from .const import __version__  # noqa
-from .exceptions import *  # noqa
-from .requestor import Requestor  # noqa
-from .sessions import Session, session  # noqa
+from .const import __version__
+from .exceptions import *  # noqa: F403
+from .requestor import Requestor
+from .sessions import Session, session
 
 logging.getLogger(__package__).addHandler(logging.NullHandler())

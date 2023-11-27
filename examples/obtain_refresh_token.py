@@ -50,9 +50,9 @@ async def main():
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
             requestor,
-            os.environ["ASYNCPRAWCORE_CLIENT_ID"],
-            os.environ["ASYNCPRAWCORE_CLIENT_SECRET"],
-            os.environ["ASYNCPRAWCORE_REDIRECT_URI"],
+            os.environ["PRAWCORE_CLIENT_ID"],
+            os.environ["PRAWCORE_CLIENT_SECRET"],
+            "http://localhost:8080",
         )
 
         state = str(random.randint(0, 65000))
@@ -80,11 +80,10 @@ async def main():
         await authorizer.authorize(params["code"])
 
         send_message(client, f"Refresh token: {authorizer.refresh_token}")
-        return 0
     finally:
         await requestor.close()
+    return 0
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    sys.exit(loop.run_until_complete(main()))
+    sys.exit(asyncio.run(main()))

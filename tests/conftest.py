@@ -100,6 +100,14 @@ placeholders = {
     ).split()
 }
 
-placeholders["basic_auth"] = b64encode(
-    f"{placeholders['client_id']}:{placeholders['client_secret']}".encode("utf-8")
-).decode("utf-8")
+if (
+    placeholders["client_id"] != "fake_client_id"
+    and placeholders["client_secret"] == "fake_client_secret"
+):
+    placeholders["basic_auth"] = b64encode(
+        f"{placeholders['client_id']}:".encode("utf-8")
+    ).decode("utf-8")
+else:
+    placeholders["basic_auth"] = b64encode(
+        f"{placeholders['client_id']}:{placeholders['client_secret']}".encode("utf-8")
+    ).decode("utf-8")

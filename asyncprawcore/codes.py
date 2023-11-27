@@ -1,8 +1,8 @@
 """Use our own codes instead of importing them."""
-from typing import Dict, Tuple
+from __future__ import annotations
 
 
-def _make_into_dict(tupledict: Dict[int, Tuple[str, ...]]) -> Dict[str, int]:
+def _make_into_dict(tupledict: dict[int, tuple[str, ...]]) -> dict[str, int]:
     """Transform a ``value, keys`` tupledict."""
     newdict = {}
     for value, keys in tupledict.items():

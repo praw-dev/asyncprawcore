@@ -1,38 +1,13 @@
 """Pytest utils for integration tests."""
-
+from __future__ import annotations
 import json
 import os
 from datetime import datetime
-from typing import Dict
 
-import pytest
 from vcr.persisters.filesystem import FilesystemPersister
 from vcr.serialize import deserialize, serialize
 
 from tests.conftest import placeholders as _placeholders
-
-
-def ensure_environment_variables():
-    """Ensure needed environment variables for recording a new cassette are set."""
-    for key in (
-        "client_id",
-        "client_secret",
-    ):
-        if getattr(pytest.placeholders, key) == f"fake_{key}":
-            raise ValueError(
-                f"Environment variable 'PRAWCORE_{key.upper()}' must be set for recording new"
-                " cassettes."
-            )
-    auth_set = False
-    for auth_keys in [["refresh_token"], ["username", "password"]]:
-        if all(getattr(pytest.placeholders, key) != f"fake_{key}" for key in auth_keys):
-            auth_set = True
-            break
-    if not auth_set:
-        raise ValueError(
-            "Environment variables 'PRAWCORE_REFRESH_TOKEN' or 'PRAWCORE_USERNAME' and 'PRAWCORE_PASSWORD' must be set"
-            " for new cassette recording."
-        )
 
 
 def ensure_integration_test(cassette):
@@ -53,14 +28,15 @@ def filter_access_token(response):
     if "api/v1/access_token" not in request_uri or response["status"]["code"] != 200:
         return response
     body = response["body"]["string"].decode()
-    try:
-        token = json.loads(body)["access_token"]
+    for token_key in ["access", "refresh"]:
+        try:
+            token = json.loads(body)[f"{token_key}_token"]
+        except (KeyError, TypeError, ValueError):
+            continue
         response["body"]["string"] = response["body"]["string"].replace(
-            token.encode("utf-8"), b"<ACCESS_TOKEN>"
+            token.encode("utf-8"), f"<{token_key.upper()}_TOKEN>".encode("utf-8")
         )
-        _placeholders["access_token"] = token
-    except (KeyError, TypeError, ValueError):
-        pass
+        _placeholders[f"{token_key}_token"] = token
     return response
 
 
@@ -70,7 +46,7 @@ class CustomPersister(FilesystemPersister):
     additional_placeholders = {}
 
     @classmethod
-    def add_additional_placeholders(cls, placeholders: Dict[str, str]):
+    def add_additional_placeholders(cls, placeholders: dict[str, str]):
         """Add additional placeholders."""
         cls.additional_placeholders.update(placeholders)
 
@@ -115,8 +91,8 @@ class CustomSerializer:
     """Custom serializer to handle binary objects in dict."""
 
     @staticmethod
-    def _serialize_file(file_name):
-        with open(file_name, "rb") as f:
+    def _serialize_file(file):
+        with open(file.name, "rb") as f:
             return f.read().decode("utf-8", "replace")
 
     @staticmethod
@@ -129,7 +105,7 @@ class CustomSerializer:
         new_dict = {}
         for key, value in data.items():
             if key == "file":
-                new_dict[key] = cls._serialize_file(value.name)
+                new_dict[key] = cls._serialize_file(value)
             elif isinstance(value, dict):
                 new_dict[key] = cls._serialize_dict(value)
             elif isinstance(value, list):
@@ -148,7 +124,7 @@ class CustomSerializer:
                 new_list.append(cls._serialize_list(item))
             elif isinstance(item, tuple):
                 if item[0] == "file":
-                    item = (item[0], cls._serialize_file(item[1].name))
+                    item = (item[0], cls._serialize_file(item[1]))
                 new_list.append(item)
             else:
                 new_list.append(item)

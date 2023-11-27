@@ -1,11 +1,14 @@
 """asyncprawcore.sessions: Provides asyncprawcore.Session and asyncprawcore.session."""
+from __future__ import annotations
+
 import asyncio
 import logging
 import random
 import time
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from pprint import pformat
+from typing import TYPE_CHECKING, Any, BinaryIO, TextIO
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
@@ -32,9 +35,6 @@ from .rate_limit import RateLimiter
 from .util import authorization_error_class
 
 if TYPE_CHECKING:
-    from io import BufferedReader
-
-    from aiofiles.threadpool.binary import AsyncBufferedReader
     from aiohttp import ClientResponse
 
     from .auth import Authorizer
@@ -53,10 +53,10 @@ class RetryStrategy(ABC):
     """
 
     @abstractmethod
-    def _sleep_seconds(self) -> Optional[float]:
+    def _sleep_seconds(self) -> float | None:
         pass
 
-    async def sleep(self) -> None:
+    async def sleep(self):
         """Sleep until we are ready to attempt the request."""
         sleep_seconds = self._sleep_seconds()
         if sleep_seconds is not None:
@@ -65,33 +65,7 @@ class RetryStrategy(ABC):
             await asyncio.sleep(sleep_seconds)
 
 
-class FiniteRetryStrategy(RetryStrategy):
-    """A ``RetryStrategy`` that retries requests a finite number of times."""
-
-    def _sleep_seconds(self) -> Optional[float]:
-        if self._retries < 3:
-            base = 0 if self._retries == 2 else 2
-            return base + 2 * random.random()
-        return None
-
-    def __init__(self, retries: int = 3) -> None:
-        """Initialize the strategy.
-
-        :param retries: Number of times to attempt a request (default: ``3``).
-
-        """
-        self._retries = retries
-
-    def consume_available_retry(self) -> "FiniteRetryStrategy":
-        """Allow one fewer retry."""
-        return type(self)(self._retries - 1)
-
-    def should_retry_on_failure(self) -> bool:
-        """Return ``True`` if and only if the strategy will allow another retry."""
-        return self._retries > 1
-
-
-class Session(object):
+class Session:
     """The low-level connection interface to Reddit's API."""
 
     RETRY_EXCEPTIONS = (ConnectionError, HTTPRequestTimeout)
@@ -130,17 +104,17 @@ class Session(object):
 
     @staticmethod
     def _log_request(
-        data: Optional[List[Tuple[str, str]]],
+        data: list[tuple[str, str]] | None,
         method: str,
-        params: Dict[str, int],
+        params: dict[str, int],
         url: str,
     ):
-        log.debug(f"Fetching: {method} {url} at {time.time()}")
-        log.debug(f"Data: {data}")
-        log.debug(f"Params: {params}")
+        log.debug("Fetching: %s %s at %s", method, url, time.time())
+        log.debug("Data: %s", pformat(data))
+        log.debug("Params: %s", pformat(params))
 
     @staticmethod
-    def _preprocess_dict(data: Dict[str, Any]) -> Dict[str, str]:
+    def _preprocess_dict(data: dict[str, Any]) -> dict[str, str]:
         new_data = {}
         for key, value in data.items():
             if isinstance(value, bool):
@@ -149,11 +123,23 @@ class Session(object):
                 new_data[key] = str(value) if not isinstance(value, str) else value
         return new_data
 
+    @property
+    def _requestor(self) -> Requestor:
+        return self._authorizer._authenticator._requestor
+
+    async def __aenter__(self) -> Session:  # noqa: PYI034
+        """Allow this object to be used as a context manager."""
+        return self
+
+    async def __aexit__(self, *_args):
+        """Allow this object to be used as a context manager."""
+        await self.close()
+
     def __init__(
         self,
-        authorizer: Optional[BaseAuthorizer],
+        authorizer: BaseAuthorizer | None,
         window_size: int = WINDOW_SIZE,
-    ) -> None:
+    ):
         """Prepare the connection to Reddit's API.
 
         :param authorizer: An instance of :class:`.Authorizer`.
@@ -161,36 +147,26 @@ class Session(object):
 
         """
         if not isinstance(authorizer, BaseAuthorizer):
-            raise InvalidInvocation(f"invalid Authorizer: {authorizer}")
+            msg = f"invalid Authorizer: {authorizer}"
+            raise InvalidInvocation(msg)
         self._authorizer = authorizer
         self._rate_limiter = RateLimiter(window_size=window_size)
         self._retry_strategy_class = FiniteRetryStrategy
 
-    async def __aenter__(self) -> "Session":
-        """Allow this object to be used as a context manager."""
-        return self
-
-    async def __aexit__(self, *_args) -> None:
-        """Allow this object to be used as a context manager."""
-        await self.close()
-
     async def _do_retry(
         self,
-        data: List[Tuple[str, Any]],
-        json: Dict[str, Any],
+        data: list[tuple[str, Any]],
+        json: dict[str, Any],
         method: str,
-        params: Dict[str, int],
-        response: Optional["ClientResponse"],
-        retry_strategy_state: "FiniteRetryStrategy",
-        saved_exception: Optional[Exception],
+        params: dict[str, int],
+        response: ClientResponse | None,
+        retry_strategy_state: FiniteRetryStrategy,
+        saved_exception: Exception | None,
         timeout: float,
         url: str,
-    ) -> Optional[Union[Dict[str, Any], str]]:
-        if saved_exception:
-            status = repr(saved_exception)
-        else:
-            status = response.status
-        log.warning(f"Retrying due to {status} status: {method} {url}")
+    ) -> dict[str, Any] | str | None:
+        status = repr(saved_exception) if saved_exception else response.status
+        log.warning("Retrying due to %s status: %s %s", status, method, url)
         return await self._request_with_retries(
             data=data,
             json=json,
@@ -204,14 +180,14 @@ class Session(object):
 
     async def _make_request(
         self,
-        data: List[Tuple[str, Any]],
-        json: Dict[str, Any],
+        data: list[tuple[str, Any]],
+        json: dict[str, Any],
         method: str,
-        params: Dict[str, Any],
-        retry_strategy_state: "FiniteRetryStrategy",
+        params: dict[str, Any],
+        retry_strategy_state: FiniteRetryStrategy,
         timeout: float,
         url: str,
-    ) -> Union[Tuple["ClientResponse", None], Tuple[None, Exception]]:
+    ) -> tuple[ClientResponse, None] | tuple[None, Exception]:
         try:
             response = await self._rate_limiter.call(
                 self._requestor.request,
@@ -225,11 +201,13 @@ class Session(object):
                 timeout=timeout,
             )
             log.debug(
-                f"Response: {response.status}"
-                f" ({response.headers.get('content-length')} bytes)"
-                f" (rst-{response.headers.get('x-ratelimit-reset')}:"
-                f"rem-{response.headers.get('x-ratelimit-remaining')}:"
-                f"used-{response.headers.get('x-ratelimit-used')} ratelimit) at {time.time()}"
+                "Response: %s (%s bytes) (rst-%s:rem-%s:used-%s ratelimit) at %s",
+                response.status,
+                response.headers.get("content-length"),
+                response.headers.get("x-ratelimit-reset"),
+                response.headers.get("x-ratelimit-remaining"),
+                response.headers.get("x-ratelimit-used"),
+                time.time(),
             )
             return response, None
         except RequestException as exception:
@@ -244,9 +222,9 @@ class Session(object):
 
     def _preprocess_data(
         self,
-        data: Dict[str, Any],
-        files: Optional[Dict[str, Union["AsyncBufferedReader", "BufferedReader"]]],
-    ) -> Optional[Dict[str, str]]:
+        data: dict[str, Any],
+        files: dict[str, BinaryIO | TextIO] | None,
+    ) -> dict[str, str] | None:
         """Preprocess data and files before request.
 
         This is to convert requests that are formatted for the ``requests`` package to
@@ -268,11 +246,11 @@ class Session(object):
         if isinstance(data, dict):
             data = self._preprocess_dict(data)
             if files is not None:
-                data: Dict[str, Union[str, "AsyncBufferedReader", "BufferedReader"]]
+                data: dict[str, str | BinaryIO | TextIO]
                 data.update(files)
         return data
 
-    def _preprocess_params(self, params: Dict[str, int]) -> Dict[str, str]:
+    def _preprocess_params(self, params: dict[str, int]) -> dict[str, str]:
         """Preprocess params before request.
 
         This is to convert requests that are formatted for the ``requests`` package to
@@ -292,14 +270,14 @@ class Session(object):
 
     async def _request_with_retries(
         self,
-        data: List[Union[Tuple[str, Any]]],
-        json: Dict[str, Any],
+        data: list[tuple[str, Any]],
+        json: dict[str, Any],
         method: str,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         timeout: float,
         url: str,
-        retry_strategy_state: Optional["FiniteRetryStrategy"] = None,
-    ) -> Optional[Union[Dict[str, Any], str]]:
+        retry_strategy_state: FiniteRetryStrategy | None = None,
+    ) -> dict[str, Any] | str | None:
         if retry_strategy_state is None:
             retry_strategy_state = self._retry_strategy_class()
 
@@ -335,16 +313,15 @@ class Session(object):
                 timeout,
                 url,
             )
-        elif response.status in self.STATUS_EXCEPTIONS:
+        if response.status in self.STATUS_EXCEPTIONS:
             if response.status == codes["media_type"]:
                 # since exception class needs response.json
                 raise self.STATUS_EXCEPTIONS[response.status](
                     response, await response.json()
                 )
-            else:
-                raise self.STATUS_EXCEPTIONS[response.status](response)
-        elif response.status == codes["no_content"]:
-            return
+            raise self.STATUS_EXCEPTIONS[response.status](response)
+        if response.status == codes["no_content"]:
+            return None
         assert (
             response.status in self.SUCCESS_STATUSES
         ), f"Unexpected status code: {response.status}"
@@ -353,18 +330,14 @@ class Session(object):
         try:
             return await response.json()
         except ValueError:
-            raise BadJSON(response)
+            raise BadJSON(response) from None
 
-    async def _set_header_callback(self) -> Dict[str, str]:
+    async def _set_header_callback(self) -> dict[str, str]:
         if not self._authorizer.is_valid() and hasattr(self._authorizer, "refresh"):
             await self._authorizer.refresh()
         return {"Authorization": f"bearer {self._authorizer.access_token}"}
 
-    @property
-    def _requestor(self) -> "Requestor":
-        return self._authorizer._authenticator._requestor
-
-    async def close(self) -> None:
+    async def close(self):
         """Close the session and perform any clean up."""
         await self._requestor.close()
 
@@ -372,14 +345,12 @@ class Session(object):
         self,
         method: str,
         path: str,
-        data: Optional[Dict[str, Any]] = None,
-        files: Optional[
-            Dict[str, Union["AsyncBufferedReader", "BufferedReader"]]
-        ] = None,
-        json: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        data: dict[str, Any] | None = None,
+        files: dict[str, BinaryIO | TextIO] | None = None,
+        json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
         timeout: float = TIMEOUT,
-    ) -> Optional[Union[Dict[str, Any], str]]:
+    ) -> dict[str, Any] | str | None:
         """Return the json content from the resource at ``path``.
 
         :param method: The request verb. E.g., ``"GET"``, ``"POST"``, ``"PUT"``.
@@ -420,7 +391,7 @@ class Session(object):
 
 
 def session(
-    authorizer: "Authorizer" = None,
+    authorizer: Authorizer = None,
     window_size: int = WINDOW_SIZE,
 ) -> Session:
     """Return a :class:`.Session` instance.
@@ -430,3 +401,29 @@ def session(
 
     """
     return Session(authorizer=authorizer, window_size=window_size)
+
+
+class FiniteRetryStrategy(RetryStrategy):
+    """A ``RetryStrategy`` that retries requests a finite number of times."""
+
+    def __init__(self, retries: int = 3):
+        """Initialize the strategy.
+
+        :param retries: Number of times to attempt a request (default: ``3``).
+
+        """
+        self._retries = retries
+
+    def _sleep_seconds(self) -> float | None:
+        if self._retries < 3:
+            base = 0 if self._retries == 2 else 2
+            return base + 2 * random.random()  # noqa: S311
+        return None
+
+    def consume_available_retry(self) -> FiniteRetryStrategy:
+        """Allow one fewer retry."""
+        return type(self)(self._retries - 1)
+
+    def should_retry_on_failure(self) -> bool:
+        """Return ``True`` if and only if the strategy will allow another retry."""
+        return self._retries > 1

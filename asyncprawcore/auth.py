@@ -1,20 +1,12 @@
 """Provides Authentication and Authorization classes."""
+from __future__ import annotations
+
 import inspect
 import time
 from abc import ABC, abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    Awaitable,
-    Callable,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
-from aiohttp import ClientRequest, ClientResponse
+from aiohttp import ClientRequest
 from aiohttp.helpers import BasicAuth
 from yarl import URL
 
@@ -23,15 +15,24 @@ from .codes import codes
 from .exceptions import InvalidInvocation, OAuthException, ResponseException
 
 if TYPE_CHECKING:
+    from aiohttp import ClientResponse
+
     from asyncprawcore.requestor import Requestor
 
 
 class BaseAuthenticator(ABC):
     """Provide the base authenticator object that stores OAuth2 credentials."""
 
+    @abstractmethod
+    def _auth(self) -> BasicAuth:
+        pass
+
     def __init__(
-        self, requestor: "Requestor", client_id: str, redirect_uri: Optional[str] = None
-    ) -> None:
+        self,
+        requestor: Requestor,
+        client_id: str,
+        redirect_uri: str | None = None,
+    ):
         """Represent a single authentication to Reddit's API.
 
         :param requestor: An instance of :class:`.Requestor`.
@@ -47,12 +48,8 @@ class BaseAuthenticator(ABC):
         self.client_id = client_id
         self.redirect_uri = redirect_uri
 
-    @abstractmethod
-    def _auth(self):
-        pass
-
     async def _post(
-        self, url: str, success_status: int = codes["ok"], **data
+        self, url: str, success_status: int = codes["ok"], **data: Any
     ) -> ClientResponse:
         response = await self._requestor.request(
             "POST",
@@ -66,7 +63,7 @@ class BaseAuthenticator(ABC):
         return response
 
     def authorize_url(
-        self, duration: str, scopes: List[str], state: str, implicit: bool = False
+        self, duration: str, scopes: list[str], state: str, implicit: bool = False
     ) -> str:
         """Return the URL used out-of-band to grant access to your application.
 
@@ -92,16 +89,16 @@ class BaseAuthenticator(ABC):
 
         """
         if self.redirect_uri is None:
-            raise InvalidInvocation("redirect URI not provided")
+            msg = "redirect URI not provided"
+            raise InvalidInvocation(msg)
         if implicit and not isinstance(self, UntrustedAuthenticator):
-            raise InvalidInvocation(
-                "Only UntrustedAuthenticator instances can "
-                "use the implicit grant flow."
+            msg = (
+                "Only UntrustedAuthenticator instances can use the implicit grant flow."
             )
+            raise InvalidInvocation(msg)
         if implicit and duration != "temporary":
-            raise InvalidInvocation(
-                "The implicit grant flow only supports temporary access tokens."
-            )
+            msg = "The implicit grant flow only supports temporary access tokens."
+            raise InvalidInvocation(msg)
 
         params = {
             "client_id": self.client_id,
@@ -115,7 +112,7 @@ class BaseAuthenticator(ABC):
         request = ClientRequest("GET", URL(url), params=params)
         return str(request.url)
 
-    async def revoke_token(self, token: str, token_type: Optional[str] = None) -> None:
+    async def revoke_token(self, token: str, token_type: str | None = None):
         """Ask Reddit to revoke the provided token.
 
         :param token: The access or refresh token to revoke.
@@ -131,50 +128,12 @@ class BaseAuthenticator(ABC):
         await self._post(url, **data)
 
 
-class TrustedAuthenticator(BaseAuthenticator):
-    """Store OAuth2 authentication credentials for web, or script type apps."""
-
-    RESPONSE_TYPE: str = "code"
-
-    def __init__(
-        self,
-        requestor: "Requestor",
-        client_id: str,
-        client_secret: str,
-        redirect_uri: Optional[str] = None,
-    ) -> None:
-        """Represent a single authentication to Reddit's API.
-
-        :param requestor: An instance of :class:`.Requestor`.
-        :param client_id: The OAuth2 client ID to use with the session.
-        :param client_secret: The OAuth2 client secret to use with the session.
-        :param redirect_uri: The redirect URI exactly as specified in your OAuth
-            application settings on Reddit. This parameter is required if you want to
-            use the :meth:`~.Authorizer.authorize_url` method, or the
-            :meth:`~.Authorizer.authorize` method of the :class:`.Authorizer` class
-            (default: ``None``).
-
-        """
-        super(TrustedAuthenticator, self).__init__(requestor, client_id, redirect_uri)
-        self.client_secret = client_secret
-
-    def _auth(self) -> BasicAuth:
-        return BasicAuth(self.client_id, self.client_secret)
-
-
-class UntrustedAuthenticator(BaseAuthenticator):
-    """Store OAuth2 authentication credentials for installed applications."""
-
-    def _auth(self) -> BasicAuth:
-        return BasicAuth(self.client_id, "")
-
-
 class BaseAuthorizer(ABC):
     """Superclass for OAuth2 authorization tokens and scopes."""
 
-    AUTHENTICATOR_CLASS: Union[Tuple, Type] = BaseAuthenticator
+    AUTHENTICATOR_CLASS: tuple | type = BaseAuthenticator
 
-    def __init__(self, authenticator: BaseAuthenticator) -> None:
+    def __init__(self, authenticator: BaseAuthenticator):
         """Represent a single authorization to Reddit's API.
 
         :param authenticator: An instance of :class:`.BaseAuthenticator`.
@@ -184,12 +143,12 @@ class BaseAuthorizer(ABC):
         self._clear_access_token()
         self._validate_authenticator()
 
-    def _clear_access_token(self) -> None:
+    def _clear_access_token(self):
         self._expiration_timestamp: float
-        self.access_token: Optional[str] = None
-        self.scopes: Optional[Set[str]] = None
+        self.access_token: str | None = None
+        self.scopes: set[str] | None = None
 
-    async def _request_token(self, **data) -> None:
+    async def _request_token(self, **data: Any):
         url = self._authenticator._requestor.reddit_url + const.ACCESS_TOKEN_PATH
         pre_request_time = time.time()
         response = await self._authenticator._post(url=url, **data)
@@ -205,7 +164,7 @@ class BaseAuthorizer(ABC):
             self.refresh_token = payload["refresh_token"]
         self.scopes = set(payload["scope"].split(" "))
 
-    def _validate_authenticator(self) -> None:
+    def _validate_authenticator(self):
         if not isinstance(self._authenticator, self.AUTHENTICATOR_CLASS):
             msg = "Must use an authenticator of type"
             if isinstance(self.AUTHENTICATOR_CLASS, type):
@@ -227,13 +186,52 @@ class BaseAuthorizer(ABC):
             self.access_token is not None and time.time() < self._expiration_timestamp
         )
 
-    async def revoke(self) -> None:
+    async def revoke(self):
         """Revoke the current Authorization."""
         if self.access_token is None:
-            raise InvalidInvocation("no token available to revoke")
+            msg = "no token available to revoke"
+            raise InvalidInvocation(msg)
 
         await self._authenticator.revoke_token(self.access_token, "access_token")
         self._clear_access_token()
+
+
+class TrustedAuthenticator(BaseAuthenticator):
+    """Store OAuth2 authentication credentials for web, or script type apps."""
+
+    RESPONSE_TYPE: str = "code"
+
+    def __init__(
+        self,
+        requestor: Requestor,
+        client_id: str,
+        client_secret: str,
+        redirect_uri: str | None = None,
+    ):
+        """Represent a single authentication to Reddit's API.
+
+        :param requestor: An instance of :class:`.Requestor`.
+        :param client_id: The OAuth2 client ID to use with the session.
+        :param client_secret: The OAuth2 client secret to use with the session.
+        :param redirect_uri: The redirect URI exactly as specified in your OAuth
+            application settings on Reddit. This parameter is required if you want to
+            use the :meth:`~.Authorizer.authorize_url` method, or the
+            :meth:`~.Authorizer.authorize` method of the :class:`.Authorizer` class
+            (default: ``None``).
+
+        """
+        super().__init__(requestor, client_id, redirect_uri)
+        self.client_secret = client_secret
+
+    def _auth(self) -> BasicAuth:
+        return BasicAuth(self.client_id, self.client_secret)
+
+
+class UntrustedAuthenticator(BaseAuthenticator):
+    """Store OAuth2 authentication credentials for installed applications."""
+
+    def _auth(self) -> BasicAuth:
+        return BasicAuth(self.client_id, "")
 
 
 class Authorizer(BaseAuthorizer):
@@ -243,20 +241,14 @@ class Authorizer(BaseAuthorizer):
         self,
         authenticator: BaseAuthenticator,
         *,
-        post_refresh_callback: Optional[
-            Union[
-                Callable[["Authorizer"], Awaitable[None]],
-                Callable[["Authorizer"], None],
-            ]
-        ] = None,
-        pre_refresh_callback: Optional[
-            Union[
-                Callable[["Authorizer"], Awaitable[None]],
-                Callable[["Authorizer"], None],
-            ]
-        ] = None,
-        refresh_token: Optional[str] = None,
-    ) -> None:
+        post_refresh_callback: Callable[[Authorizer], Awaitable[None]]
+        | Callable[[Authorizer], None]
+        | None = None,
+        pre_refresh_callback: Callable[[Authorizer], Awaitable[None]]
+        | Callable[[Authorizer], None]
+        | None = None,
+        refresh_token: str | None = None,
+    ):
         """Represent a single authorization to Reddit's API.
 
         :param authenticator: An instance of a subclass of :class:`.BaseAuthenticator`.
@@ -273,12 +265,12 @@ class Authorizer(BaseAuthorizer):
         :param refresh_token: Enables the ability to refresh the authorization.
 
         """
-        super(Authorizer, self).__init__(authenticator)
+        super().__init__(authenticator)
         self._post_refresh_callback = post_refresh_callback
         self._pre_refresh_callback = pre_refresh_callback
         self.refresh_token = refresh_token
 
-    async def authorize(self, code: str) -> None:
+    async def authorize(self, code: str):
         """Obtain and set authorization tokens based on ``code``.
 
         :param code: The code obtained by an out-of-band authorization request to
@@ -286,14 +278,15 @@ class Authorizer(BaseAuthorizer):
 
         """
         if self._authenticator.redirect_uri is None:
-            raise InvalidInvocation("redirect URI not provided")
+            msg = "redirect URI not provided"
+            raise InvalidInvocation(msg)
         await self._request_token(
             code=code,
             grant_type="authorization_code",
             redirect_uri=self._authenticator.redirect_uri,
         )
 
-    async def refresh(self) -> None:
+    async def refresh(self):
         """Obtain a new access token from the refresh_token."""
         if self._pre_refresh_callback:
             if inspect.iscoroutinefunction(self._pre_refresh_callback):
@@ -301,7 +294,8 @@ class Authorizer(BaseAuthorizer):
             else:
                 self._pre_refresh_callback(self)
         if self.refresh_token is None:
-            raise InvalidInvocation("refresh token not provided")
+            msg = "refresh token not provided"
+            raise InvalidInvocation(msg)
         await self._request_token(
             grant_type="refresh_token", refresh_token=self.refresh_token
         )
@@ -311,7 +305,7 @@ class Authorizer(BaseAuthorizer):
             else:
                 self._post_refresh_callback(self)
 
-    async def revoke(self, only_access: bool = False) -> None:
+    async def revoke(self, only_access: bool = False):
         """Revoke the current Authorization.
 
         :param only_access: When explicitly set to ``True``, do not evict the refresh
@@ -322,58 +316,11 @@ class Authorizer(BaseAuthorizer):
 
         """
         if only_access or self.refresh_token is None:
-            await super(Authorizer, self).revoke()
+            await super().revoke()
         else:
             await self._authenticator.revoke_token(self.refresh_token, "refresh_token")
             self._clear_access_token()
             self.refresh_token = None
-
-
-class DeviceIDAuthorizer(BaseAuthorizer):
-    """Manages app-only OAuth2 for 'installed' applications.
-
-    While the ``"*"`` scope will be available, some endpoints simply will not work due
-    to the lack of an associated Reddit account.
-
-    """
-
-    AUTHENTICATOR_CLASS = (TrustedAuthenticator, UntrustedAuthenticator)
-
-    def __init__(
-        self,
-        authenticator: BaseAuthenticator,
-        device_id: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-    ) -> None:
-        """Represent an app-only OAuth2 authorization for 'installed' apps.
-
-        :param authenticator: An instance of :class:`.UntrustedAuthenticator` or
-            :class:`.TrustedAuthenticator`.
-        :param device_id: A unique ID (20-30 character ASCII string) (default:
-            ``None``). ``device_id`` is set to ``"DO_NOT_TRACK_THIS_DEVICE"`` when the
-            default argument is used. For more information about this parameter, see:
-            https://github.com/reddit/reddit/wiki/OAuth2#application-only-oauth
-        :param scopes: A list of OAuth scopes to request authorization for (default:
-            ``None``). The scope ``"*"`` is requested when the default argument is used.
-
-        """
-        if device_id is None:
-            device_id = "DO_NOT_TRACK_THIS_DEVICE"
-        super().__init__(authenticator)
-        self._device_id = device_id
-        self._scopes = scopes
-
-    async def refresh(self) -> None:
-        """Obtain a new access token."""
-        additional_kwargs = {}
-        if self._scopes:
-            additional_kwargs["scope"] = " ".join(self._scopes)
-        grant_type = "https://oauth.reddit.com/grants/installed_client"
-        await self._request_token(
-            grant_type=grant_type,
-            device_id=self._device_id,
-            **additional_kwargs,
-        )
 
 
 class ImplicitAuthorizer(BaseAuthorizer):
@@ -387,7 +334,7 @@ class ImplicitAuthorizer(BaseAuthorizer):
         access_token: str,
         expires_in: int,
         scope: str,
-    ) -> None:
+    ):
         """Represent a single implicit authorization to Reddit's API.
 
         :param authenticator: An instance of :class:`.UntrustedAuthenticator`.
@@ -402,7 +349,7 @@ class ImplicitAuthorizer(BaseAuthorizer):
             from Reddit in the callback to the authenticator's redirect uri.
 
         """
-        super(ImplicitAuthorizer, self).__init__(authenticator)
+        super().__init__(authenticator)
         self._expiration_timestamp = time.time() + expires_in
         self.access_token = access_token
         self.scopes = set(scope.split(" "))
@@ -421,8 +368,8 @@ class ReadOnlyAuthorizer(Authorizer):
     def __init__(
         self,
         authenticator: BaseAuthenticator,
-        scopes: Optional[List[str]] = None,
-    ) -> None:
+        scopes: list[str] | None = None,
+    ):
         """Represent a ReadOnly authorization to Reddit's API.
 
         :param scopes: A list of OAuth scopes to request authorization for (default:
@@ -432,7 +379,7 @@ class ReadOnlyAuthorizer(Authorizer):
         super().__init__(authenticator)
         self._scopes = scopes
 
-    async def refresh(self) -> None:
+    async def refresh(self):
         """Obtain a new ReadOnly access token."""
         additional_kwargs = {}
         if self._scopes:
@@ -453,11 +400,11 @@ class ScriptAuthorizer(Authorizer):
     def __init__(
         self,
         authenticator: BaseAuthenticator,
-        username: Optional[str],
-        password: Optional[str],
-        two_factor_callback: Optional[Callable[[], Union[Awaitable[str], str]]] = None,
-        scopes: Optional[List[str]] = None,
-    ) -> None:
+        username: str | None,
+        password: str | None,
+        two_factor_callback: Callable | None = None,
+        scopes: list[str] | None = None,
+    ):
         """Represent a single personal-use authorization to Reddit's API.
 
         :param authenticator: An instance of :class:`.TrustedAuthenticator`.
@@ -470,27 +417,74 @@ class ScriptAuthorizer(Authorizer):
             ``None``). The scope ``"*"`` is requested when the default argument is used.
 
         """
-        super(ScriptAuthorizer, self).__init__(authenticator)
+        super().__init__(authenticator)
         self._password = password
         self._scopes = scopes
         self._two_factor_callback = two_factor_callback
         self._username = username
 
-    async def refresh(self) -> None:
+    async def refresh(self):
         """Obtain a new personal-use script type access token."""
         additional_kwargs = {}
         if self._scopes:
             additional_kwargs["scope"] = " ".join(self._scopes)
         if self._two_factor_callback:
             if inspect.iscoroutinefunction(self._two_factor_callback):
-                otp = await self._two_factor_callback()
+                two_factor_code = await self._two_factor_callback()
             else:
-                otp = self._two_factor_callback()
-            if otp:
-                additional_kwargs["otp"] = otp
+                two_factor_code = self._two_factor_callback()
+            if two_factor_code:
+                additional_kwargs["otp"] = two_factor_code
         await self._request_token(
             grant_type="password",
             username=self._username,
             password=self._password,
+            **additional_kwargs,
+        )
+
+
+class DeviceIDAuthorizer(BaseAuthorizer):
+    """Manages app-only OAuth2 for 'installed' applications.
+
+    While the ``"*"`` scope will be available, some endpoints simply will not work due
+    to the lack of an associated Reddit account.
+
+    """
+
+    AUTHENTICATOR_CLASS = (TrustedAuthenticator, UntrustedAuthenticator)
+
+    def __init__(
+        self,
+        authenticator: BaseAuthenticator,
+        device_id: str | None = None,
+        scopes: list[str] | None = None,
+    ):
+        """Represent an app-only OAuth2 authorization for 'installed' apps.
+
+        :param authenticator: An instance of :class:`.UntrustedAuthenticator` or
+            :class:`.TrustedAuthenticator`.
+        :param device_id: A unique ID (20-30 character ASCII string) (default:
+            ``None``). ``device_id`` is set to ``"DO_NOT_TRACK_THIS_DEVICE"`` when the
+            default argument is used. For more information about this parameter, see:
+            https://github.com/reddit/reddit/wiki/OAuth2#application-only-oauth
+        :param scopes: A list of OAuth scopes to request authorization for (default:
+            ``None``). The scope ``"*"`` is requested when the default argument is used.
+
+        """
+        if device_id is None:
+            device_id = "DO_NOT_TRACK_THIS_DEVICE"
+        super().__init__(authenticator)
+        self._device_id = device_id
+        self._scopes = scopes
+
+    async def refresh(self):
+        """Obtain a new access token."""
+        additional_kwargs = {}
+        if self._scopes:
+            additional_kwargs["scope"] = " ".join(self._scopes)
+        grant_type = "https://oauth.reddit.com/grants/installed_client"
+        await self._request_token(
+            grant_type=grant_type,
+            device_id=self._device_id,
             **additional_kwargs,
         )

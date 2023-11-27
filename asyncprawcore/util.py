@@ -1,5 +1,7 @@
 """Provide utility for the asyncprawcore package."""
-from typing import TYPE_CHECKING, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from .exceptions import Forbidden, InsufficientScope, InvalidToken
 
@@ -14,16 +16,14 @@ _auth_error_mapping = {
 
 
 def authorization_error_class(
-    response: "ClientResponse",
-) -> Union[InvalidToken, Forbidden, InsufficientScope]:
+    response: ClientResponse,
+) -> InvalidToken | (Forbidden | InsufficientScope):
     """Return an exception instance that maps to the OAuth Error.
 
     :param response: The HTTP response containing a www-authenticate error.
 
     """
     message = response.headers.get("www-authenticate")
-    if message:
-        error = message.replace('"', "").rsplit("=", 1)[1]
-    else:
-        error = response.status
+    error: int | str
+    error = message.replace('"', "").rsplit("=", 1)[1] if message else response.status
     return _auth_error_mapping[error](response)

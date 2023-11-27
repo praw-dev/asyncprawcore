@@ -46,7 +46,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sun, 06 Aug 2023 18:32:27 GMT"
+            "Mon, 27 Nov 2023 02:12:53 GMT"
           ],
           "NEL": [
             "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
@@ -58,13 +58,13 @@
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=VwWdPbfYYwOTpBkM3R; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=iIiKyRhqRWR1DD1Xxv; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubdomains"
           ],
           "Vary": [
-            "accept-encoding"
+            "accept-encoding, Accept-Encoding"
           ],
           "Via": [
             "1.1 varnish"
@@ -78,11 +78,8 @@
           "X-XSS-Protection": [
             "1; mode=block"
           ],
-          "x-moose": [
-            "majestic"
-          ],
           "x-reddit-loid": [
-            "000000000h1k5lrnez.2.1691346747221.Z0FBQUFBQmt6LWM3cGxXbEJVdXBrcjNvdHd1ZXhHb1dJYTJmeWVwM1ZKa0FRbXZCNFlBdU4zVy1XTWVDQVd3MXJFRFVxQmJoT2hGV1lBTVNaRk9fWktrN2NPQkhOSkRMd3lhdzh1VTdFbG5nSzFMMnp2V2YzYTZYVmlOeno4WUhxUFFHWVctSkFqWEw"
+            "000000000oqkuy1iy8.2.1701051173638.Z0FBQUFBQmxZX3NscUI0WlJWQm05VFpMdnMyMkxNQkxONGFscm1KRVZFV0hmNUZaa0hvSS1RUnhPdjItYUVkQldtai1aSDBnT282cy12dWktOGhURzYxamd0SjZoSUc1ZVBUS3NXbVZ5N0tsQTJLZnVtV0htby1hSzlTc3pGQkNpRGZjSW9BSV9GaUI"
           ]
         },
         "status": {
@@ -103,7 +100,7 @@
             "bearer <ACCESS_TOKEN>"
           ],
           "Cookie": [
-            "edgebucket=VwWdPbfYYwOTpBkM3R"
+            "edgebucket=iIiKyRhqRWR1DD1Xxv"
           ],
           "User-Agent": [
             "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
@@ -133,7 +130,7 @@
             "text/plain"
           ],
           "Date": [
-            "Sun, 06 Aug 2023 18:32:27 GMT"
+            "Mon, 27 Nov 2023 02:12:53 GMT"
           ],
           "Retry-After": [
             "0"
@@ -153,6 +150,6 @@
       }
     }
   ],
-  "recorded_at": "2023-08-06T18:32:27",
+  "recorded_at": "2023-11-27T02:12:53",
   "version": 1
 }

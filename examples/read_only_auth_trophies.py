@@ -23,8 +23,8 @@ async def main():
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
             requestor,
-            os.environ["asyncprawcore_CLIENT_ID"],
-            os.environ["asyncprawcore_CLIENT_SECRET"],
+            os.environ["PRAWCORE_CLIENT_ID"],
+            os.environ["PRAWCORE_CLIENT_SECRET"],
         )
         authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
         await authorizer.refresh()
@@ -38,12 +38,11 @@ async def main():
             print(
                 f"{trophy['data']['name']}{(f' ({description})' if description else '')}"
             )
-
-        return 0
     finally:
         await requestor.close()
 
+    return 0
+
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    sys.exit(loop.run_until_complete(main()))
+    sys.exit(asyncio.run(main()))
