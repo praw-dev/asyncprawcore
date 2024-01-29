@@ -1,4 +1,5 @@
 """Test for asyncprawcore.auth.Authorizer classes."""
+
 import pytest
 
 import asyncprawcore

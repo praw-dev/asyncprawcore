@@ -1,4 +1,5 @@
 """Provides the HTTP request handling interface."""
+
 from __future__ import annotations
 
 import asyncio
@@ -59,9 +60,9 @@ class Requestor:
         self._http = session or aiohttp.ClientSession(
             loop=self.loop, timeout=aiohttp.ClientTimeout(total=None)
         )
-        self._http._default_headers[
-            "User-Agent"
-        ] = f"{user_agent} asyncprawcore/{__version__}"
+        self._http._default_headers["User-Agent"] = (
+            f"{user_agent} asyncprawcore/{__version__}"
+        )
 
         self.oauth_url = oauth_url
         self.reddit_url = reddit_url

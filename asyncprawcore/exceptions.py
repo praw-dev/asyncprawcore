@@ -1,4 +1,5 @@
 """Provide exception classes for the asyncprawcore package."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
