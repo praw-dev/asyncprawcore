@@ -1,4 +1,5 @@
 """Provides Authentication and Authorization classes."""
+
 from __future__ import annotations
 
 import inspect
@@ -241,12 +242,16 @@ class Authorizer(BaseAuthorizer):
         self,
         authenticator: BaseAuthenticator,
         *,
-        post_refresh_callback: Callable[[Authorizer], Awaitable[None]]
-        | Callable[[Authorizer], None]
-        | None = None,
-        pre_refresh_callback: Callable[[Authorizer], Awaitable[None]]
-        | Callable[[Authorizer], None]
-        | None = None,
+        post_refresh_callback: (
+            Callable[[Authorizer], Awaitable[None]]
+            | Callable[[Authorizer], None]
+            | None
+        ) = None,
+        pre_refresh_callback: (
+            Callable[[Authorizer], Awaitable[None]]
+            | Callable[[Authorizer], None]
+            | None
+        ) = None,
         refresh_token: str | None = None,
     ):
         """Represent a single authorization to Reddit's API.

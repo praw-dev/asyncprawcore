@@ -1,4 +1,5 @@
 """Test for asyncprawcore.Sessions module."""
+
 import logging
 from unittest.mock import AsyncMock, patch
 

@@ -1,4 +1,5 @@
 """asyncprawcore Integration test suite."""
+
 import os
 
 import pytest

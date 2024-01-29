@@ -1,4 +1,5 @@
 """Test for asyncprawcore.self.requestor.Requestor class."""
+
 import asyncio
 from unittest.mock import MagicMock, patch
 
