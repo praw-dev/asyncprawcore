@@ -13,7 +13,7 @@ Unreleased
 
 - Drop support for Python 3.6, which is end-of-life on 2021-12-23.
 - :class:`DeviceIDAuthorizer` can be now used with :class:`TrustedAuthenticator`.
-- Updated rate limit algorithm to better handle reddit's new rate limits.
+- Updated rate limit algorithm to better handle Reddit's new rate limits.
 - Drop support for Python 3.7, which is end-of-life on 2023-06-27.
 
 2.3.0 (2021/07/27)
