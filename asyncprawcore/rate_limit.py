@@ -5,7 +5,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Mapping
+from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING, Any, AsyncContextManager, Awaitable, Callable, Mapping
 
 if TYPE_CHECKING:
     from aiohttp import ClientResponse
@@ -28,16 +29,15 @@ class RateLimiter:
         self.used: int | None = None
         self.window_size: int = window_size
 
+    @asynccontextmanager
     async def call(
         self,
-        request_function: Callable[
-            [Any],
-            Awaitable[ClientResponse],
-        ],
+        # async context manager
+        request_function: Callable[..., AsyncContextManager[ClientResponse]],
         set_header_callback: Callable[[], Awaitable[dict[str, str]]],
         *args: Any,
         **kwargs: Any,
-    ) -> ClientResponse:
+    ) -> Callable[..., AsyncContextManager[ClientResponse]]:
         """Rate limit the call to ``request_function``.
 
         :param request_function: A function call that returns an HTTP response object.
@@ -49,9 +49,9 @@ class RateLimiter:
         """
         await self.delay()
         kwargs["headers"] = await set_header_callback()
-        response = await request_function(*args, **kwargs)
-        self.update(response.headers)
-        return response
+        async with request_function(*args, **kwargs) as response:
+            self.update(response.headers)
+            yield response
 
     async def delay(self):
         """Sleep for an amount of time to remain under the rate limit."""
