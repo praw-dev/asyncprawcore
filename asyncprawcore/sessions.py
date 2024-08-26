@@ -7,9 +7,10 @@ import logging
 import random
 import time
 from abc import ABC, abstractmethod
+from contextlib import asynccontextmanager
 from copy import deepcopy
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, BinaryIO, TextIO
+from typing import TYPE_CHECKING, Any, AsyncContextManager, BinaryIO, Callable, TextIO
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
@@ -179,6 +180,7 @@ class Session:
             # noqa: E501
         )
 
+    @asynccontextmanager
     async def _make_request(
         self,
         data: list[tuple[str, Any]],
@@ -188,9 +190,11 @@ class Session:
         retry_strategy_state: FiniteRetryStrategy,
         timeout: float,
         url: str,
-    ) -> tuple[ClientResponse, None] | tuple[None, Exception]:
+    ) -> Callable[
+        ..., AsyncContextManager[tuple[ClientResponse | None, Exception | None]]
+    ]:
         try:
-            response = await self._rate_limiter.call(
+            async with self._rate_limiter.call(
                 self._requestor.request,
                 self._set_header_callback,
                 method,
@@ -200,17 +204,17 @@ class Session:
                 json=json,
                 params=params,
                 timeout=timeout,
-            )
-            log.debug(
-                "Response: %s (%s bytes) (rst-%s:rem-%s:used-%s ratelimit) at %s",
-                response.status,
-                response.headers.get("content-length"),
-                response.headers.get("x-ratelimit-reset"),
-                response.headers.get("x-ratelimit-remaining"),
-                response.headers.get("x-ratelimit-used"),
-                time.time(),
-            )
-            return response, None
+            ) as response:
+                log.debug(
+                    "Response: %s (%s bytes) (rst-%s:rem-%s:used-%s ratelimit) at %s",
+                    response.status,
+                    response.headers.get("content-length"),
+                    response.headers.get("x-ratelimit-reset"),
+                    response.headers.get("x-ratelimit-remaining"),
+                    response.headers.get("x-ratelimit-used"),
+                    time.time(),
+                )
+                yield response, None
         except RequestException as exception:
             if (
                 not retry_strategy_state.should_retry_on_failure()
@@ -219,7 +223,7 @@ class Session:
                 )
             ):
                 raise
-            return None, exception.original_exception
+            yield None, exception.original_exception
 
     def _preprocess_data(
         self,
@@ -284,7 +288,7 @@ class Session:
 
         await retry_strategy_state.sleep()
         self._log_request(data, method, params, url)
-        response, saved_exception = await self._make_request(
+        async with self._make_request(
             data,
             json,
             method,
@@ -292,46 +296,46 @@ class Session:
             retry_strategy_state,
             timeout,
             url,
-        )
+        ) as (response, saved_exception):
+            do_retry = False
+            if response is not None and response.status == codes["unauthorized"]:
+                # noinspection PyProtectedMember
+                self._authorizer._clear_access_token()
+                if hasattr(self._authorizer, "refresh"):
+                    do_retry = True
 
-        do_retry = False
-        if response is not None and response.status == codes["unauthorized"]:
-            self._authorizer._clear_access_token()
-            if hasattr(self._authorizer, "refresh"):
-                do_retry = True
-
-        if retry_strategy_state.should_retry_on_failure() and (
-            do_retry or response is None or response.status in self.RETRY_STATUSES
-        ):
-            return await self._do_retry(
-                data,
-                json,
-                method,
-                params,
-                response,
-                retry_strategy_state,
-                saved_exception,
-                timeout,
-                url,
-            )
-        if response.status in self.STATUS_EXCEPTIONS:
-            if response.status == codes["media_type"]:
-                # since exception class needs response.json
-                raise self.STATUS_EXCEPTIONS[response.status](
-                    response, await response.json()
+            if retry_strategy_state.should_retry_on_failure() and (
+                do_retry or response is None or response.status in self.RETRY_STATUSES
+            ):
+                return await self._do_retry(
+                    data,
+                    json,
+                    method,
+                    params,
+                    response,
+                    retry_strategy_state,
+                    saved_exception,
+                    timeout,
+                    url,
                 )
-            raise self.STATUS_EXCEPTIONS[response.status](response)
-        if response.status == codes["no_content"]:
-            return None
-        assert (
-            response.status in self.SUCCESS_STATUSES
-        ), f"Unexpected status code: {response.status}"
-        if response.headers.get("content-length") == "0":
-            return ""
-        try:
-            return await response.json()
-        except ValueError:
-            raise BadJSON(response) from None
+            if response.status in self.STATUS_EXCEPTIONS:
+                if response.status == codes["media_type"]:
+                    # since exception class needs response.json
+                    raise self.STATUS_EXCEPTIONS[response.status](
+                        response, await response.json()
+                    )
+                raise self.STATUS_EXCEPTIONS[response.status](response)
+            if response.status == codes["no_content"]:
+                return None
+            assert (
+                response.status in self.SUCCESS_STATUSES
+            ), f"Unexpected status code: {response.status}"
+            if response.headers.get("content-length") == "0":
+                return ""
+            try:
+                return await response.json()
+            except ValueError:
+                raise BadJSON(response) from None
 
     async def _set_header_callback(self) -> dict[str, str]:
         if not self._authorizer.is_valid() and hasattr(self._authorizer, "refresh"):
