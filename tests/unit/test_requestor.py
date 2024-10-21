@@ -1,7 +1,8 @@
 """Test for asyncprawcore.self.requestor.Requestor class."""
 
 import asyncio
-from unittest.mock import MagicMock, patch
+from contextlib import asynccontextmanager
+from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 
@@ -12,13 +13,21 @@ from . import UnitTest
 
 
 class TestRequestor(UnitTest):
-    def test_initialize(self, requestor):
+    async def test_deprecated_loop(self):
+        with pytest.warns(DeprecationWarning):
+            asyncprawcore.Requestor(
+                "asyncprawcore:test (by u/Lil_SpazJoekp)", loop=asyncio.get_event_loop()
+            )
+
+    async def test_initialize(self, requestor):
+        async with requestor.request("get", "https://reddit.com") as _:
+            pass
         assert (
             requestor._http._default_headers["User-Agent"]
             == f"asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}"
         )
 
-    def test_initialize__failures(self):
+    async def test_initialize__failures(self):
         for agent in [None, "shorty"]:
             with pytest.raises(asyncprawcore.InvalidInvocation):
                 asyncprawcore.Requestor(agent)
@@ -27,25 +36,29 @@ class TestRequestor(UnitTest):
         override = "REQUEST OVERRIDDEN"
         custom_header = "CUSTOM SESSION HEADER"
         headers = {"session_header": custom_header}
-        return_of_request = asyncio.Future()
-        return_of_request.set_result(override)
-        attrs = {
-            "request.return_value": return_of_request,
-            "_default_headers": headers,
-        }
-        session = MagicMock(**attrs)
 
+        expected_response = MagicMock()
+        expected_response.content.read = AsyncMock(return_value=override)
+        return_of_request = MagicMock()
+        return_of_request.__aenter__ = AsyncMock()
+        return_of_request.__aenter__.return_value = expected_response
+
+        session = MagicMock()
+        session.request.return_value = return_of_request
+        session.headers = headers
+        session.closed = False
         requestor = asyncprawcore.Requestor(
             "asyncprawcore:test (by u/Lil_SpazJoekp)", session=session
         )
 
         assert (
-            requestor._http._default_headers["User-Agent"]
+            requestor._http.headers["User-Agent"]
             == f"asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/{asyncprawcore.__version__}"
         )
-        assert requestor._http._default_headers["session_header"] == custom_header
+        assert requestor._http.headers["session_header"] == custom_header
 
-        assert await requestor.request("https://reddit.com") == override
+        async with requestor.request("get", "https://reddit.com") as response:
+            assert await response.content.read() == override
 
     @patch("aiohttp.ClientSession")
     async def test_request__wrap_request_exceptions(self, mock_session):
@@ -54,7 +67,8 @@ class TestRequestor(UnitTest):
         session_instance.request.side_effect = exception
         requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
         with pytest.raises(asyncprawcore.RequestException) as exception_info:
-            await requestor.request("get", "http://a.b", data="bar")
+            async with requestor.request("get", "http://a.b", data="bar") as _:
+                pass
         assert isinstance(exception_info.value, RequestException)
         assert exception is exception_info.value.original_exception
         assert exception_info.value.request_args == ("get", "http://a.b")
