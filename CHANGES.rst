@@ -6,15 +6,19 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+**Changed**
+
+- Drop support for Python 3.8, which was end-of-life on 2024-10-07.
+
 2.4.0 (2023/11/27)
 ------------------
 
 **Changed**
 
-- Drop support for Python 3.6, which is end-of-life on 2021-12-23.
+- Drop support for Python 3.6, which was end-of-life on 2021-12-23.
 - :class:`DeviceIDAuthorizer` can be now used with :class:`TrustedAuthenticator`.
 - Updated rate limit algorithm to better handle Reddit's new rate limits.
-- Drop support for Python 3.7, which is end-of-life on 2023-06-27.
+- Drop support for Python 3.7, which was end-of-life on 2023-06-27.
 
 2.3.0 (2021/07/27)
 ------------------

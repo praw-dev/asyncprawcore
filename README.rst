@@ -35,10 +35,6 @@ asyncprawcore
     :alt: pre-commit
     :target: https://github.com/pre-commit/pre-commit
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :alt: Black code style
-    :target: https://github.com/psf/black
-
 asyncprawcore is a low-level communication layer used by Async PRAW 7+.
 
 Installation

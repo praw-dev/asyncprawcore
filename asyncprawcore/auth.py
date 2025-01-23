@@ -5,8 +5,8 @@ from __future__ import annotations
 import inspect
 import time
 from abc import ABC, abstractmethod
-from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, AsyncContextManager, Awaitable, Callable
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from typing import TYPE_CHECKING, Any, Callable
 
 from aiohttp import ClientRequest
 from aiohttp.helpers import BasicAuth
@@ -17,6 +17,8 @@ from .codes import codes
 from .exceptions import InvalidInvocation, OAuthException, ResponseException
 
 if TYPE_CHECKING:
+    from collections.abc import Awaitable
+
     from aiohttp import ClientResponse
 
     from asyncprawcore.requestor import Requestor
@@ -53,7 +55,7 @@ class BaseAuthenticator(ABC):
     @asynccontextmanager
     async def _post(
         self, url: str, success_status: int = codes["ok"], **data: Any
-    ) -> Callable[..., AsyncContextManager[ClientResponse]]:
+    ) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
         async with self._requestor.request(
             "POST",
             url,

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, AsyncContextManager, Callable
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from typing import TYPE_CHECKING, Any, Callable
 from warnings import warn
 
 import aiohttp
@@ -93,7 +93,7 @@ class Requestor:
     @asynccontextmanager
     async def request(
         self, *args: Any, timeout: float | None = None, **kwargs: Any
-    ) -> Callable[..., AsyncContextManager[ClientResponse]]:
+    ) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
         """Issue the HTTP request capturing any errors that may occur.
 
         :param args: Positional arguments to pass to ``aiohttp.ClientSession.request``.
