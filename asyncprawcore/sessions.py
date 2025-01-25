@@ -111,7 +111,7 @@ class Session:
         params: dict[str, int],
         url: str,
     ):
-        log.debug("Fetching: %s %s at %s", method, url, time.time())
+        log.debug("Fetching: %s %s at %s", method, url, time.monotonic())
         log.debug("Data: %s", pformat(data))
         log.debug("Params: %s", pformat(params))
 
@@ -212,7 +212,7 @@ class Session:
                     response.headers.get("x-ratelimit-reset"),
                     response.headers.get("x-ratelimit-remaining"),
                     response.headers.get("x-ratelimit-used"),
-                    time.time(),
+                    time.monotonic(),
                 )
                 yield response, None
         except RequestException as exception:
