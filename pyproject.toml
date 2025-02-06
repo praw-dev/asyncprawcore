@@ -33,7 +33,6 @@ readme = "README.rst"
 requires-python = "~=3.9"
 
 [project.optional-dependencies]
-ci = ["coveralls"]
 dev = [
   "packaging",
   "asyncprawcore[lint]",
