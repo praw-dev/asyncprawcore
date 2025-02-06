@@ -36,9 +36,7 @@ async def main():
 
         for trophy in data["data"]["trophies"]:
             description = trophy["data"]["description"]
-            print(
-                f"{trophy['data']['name']}{(f' ({description})' if description else '')}"
-            )
+            print(f"{trophy['data']['name']}{(f' ({description})' if description else '')}")
     finally:
         await requestor.close()
 

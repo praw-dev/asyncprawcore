@@ -65,8 +65,7 @@ class CustomPersister(FilesystemPersister):
         except OSError:
             raise ValueError("Cassette not found.")
         for replacement, value in [
-            (v, f"<{k.upper()}>")
-            for k, v in {**cls.additional_placeholders, **_placeholders}.items()
+            (v, f"<{k.upper()}>") for k, v in {**cls.additional_placeholders, **_placeholders}.items()
         ]:
             cassette_content = cassette_content.replace(value, replacement)
         cassette = deserialize(cassette_content, serializer)
@@ -77,8 +76,7 @@ class CustomPersister(FilesystemPersister):
         """Save cassette."""
         data = serialize(cassette_dict, serializer)
         for replacement, value in [
-            (f"<{k.upper()}>", v)
-            for k, v in {**cls.additional_placeholders, **_placeholders}.items()
+            (f"<{k.upper()}>", v) for k, v in {**cls.additional_placeholders, **_placeholders}.items()
         ]:
             data = data.replace(value, replacement)
         dirname, filename = os.path.split(cassette_path)

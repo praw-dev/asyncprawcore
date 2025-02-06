@@ -45,9 +45,7 @@ class TestSession(UnitTest):
         asyncprawcore.Session(authorizer)
 
     def test_init__with_implicit_authorizer(self, untrusted_authenticator):
-        authorizer = asyncprawcore.ImplicitAuthorizer(
-            untrusted_authenticator, None, 0, ""
-        )
+        authorizer = asyncprawcore.ImplicitAuthorizer(untrusted_authenticator, None, 0, "")
         asyncprawcore.Session(authorizer)
 
     def test_init__without_authenticator(self):
@@ -71,9 +69,7 @@ class TestSession(UnitTest):
                 "scope": "",
             },
         )
-        response_mock = MagicMock(
-            spec=aiohttp.client.ClientResponse, status=200, headers={}
-        )
+        response_mock = MagicMock(spec=aiohttp.client.ClientResponse, status=200, headers={})
         response_mock.json = json_mock
         session_instance.request.return_value.__aenter__.return_value = response_mock
         requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
@@ -113,6 +109,4 @@ class TestSession(UnitTest):
 
 class TestSessionFunction(UnitTest):
     def test_session(self, requestor):
-        assert isinstance(
-            asyncprawcore.session(InvalidAuthorizer(requestor)), asyncprawcore.Session
-        )
+        assert isinstance(asyncprawcore.session(InvalidAuthorizer(requestor)), asyncprawcore.Session)

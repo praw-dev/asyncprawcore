@@ -38,9 +38,7 @@ class TestAuthorizer(IntegrationTest):
         assert authorizer.is_valid()
 
     async def test_refresh(self, trusted_authenticator):
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, refresh_token=pytest.placeholders.refresh_token
-        )
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, refresh_token=pytest.placeholders.refresh_token)
         await authorizer.refresh()
 
         assert authorizer.access_token is not None
@@ -92,9 +90,7 @@ class TestAuthorizer(IntegrationTest):
             assert authorizer.refresh_token is None
             authorizer.refresh_token = pytest.placeholders.refresh_token
 
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, pre_refresh_callback=callback
-        )
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, pre_refresh_callback=callback)
         await authorizer.refresh()
 
         assert authorizer.access_token is not None
@@ -108,9 +104,7 @@ class TestAuthorizer(IntegrationTest):
             assert authorizer.refresh_token is None
             authorizer.refresh_token = pytest.placeholders.refresh_token
 
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, pre_refresh_callback=callback
-        )
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, pre_refresh_callback=callback)
         await authorizer.refresh()
 
         assert authorizer.access_token is not None
@@ -119,17 +113,13 @@ class TestAuthorizer(IntegrationTest):
         assert authorizer.is_valid()
 
     async def test_refresh__with_invalid_token(self, trusted_authenticator):
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, refresh_token="INVALID_TOKEN"
-        )
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, refresh_token="INVALID_TOKEN")
         with pytest.raises(asyncprawcore.ResponseException):
             await authorizer.refresh()
         assert not authorizer.is_valid()
 
     async def test_revoke__access_token_with_refresh_set(self, trusted_authenticator):
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, refresh_token=pytest.placeholders.refresh_token
-        )
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, refresh_token=pytest.placeholders.refresh_token)
         await authorizer.refresh()
         await authorizer.revoke(only_access=True)
 
@@ -142,9 +132,7 @@ class TestAuthorizer(IntegrationTest):
 
         assert authorizer.is_valid()
 
-    async def test_revoke__access_token_without_refresh_set(
-        self, trusted_authenticator
-    ):
+    async def test_revoke__access_token_without_refresh_set(self, trusted_authenticator):
         trusted_authenticator.redirect_uri = pytest.placeholders.redirect_uri
         authorizer = asyncprawcore.Authorizer(trusted_authenticator)
         await authorizer.authorize(pytest.placeholders.temporary_grant_code)
@@ -156,9 +144,7 @@ class TestAuthorizer(IntegrationTest):
         assert not authorizer.is_valid()
 
     async def test_revoke__refresh_token_with_access_set(self, trusted_authenticator):
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, refresh_token=pytest.placeholders.refresh_token
-        )
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, refresh_token=pytest.placeholders.refresh_token)
         await authorizer.refresh()
         await authorizer.revoke()
 
@@ -167,12 +153,8 @@ class TestAuthorizer(IntegrationTest):
         assert authorizer.scopes is None
         assert not authorizer.is_valid()
 
-    async def test_revoke__refresh_token_without_access_set(
-        self, trusted_authenticator
-    ):
-        authorizer = asyncprawcore.Authorizer(
-            trusted_authenticator, refresh_token=pytest.placeholders.refresh_token
-        )
+    async def test_revoke__refresh_token_without_access_set(self, trusted_authenticator):
+        authorizer = asyncprawcore.Authorizer(trusted_authenticator, refresh_token=pytest.placeholders.refresh_token)
         await authorizer.revoke()
 
         assert authorizer.access_token is None
@@ -190,9 +172,7 @@ class TestDeviceIDAuthorizer(IntegrationTest):
         assert authorizer.scopes == {"*"}
         assert authorizer.is_valid()
 
-    async def test_refresh__with_scopes_and_trusted_authenticator(
-        self, requestor, untrusted_authenticator
-    ):
+    async def test_refresh__with_scopes_and_trusted_authenticator(self, requestor, untrusted_authenticator):
         scope_list = {"adsedit", "adsread", "creddits", "history"}
         authorizer = asyncprawcore.DeviceIDAuthorizer(
             asyncprawcore.TrustedAuthenticator(
@@ -228,9 +208,7 @@ class TestReadOnlyAuthorizer(IntegrationTest):
 
     async def test_refresh__with_scopes(self, trusted_authenticator):
         scope_list = {"adsedit", "adsread", "creddits", "history"}
-        authorizer = asyncprawcore.ReadOnlyAuthorizer(
-            trusted_authenticator, scopes=scope_list
-        )
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(trusted_authenticator, scopes=scope_list)
         assert authorizer.access_token is None
         assert authorizer.scopes is None
         assert not authorizer.is_valid()
@@ -268,9 +246,7 @@ class TestScriptAuthorizer(IntegrationTest):
             await authorizer.refresh()
         assert not authorizer.is_valid()
 
-    async def test_refresh__with_invalid_username_or_password(
-        self, trusted_authenticator
-    ):
+    async def test_refresh__with_invalid_username_or_password(self, trusted_authenticator):
         authorizer = asyncprawcore.ScriptAuthorizer(
             trusted_authenticator, pytest.placeholders.username, "invalidpassword"
         )

@@ -46,9 +46,7 @@ async def main():
         print(f"Usage: {sys.argv[0]} USERNAME")
         return 1
 
-    caching_requestor = asyncprawcore.Requestor(
-        "asyncprawcore_device_id_auth_example", session=CachingSession()
-    )
+    caching_requestor = asyncprawcore.Requestor("asyncprawcore_device_id_auth_example", session=CachingSession())
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
             caching_requestor,

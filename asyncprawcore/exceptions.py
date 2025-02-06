@@ -20,9 +20,7 @@ class InvalidInvocation(AsyncPrawcoreException):
 class OAuthException(AsyncPrawcoreException):
     """Indicate that there was an OAuth2 related error with the request."""
 
-    def __init__(
-        self, response: ClientResponse, error: str, description: str | None = None
-    ):
+    def __init__(self, response: ClientResponse, error: str, description: str | None = None):
         """Initialize a OAuthException instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance.
@@ -46,9 +44,7 @@ class RequestException(AsyncPrawcoreException):
         self,
         original_exception: Exception,
         request_args: tuple[Any, ...],
-        request_kwargs: dict[
-            str, bool | (dict[str, int] | (dict[str, str] | str)) | None
-        ],
+        request_kwargs: dict[str, bool | (dict[str, int] | (dict[str, str] | str)) | None],
     ):
         """Initialize a RequestException instance.
 
@@ -124,8 +120,7 @@ class Redirect(ResponseException):
         self.response = response
         msg = f"Redirect to {self.path}"
         msg += (
-            " (You may be trying to perform a non-read-only action via a "
-            "read-only instance.)"
+            " (You may be trying to perform a non-read-only action via a read-only instance.)"
             if "/login/" in self.path
             else ""
         )
@@ -174,10 +169,7 @@ class TooManyRequests(ResponseException):
 
         msg = f"received {response.status} HTTP response"
         if self.retry_after:
-            msg += (
-                f". Please wait at least {float(self.retry_after)} seconds before"
-                f" re-trying this request."
-            )
+            msg += f". Please wait at least {float(self.retry_after)} seconds before re-trying this request."
         AsyncPrawcoreException.__init__(self, msg)
 
 

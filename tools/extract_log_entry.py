@@ -23,9 +23,7 @@ def get_entry_slice(doc):
 def parse_rst(text: str) -> docutils.nodes.document:
     parser = docutils.parsers.rst.Parser()
     components = (docutils.parsers.rst.Parser,)
-    settings = docutils.frontend.OptionParser(
-        components=components
-    ).get_default_values()
+    settings = docutils.frontend.OptionParser(components=components).get_default_values()
     settings.report_level = 4
     document = docutils.utils.new_document("<rst-doc>", settings=settings)
     parser.parse(text, document)

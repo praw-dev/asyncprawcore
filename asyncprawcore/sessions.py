@@ -190,9 +190,7 @@ class Session:
         retry_strategy_state: FiniteRetryStrategy,
         timeout: float,
         url: str,
-    ) -> Callable[
-        ..., AbstractAsyncContextManager[tuple[ClientResponse | None, Exception | None]]
-    ]:
+    ) -> Callable[..., AbstractAsyncContextManager[tuple[ClientResponse | None, Exception | None]]]:
         try:
             async with self._rate_limiter.call(
                 self._requestor.request,
@@ -318,15 +316,11 @@ class Session:
             if response.status in self.STATUS_EXCEPTIONS:
                 if response.status == codes["media_type"]:
                     # since exception class needs response.json
-                    raise self.STATUS_EXCEPTIONS[response.status](
-                        response, await response.json()
-                    )
+                    raise self.STATUS_EXCEPTIONS[response.status](response, await response.json())
                 raise self.STATUS_EXCEPTIONS[response.status](response)
             if response.status == codes["no_content"]:
                 return None
-            assert response.status in self.SUCCESS_STATUSES, (
-                f"Unexpected status code: {response.status}"
-            )
+            assert response.status in self.SUCCESS_STATUSES, f"Unexpected status code: {response.status}"
             if response.headers.get("content-length") == "0":
                 return ""
             try:
