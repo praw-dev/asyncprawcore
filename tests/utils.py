@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from vcr.persisters.filesystem import FilesystemPersister
@@ -12,9 +12,9 @@ from vcr.serialize import deserialize, serialize
 from tests.conftest import placeholders as _placeholders
 
 
-def ensure_integration_test(cassette):
+def ensure_integration_test(cassette):  # pragma: no cover
     """Ensure test is being run is actually an integration test and error if not."""
-    if cassette.write_protected:
+    if cassette.write_protected:  # pragma: no cover
         is_integration_test = cassette.play_count > 0
         action = "play back"
     else:
@@ -24,7 +24,7 @@ def ensure_integration_test(cassette):
     assert is_integration_test, message
 
 
-def filter_access_token(response):
+def filter_access_token(response):  # pragma: no cover
     """Add VCR callback to filter access token."""
     request_uri = response["url"]
     if "api/v1/access_token" not in request_uri or response["status"]["code"] != 200:
@@ -48,17 +48,17 @@ class CustomPersister(FilesystemPersister):
     additional_placeholders = {}
 
     @classmethod
-    def add_additional_placeholders(cls, placeholders: dict[str, str]):
+    def add_additional_placeholders(cls, placeholders: dict[str, str]):  # pragma: no cover
         """Add additional placeholders."""
         cls.additional_placeholders.update(placeholders)
 
     @classmethod
-    def clear_additional_placeholders(cls):
+    def clear_additional_placeholders(cls):  # pragma: no cover
         """Clear additional placeholders."""
         cls.additional_placeholders = {}
 
     @classmethod
-    def load_cassette(cls, cassette_path, serializer):
+    def load_cassette(cls, cassette_path, serializer):  # pragma: no cover
         """Load cassette."""
         try:
             with Path(cassette_path).open() as f:
@@ -73,7 +73,7 @@ class CustomPersister(FilesystemPersister):
         return deserialize(cassette_content, serializer)
 
     @classmethod
-    def save_cassette(cls, cassette_path, cassette_dict, serializer):
+    def save_cassette(cls, cassette_path, cassette_dict, serializer):  # pragma: no cover
         """Save cassette."""
         cassette_path = Path(cassette_path)
         data = serialize(cassette_dict, serializer)
@@ -92,7 +92,7 @@ class CustomSerializer:
     """Custom serializer to handle binary objects in dict."""
 
     @staticmethod
-    def _serialize_file(file):
+    def _serialize_file(file):  # pragma: no cover
         with Path(file.name).open("rb") as f:
             return f.read().decode("utf-8", "replace")
 
@@ -101,7 +101,7 @@ class CustomSerializer:
         return json.loads(cassette_string)
 
     @classmethod
-    def _serialize_dict(cls, data: dict):
+    def _serialize_dict(cls, data: dict):  # pragma: no cover
         """This is to filter out buffered readers."""
         new_dict = {}
         for key, value in data.items():
@@ -116,7 +116,7 @@ class CustomSerializer:
         return new_dict
 
     @classmethod
-    def _serialize_list(cls, data: list):
+    def _serialize_list(cls, data: list):  # pragma: no cover
         new_list = []
         for item in data:
             if isinstance(item, dict):
@@ -133,9 +133,9 @@ class CustomSerializer:
         return new_list
 
     @classmethod
-    def serialize(cls, cassette_dict):
+    def serialize(cls, cassette_dict):  # pragma: no cover
         """Serialize cassette."""
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(tz=timezone.utc).isoformat()
         try:
             i = timestamp.rindex(".")
         except ValueError:

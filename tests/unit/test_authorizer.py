@@ -8,8 +8,7 @@ from . import UnitTest
 
 
 class InvalidAuthenticator(asyncprawcore.auth.BaseAuthenticator):
-    def _auth(self):
-        pass
+    _auth = None
 
 
 class TestAuthorizer(UnitTest):

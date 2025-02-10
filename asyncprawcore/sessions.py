@@ -7,11 +7,11 @@ import logging
 import random
 import time
 from abc import ABC, abstractmethod
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from contextlib import asynccontextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from pprint import pformat
-from typing import TYPE_CHECKING, BinaryIO, Callable, TextIO
+from typing import TYPE_CHECKING, BinaryIO, TextIO
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
@@ -39,6 +39,8 @@ from .rate_limit import RateLimiter
 from .util import authorization_error_class
 
 if TYPE_CHECKING:
+    from collections.abc import AsyncGenerator
+
     from aiohttp import ClientResponse
     from typing_extensions import Self
 
@@ -151,7 +153,7 @@ class Session:
         log.debug("Params: %s", pformat(params))
 
     @staticmethod
-    def _preprocess_dict(data: dict[str, object]) -> dict[str, str]:
+    def _preprocess_dict(data: dict[str, object]) -> dict[str, object]:
         new_data = {}
         for key, value in data.items():
             if isinstance(value, bool):
@@ -223,7 +225,7 @@ class Session:
         params: dict[str, object],
         timeout: float,
         url: str,
-    ) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
+    ) -> AsyncGenerator[ClientResponse]:
         async with self._rate_limiter.call(
             self._requestor.request,
             self._set_header_callback,
@@ -250,7 +252,7 @@ class Session:
         self,
         data: dict[str, object],
         files: dict[str, BinaryIO | TextIO] | None,
-    ) -> dict[str, str] | None:
+    ) -> dict[str, object]:
         """Preprocess data and files before request.
 
         This is to convert requests that are formatted for the ``requests`` package to
@@ -272,11 +274,10 @@ class Session:
         if isinstance(data, dict):
             data = self._preprocess_dict(data)
             if files is not None:
-                data: dict[str, str | BinaryIO | TextIO]
                 data.update(files)
         return data
 
-    def _preprocess_params(self, params: dict[str, int]) -> dict[str, str]:
+    def _preprocess_params(self, params: dict[str, object]) -> dict[str, object]:
         """Preprocess params before request.
 
         This is to convert requests that are formatted for the ``requests`` package to

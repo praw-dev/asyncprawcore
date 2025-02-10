@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
-from typing import TYPE_CHECKING, Any, Callable
+from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING, Any
 from warnings import warn
 
 import aiohttp
+from aiohttp import ClientTimeout
 
 from .const import TIMEOUT
 from .exceptions import InvalidInvocation, RequestException, ResponseException
 
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
+    from collections.abc import AsyncGenerator
 
     from aiohttp import ClientResponse, ClientSession
 
@@ -92,9 +94,7 @@ class Requestor:
             await self._http.close()
 
     @asynccontextmanager
-    async def request(
-        self, *args: Any, timeout: float | None = None, **kwargs: Any
-    ) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
+    async def request(self, *args: Any, timeout: float | None = None, **kwargs: Any) -> AsyncGenerator[ClientResponse]:
         """Issue the HTTP request capturing any errors that may occur.
 
         :param args: Positional arguments to pass to ``aiohttp.ClientSession.request``.
@@ -110,13 +110,14 @@ class Requestor:
         try:
             await self._ensure_session()
             kwargs_copy = kwargs.copy()
-            async with self._http.request(
-                *args,
-                headers={**self.headers, **kwargs_copy.pop("headers", {})},
-                timeout=timeout or self.timeout,
-                **kwargs_copy,
-            ) as request:
-                yield request
+            if self._http is not None:
+                async with self._http.request(
+                    *args,
+                    headers={**self.headers, **kwargs_copy.pop("headers", {})},
+                    timeout=ClientTimeout(timeout or self.timeout),
+                    **kwargs_copy,
+                ) as request:
+                    yield request
         except ResponseException as exc:
             raise exc
         except Exception as exc:  # noqa: BLE001
