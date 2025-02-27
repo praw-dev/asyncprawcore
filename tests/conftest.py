@@ -4,7 +4,6 @@ import asyncio
 import os
 from base64 import b64encode
 
-import aiohttp
 import pytest
 
 from asyncprawcore import Requestor, TrustedAuthenticator, UntrustedAuthenticator
@@ -33,17 +32,11 @@ def image_path():
 
 
 @pytest.fixture
-async def requestor(event_loop: asyncio.AbstractEventLoop):
+async def requestor():
     """Return path to image."""
-    session = aiohttp.ClientSession(
-        loop=event_loop,
-        headers={"Accept-Encoding": "identity"},
-        timeout=aiohttp.ClientTimeout(total=None),
-    )
-    yield Requestor(
-        "asyncprawcore:test (by u/Lil_SpazJoekp)", session=session, loop=event_loop
-    )
-    await session.close()
+    _requestor = Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+    yield _requestor
+    await _requestor.close()
 
 
 @pytest.fixture
