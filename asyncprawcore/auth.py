@@ -5,7 +5,8 @@ from __future__ import annotations
 import inspect
 import time
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Awaitable, Callable
+from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING, Any, AsyncContextManager, Awaitable, Callable
 
 from aiohttp import ClientRequest
 from aiohttp.helpers import BasicAuth
@@ -49,19 +50,20 @@ class BaseAuthenticator(ABC):
         self.client_id = client_id
         self.redirect_uri = redirect_uri
 
+    @asynccontextmanager
     async def _post(
         self, url: str, success_status: int = codes["ok"], **data: Any
-    ) -> ClientResponse:
-        response = await self._requestor.request(
+    ) -> Callable[..., AsyncContextManager[ClientResponse]]:
+        async with self._requestor.request(
             "POST",
             url,
             auth=self._auth(),
             data=sorted(data.items()),
             headers={"Connection": "close"},
-        )
-        if response.status != success_status:
-            raise ResponseException(response)
-        return response
+        ) as response:
+            if response.status != success_status:
+                raise ResponseException(response)
+            yield response
 
     def authorize_url(
         self, duration: str, scopes: list[str], state: str, implicit: bool = False
@@ -126,7 +128,8 @@ class BaseAuthenticator(ABC):
         if token_type is not None:
             data["token_type_hint"] = token_type
         url = self._requestor.reddit_url + const.REVOKE_TOKEN_PATH
-        await self._post(url, **data)
+        async with self._post(url, **data) as _:
+            pass  # The response is not used.
 
 
 class BaseAuthorizer:
@@ -152,8 +155,8 @@ class BaseAuthorizer:
     async def _request_token(self, **data: Any):
         url = self._authenticator._requestor.reddit_url + const.ACCESS_TOKEN_PATH
         pre_request_time = time.time()
-        response = await self._authenticator._post(url=url, **data)
-        payload = await response.json()
+        async with self._authenticator._post(url=url, **data) as response:
+            payload = await response.json()
         if "error" in payload:  # Why are these OKAY responses?
             raise OAuthException(
                 response, payload["error"], payload.get("error_description")
