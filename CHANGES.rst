@@ -9,6 +9,18 @@ Unreleased
 **Changed**
 
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
+- :class:`RateLimiter` attribute ``next_request_timestamp`` has been removed and
+  replaced with ``next_request_timestamp_ns``.
+
+**Fixed**
+
+- Add a half-second delay when there are no more requests in the rate limit window and
+  the window has zero seconds remaining to avoid a semi-rare case where Reddit will
+  return a 429 response resulting in a :class:`TooManyRequests` exception.
+
+**Removed**
+
+- Remove :class:`RateLimiter` attribute ``reset_timestamp``.
 
 2.4.0 (2023/11/27)
 ------------------
