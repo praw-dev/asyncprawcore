@@ -6,6 +6,9 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+3.0.0 (2025/08/02)
+------------------
+
 **Changed**
 
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
