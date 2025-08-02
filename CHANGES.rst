@@ -18,6 +18,7 @@ Unreleased
 
 **Changed**
 
+- Session creation is now delayed and existing sessions will be reused.
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
 - :class:`RateLimiter` attribute ``next_request_timestamp`` has been removed and
   replaced with ``next_request_timestamp_ns``.
