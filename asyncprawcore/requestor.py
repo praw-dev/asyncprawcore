@@ -57,7 +57,7 @@ class Requestor:
 
         """
         # Imported locally to avoid an import cycle, with __init__
-        from . import __version__
+        from . import __version__  # noqa: PLC0415
 
         if loop is not None:
             msg = "The loop argument is deprecated and will be ignored."
