@@ -266,7 +266,7 @@ class TestSession(IntegrationTest):
         assert (await exception_info.value.message()).startswith("\n<!doctype html>")
 
     async def test_request__too__many_requests__without_retry_headers(self, requestor):
-        requestor._http.headers.update({"User-Agent": "python-requests/2.25.1"})
+        requestor.headers.update({"User-Agent": "python-requests/2.25.1"})
         authorizer = asyncprawcore.ReadOnlyAuthorizer(
             asyncprawcore.TrustedAuthenticator(
                 requestor,

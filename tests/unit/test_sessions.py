@@ -1,10 +1,11 @@
 """Test for asyncprawcore.Sessions module."""
 
 import logging
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, patch, MagicMock
 
 import aiohttp.client
 import pytest
+from aiohttp import request
 from aiohttp.web import HTTPRequestTimeout
 
 import asyncprawcore
@@ -63,22 +64,18 @@ class TestSession(UnitTest):
         caplog.set_level(logging.WARNING)
         session_instance = mock_session.return_value
         # Handle Auth
-        response_mock = AsyncMock(spec=aiohttp.client.ClientResponse)
-        response_mock.status = 200
-        response_mock.headers = {}
-        session_instance.request = AsyncMock(return_value=response_mock)
-        # session_instance.request.return_value = asyncio.Future()
-        session_instance.request.return_value = AsyncMock(
-            status=200,
-            headers={},
-        )
-        session_instance.request.return_value.json = AsyncMock(
+        json_mock = AsyncMock(
             return_value={
                 "access_token": "",
                 "expires_in": 99,
                 "scope": "",
             },
         )
+        response_mock = MagicMock(
+            spec=aiohttp.client.ClientResponse, status=200, headers={}
+        )
+        response_mock.json = json_mock
+        session_instance.request.return_value.__aenter__.return_value = response_mock
         requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
         authenticator = asyncprawcore.TrustedAuthenticator(
             requestor,
@@ -92,17 +89,18 @@ class TestSession(UnitTest):
         session_instance.request.side_effect = exception
 
         with pytest.raises(RequestException) as exception_info:
-            await asyncprawcore.Session(authorizer).request("GET", "/")
-        message = (
-            "<HTTPRequestTimeout Request Timeout not prepared>"
-            if isinstance(exception, HTTPRequestTimeout)
-            else f"{exception.__class__.__name__}()"
-        )
-        assert (
-            "asyncprawcore",
-            logging.WARNING,
-            f"Retrying due to {message} status: GET https://oauth.reddit.com/",
-        ) in caplog.record_tuples
+            async with asyncprawcore.Session(authorizer) as session:
+                await session.request("GET", "/")
+            message = (
+                "<HTTPRequestTimeout Request Timeout not prepared>"
+                if isinstance(exception, HTTPRequestTimeout)
+                else f"{exception.__class__.__name__}()"
+            )
+            assert (
+                "asyncprawcore",
+                logging.WARNING,
+                f"Retrying due to {message} status: GET https://oauth.reddit.com/",
+            ) in caplog.record_tuples
         assert isinstance(exception_info.value, RequestException)
         assert exception is exception_info.value.original_exception
         assert session_instance.request.call_count == 3
