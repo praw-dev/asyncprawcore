@@ -5,10 +5,12 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
-from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, AsyncContextManager, Awaitable, Callable, Mapping
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
+    from collections.abc import Awaitable, Mapping
+
     from aiohttp import ClientResponse
 
 log = logging.getLogger(__package__)
@@ -33,11 +35,11 @@ class RateLimiter:
     async def call(
         self,
         # async context manager
-        request_function: Callable[..., AsyncContextManager[ClientResponse]],
+        request_function: Callable[..., AbstractAsyncContextManager[ClientResponse]],
         set_header_callback: Callable[[], Awaitable[dict[str, str]]],
         *args: Any,
         **kwargs: Any,
-    ) -> Callable[..., AsyncContextManager[ClientResponse]]:
+    ) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
         """Rate limit the call to ``request_function``.
 
         :param request_function: A function call that returns an HTTP response object.

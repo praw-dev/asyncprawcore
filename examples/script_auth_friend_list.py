@@ -7,6 +7,7 @@ those listed as a developer of the application to authenticate using their usern
 password.
 
 """
+
 import asyncio
 import os
 import sys

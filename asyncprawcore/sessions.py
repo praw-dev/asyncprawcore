@@ -7,10 +7,10 @@ import logging
 import random
 import time
 from abc import ABC, abstractmethod
-from contextlib import asynccontextmanager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from copy import deepcopy
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, AsyncContextManager, BinaryIO, Callable, TextIO
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, TextIO
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
@@ -191,7 +191,7 @@ class Session:
         timeout: float,
         url: str,
     ) -> Callable[
-        ..., AsyncContextManager[tuple[ClientResponse | None, Exception | None]]
+        ..., AbstractAsyncContextManager[tuple[ClientResponse | None, Exception | None]]
     ]:
         try:
             async with self._rate_limiter.call(
@@ -216,11 +216,8 @@ class Session:
                 )
                 yield response, None
         except RequestException as exception:
-            if (
-                not retry_strategy_state.should_retry_on_failure()
-                or not isinstance(  # noqa: E501
-                    exception.original_exception, self.RETRY_EXCEPTIONS
-                )
+            if not retry_strategy_state.should_retry_on_failure() or not isinstance(  # noqa: E501
+                exception.original_exception, self.RETRY_EXCEPTIONS
             ):
                 raise
             yield None, exception.original_exception
@@ -327,9 +324,9 @@ class Session:
                 raise self.STATUS_EXCEPTIONS[response.status](response)
             if response.status == codes["no_content"]:
                 return None
-            assert (
-                response.status in self.SUCCESS_STATUSES
-            ), f"Unexpected status code: {response.status}"
+            assert response.status in self.SUCCESS_STATUSES, (
+                f"Unexpected status code: {response.status}"
+            )
             if response.headers.get("content-length") == "0":
                 return ""
             try:
