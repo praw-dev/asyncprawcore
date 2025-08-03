@@ -25,7 +25,7 @@ class RateLimiter:
 
     """
 
-    def __init__(self, *, window_size: int):
+    def __init__(self, *, window_size: int) -> None:
         """Create an instance of the RateLimit class."""
         self.remaining: int | None = None
         self.next_request_timestamp_ns: int | None = None
@@ -56,7 +56,7 @@ class RateLimiter:
             self.update(response.headers)
             yield response
 
-    async def delay(self):
+    async def delay(self) -> None:
         """Sleep for an amount of time to remain under the rate limit."""
         if self.next_request_timestamp_ns is None:
             return
@@ -67,7 +67,7 @@ class RateLimiter:
         log.debug(message)
         await asyncio.sleep(sleep_seconds)
 
-    def update(self, response_headers: Mapping[str, str]):
+    def update(self, response_headers: Mapping[str, str]) -> None:
         """Update the state of the rate limiter based on the response headers.
 
         This method should only be called following an HTTP request to Reddit.
@@ -78,7 +78,7 @@ class RateLimiter:
 
         """
         if "x-ratelimit-remaining" not in response_headers:
-            if self.remaining is not None:
+            if self.remaining is not None and self.used is not None:
                 self.remaining -= 1
                 self.used += 1
             return
@@ -93,7 +93,7 @@ class RateLimiter:
             self.next_request_timestamp_ns = now_ns + max(NANOSECONDS, seconds_to_reset * NANOSECONDS)
             return
 
-        self.next_request_timestamp_ns = (
+        self.next_request_timestamp_ns = int(
             now_ns
             + min(
                 seconds_to_reset,

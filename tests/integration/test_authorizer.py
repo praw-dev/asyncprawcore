@@ -172,7 +172,7 @@ class TestDeviceIDAuthorizer(IntegrationTest):
         assert authorizer.scopes == {"*"}
         assert authorizer.is_valid()
 
-    async def test_refresh__with_scopes_and_trusted_authenticator(self, requestor, untrusted_authenticator):
+    async def test_refresh__with_scopes_and_trusted_authenticator(self, requestor):
         scope_list = {"adsedit", "adsread", "creddits", "history"}
         authorizer = asyncprawcore.DeviceIDAuthorizer(
             asyncprawcore.TrustedAuthenticator(

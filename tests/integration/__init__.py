@@ -23,18 +23,17 @@ class IntegrationTest:
     @pytest.fixture(autouse=True, scope="session")
     def cassette_tracker(self):
         """Track cassettes to ensure unused cassettes are not uploaded."""
-        global existing_cassettes
         for cassette in os.listdir(CASSETTES_PATH):
             existing_cassettes.add(cassette[: cassette.rindex(".")])
         yield
         unused_cassettes = existing_cassettes - used_cassettes
         if unused_cassettes and os.getenv("ENSURE_NO_UNUSED_CASSETTES", "0") == "1":
-            raise AssertionError(f"The following cassettes are unused: {', '.join(unused_cassettes)}.")
+            msg = f"The following cassettes are unused: {', '.join(unused_cassettes)}."
+            raise AssertionError(msg)
 
     @pytest.fixture(autouse=True)
     def cassette(self, request, recorder, cassette_name):
         """Wrap a test in a VCR cassette."""
-        global used_cassettes
         kwargs = {}
         for marker in request.node.iter_markers("add_placeholder"):
             recorder.persister.add_additional_placeholders(marker.kwargs)
@@ -58,7 +57,7 @@ class IntegrationTest:
         vcr.match_on = ["uri", "method"]
         vcr.path_transformer = VCR.ensure_suffix(".json")
         vcr.register_persister(CustomPersister)
-        vcr.register_serializer("custom_serializer", CustomSerializer)
+        vcr.register_serializer("custom_serializer", CustomSerializer)  # noqa: PLW2901
         vcr.serializer = "custom_serializer"
         yield vcr
         CustomPersister.additional_placeholders = {}

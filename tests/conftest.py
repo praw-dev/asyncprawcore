@@ -3,6 +3,7 @@
 import asyncio
 import os
 from base64 import b64encode
+from pathlib import Path
 
 import pytest
 
@@ -15,7 +16,6 @@ def patch_sleep(monkeypatch):
 
     async def _sleep(*_, **__):
         """Dud sleep function."""
-        pass
 
     monkeypatch.setattr(asyncio, "sleep", value=_sleep)
 
@@ -26,7 +26,7 @@ def image_path():
 
     def _get_path(name):
         """Return path to image."""
-        return os.path.join(os.path.dirname(__file__), "integration", "files", name)
+        return Path(__file__).parent / "integration" / "files" / name
 
     return _get_path
 
@@ -35,6 +35,7 @@ def image_path():
 async def requestor():
     """Return path to image."""
     _requestor = Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+    _requestor.headers = {"Accept-Encoding": "identity", **_requestor.headers}
     yield _requestor
     await _requestor.close()
 
@@ -72,7 +73,7 @@ def pytest_configure(config):
 
 def two_factor_callback():
     """Return an OTP code."""
-    return None
+    return
 
 
 class Placeholders:
@@ -89,8 +90,8 @@ placeholders = {
 }
 
 if placeholders["client_id"] != "fake_client_id" and placeholders["client_secret"] == "fake_client_secret":
-    placeholders["basic_auth"] = b64encode(f"{placeholders['client_id']}:".encode("utf-8")).decode("utf-8")
+    placeholders["basic_auth"] = b64encode(f"{placeholders['client_id']}:".encode()).decode("utf-8")
 else:
     placeholders["basic_auth"] = b64encode(
-        f"{placeholders['client_id']}:{placeholders['client_secret']}".encode("utf-8")
+        f"{placeholders['client_id']}:{placeholders['client_secret']}".encode()
     ).decode("utf-8")

@@ -2,6 +2,7 @@
 
 import logging
 from json import dumps
+from pathlib import Path
 
 import pytest
 
@@ -25,7 +26,7 @@ class TestSession(IntegrationTest):
             pytest.placeholders.password,
         )
         await authorizer.refresh()
-        yield authorizer
+        return authorizer
 
     async def test_request__accepted(self, script_authorizer: asyncprawcore.ScriptAuthorizer, caplog):
         caplog.set_level(logging.DEBUG)
@@ -61,15 +62,11 @@ class TestSession(IntegrationTest):
         session = asyncprawcore.Session(readonly_authorizer)
         with pytest.raises(asyncprawcore.ServerError) as exception_info:
             await session.request("GET", "/")
-            await session.request("GET", "/")
-            await session.request("GET", "/")
         assert exception_info.value.response.status == 522
 
     async def test_request__cloudflare_unknown_error(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
         with pytest.raises(asyncprawcore.ServerError) as exception_info:
-            await session.request("GET", "/")
-            await session.request("GET", "/")
             await session.request("GET", "/")
         assert exception_info.value.response.status == 520
 
@@ -159,7 +156,7 @@ class TestSession(IntegrationTest):
     async def test_request__post__with_files(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
         data = {"upload_type": "header"}
-        with open("tests/integration/files/white-square.png", "rb") as fp:
+        with Path("tests/integration/files/white-square.png").open("rb") as fp:  # noqa: ASYNC230
             files = {"file": fp}
             response = await session.request(
                 "POST",
@@ -175,7 +172,7 @@ class TestSession(IntegrationTest):
             "GET",
             "/r/reddit_api_test/comments/45xjdr/want_raw_json_test/",
         )
-        assert "WANT_RAW_JSON test: < > &" == response[0]["data"]["children"][0]["data"]["title"]
+        assert response[0]["data"]["children"][0]["data"]["title"] == "WANT_RAW_JSON test: < > &"
 
     async def test_request__redirect(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
@@ -192,8 +189,6 @@ class TestSession(IntegrationTest):
     async def test_request__service_unavailable(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
         with pytest.raises(asyncprawcore.ServerError) as exception_info:
-            await session.request("GET", "/")
-            await session.request("GET", "/")
             await session.request("GET", "/")
         assert exception_info.value.response.status == 503
 
@@ -233,7 +228,7 @@ class TestSession(IntegrationTest):
     async def test_request__too_large(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
         data = {"upload_type": "header"}
-        with open("tests/integration/files/too_large.jpg", "rb") as fp:
+        with Path("tests/integration/files/too_large.jpg").open("rb") as fp:  # noqa: ASYNC230
             files = {"file": fp}
             with pytest.raises(asyncprawcore.TooLarge) as exception_info:
                 await session.request(
@@ -246,26 +241,30 @@ class TestSession(IntegrationTest):
 
     async def test_request__unavailable_for_legal_reasons(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        exception_class = asyncprawcore.UnavailableForLegalReasons
-        with pytest.raises(exception_class) as exception_info:
+        with pytest.raises(asyncprawcore.UnavailableForLegalReasons) as exception_info:
             await session.request("GET", "/")
         assert exception_info.value.response.status == 451
 
+    async def test_request__unexpected_status_code(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
+        session = asyncprawcore.Session(script_authorizer)
+        with pytest.raises(asyncprawcore.ResponseException) as exception_info:
+            await session.request("DELETE", "/api/v1/me/friends/spez")
+            assert exception_info.value.response.status == 205
+
     async def test_request__unsupported_media_type(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
-        exception_class = asyncprawcore.SpecialError
         data = {
             "content": "type: submission\naction: upvote",
             "page": "config/automoderator",
         }
-        with pytest.raises(exception_class) as exception_info:
+        with pytest.raises(asyncprawcore.SpecialError) as exception_info:
             await session.request("POST", "r/asyncpraw/api/wiki/edit/", data=data)
         assert exception_info.value.response.status == 415
 
     async def test_request__uri_too_long(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
         path_start = "/api/morechildren?link_id=t3_n7r3uz&children="
-        with open("tests/integration/files/comment_ids.txt") as fp:
+        with Path("tests/integration/files/comment_ids.txt").open() as fp:  # noqa: ASYNC230
             ids = fp.read()
         with pytest.raises(asyncprawcore.URITooLong) as exception_info:
             await session.request("GET", (path_start + ids)[:9996])

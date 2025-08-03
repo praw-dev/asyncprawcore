@@ -1,22 +1,22 @@
 """Test for asyncprawcore.Sessions module."""
 
 import logging
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiohttp.client
 import pytest
-from aiohttp import request
 from aiohttp.web import HTTPRequestTimeout
 
 import asyncprawcore
 from asyncprawcore.exceptions import RequestException
+from asyncprawcore.sessions import FiniteRetryStrategy
 
 from . import UnitTest
 
 
 class InvalidAuthorizer(asyncprawcore.Authorizer):
     def __init__(self, requestor):
-        super(InvalidAuthorizer, self).__init__(
+        super().__init__(
             asyncprawcore.TrustedAuthenticator(
                 requestor,
                 pytest.placeholders.client_id,
@@ -84,19 +84,19 @@ class TestSession(UnitTest):
         # Fail on subsequent request
         session_instance.request.side_effect = exception
 
-        with pytest.raises(RequestException) as exception_info:
+        with pytest.raises(RequestException) as exception_info:  # noqa: PT012
             async with asyncprawcore.Session(authorizer) as session:
                 await session.request("GET", "/")
-            message = (
-                "<HTTPRequestTimeout Request Timeout not prepared>"
-                if isinstance(exception, HTTPRequestTimeout)
-                else f"{exception.__class__.__name__}()"
-            )
-            assert (
-                "asyncprawcore",
-                logging.WARNING,
-                f"Retrying due to {message} status: GET https://oauth.reddit.com/",
-            ) in caplog.record_tuples
+        message = (
+            "<HTTPRequestTimeout Request Timeout not prepared>"
+            if isinstance(exception, HTTPRequestTimeout)
+            else f"{exception.__class__.__name__}()"
+        )
+        assert (
+            "asyncprawcore",
+            logging.WARNING,
+            f"Retrying due to {message}: GET https://oauth.reddit.com/",
+        ) in caplog.record_tuples
         assert isinstance(exception_info.value, RequestException)
         assert exception is exception_info.value.original_exception
         assert session_instance.request.call_count == 3
@@ -110,3 +110,25 @@ class TestSession(UnitTest):
 class TestSessionFunction(UnitTest):
     def test_session(self, requestor):
         assert isinstance(asyncprawcore.session(InvalidAuthorizer(requestor)), asyncprawcore.Session)
+
+
+class TestFiniteRetryStrategy(UnitTest):
+    @patch("asyncio.sleep")
+    async def test_strategy(self, mock_sleep):
+        strategy = FiniteRetryStrategy()
+        assert strategy.should_retry_on_failure()
+        await strategy.sleep()
+        mock_sleep.assert_not_called()
+
+        strategy = strategy.consume_available_retry()
+        assert strategy.should_retry_on_failure()
+        await strategy.sleep()
+        assert len(calls := mock_sleep.mock_calls) == 1
+        assert 0 < calls[0].args[0] < 2
+        mock_sleep.reset_mock()
+
+        strategy = strategy.consume_available_retry()
+        assert not strategy.should_retry_on_failure()
+        await strategy.sleep()
+        assert len(calls := mock_sleep.mock_calls) == 1
+        assert 2 < calls[0].args[0] < 4
