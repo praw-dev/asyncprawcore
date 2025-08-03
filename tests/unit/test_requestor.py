@@ -1,8 +1,7 @@
 """Test for asyncprawcore.self.requestor.Requestor class."""
 
 import asyncio
-from contextlib import asynccontextmanager
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -15,9 +14,7 @@ from . import UnitTest
 class TestRequestor(UnitTest):
     async def test_deprecated_loop(self):
         with pytest.warns(DeprecationWarning):
-            asyncprawcore.Requestor(
-                "asyncprawcore:test (by u/Lil_SpazJoekp)", loop=asyncio.get_event_loop()
-            )
+            asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", loop=asyncio.get_event_loop())
 
     async def test_initialize(self, requestor):
         async with requestor.request("get", "https://reddit.com") as _:
@@ -47,9 +44,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = headers
         session.closed = False
-        requestor = asyncprawcore.Requestor(
-            "asyncprawcore:test (by u/Lil_SpazJoekp)", session=session
-        )
+        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
 
         assert (
             requestor._http.headers["User-Agent"]

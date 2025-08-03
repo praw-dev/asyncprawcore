@@ -35,7 +35,5 @@ class TestTrustedAuthenticator(IntegrationTest):
 
 class TestUntrustedAuthenticator(IntegrationTest):
     async def test_revoke_token(self, requestor):
-        authenticator = asyncprawcore.UntrustedAuthenticator(
-            requestor, pytest.placeholders.client_id
-        )
+        authenticator = asyncprawcore.UntrustedAuthenticator(requestor, pytest.placeholders.client_id)
         await authenticator.revoke_token("dummy token")

@@ -20,9 +20,7 @@ class InvalidInvocation(AsyncPrawcoreException):
 class OAuthException(AsyncPrawcoreException):
     """Indicate that there was an OAuth2 related error with the request."""
 
-    def __init__(
-        self, response: ClientResponse, error: str, description: str | None = None
-    ):
+    def __init__(self, response: ClientResponse, error: str, description: str | None = None) -> None:
         """Initialize a OAuthException instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance.
@@ -46,10 +44,8 @@ class RequestException(AsyncPrawcoreException):
         self,
         original_exception: Exception,
         request_args: tuple[Any, ...],
-        request_kwargs: dict[
-            str, bool | (dict[str, int] | (dict[str, str] | str)) | None
-        ],
-    ):
+        request_kwargs: dict[str, bool | (dict[str, int] | (dict[str, str] | str)) | None],
+    ) -> None:
         """Initialize a RequestException instance.
 
         :param original_exception: The original exception that occurred.
@@ -66,7 +62,7 @@ class RequestException(AsyncPrawcoreException):
 class ResponseException(AsyncPrawcoreException):
     """Indicate that there was an error with the completed HTTP request."""
 
-    def __init__(self, response: ClientResponse):
+    def __init__(self, response: ClientResponse) -> None:
         """Initialize a ResponseException instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance.
@@ -112,7 +108,7 @@ class Redirect(ResponseException):
 
     """
 
-    def __init__(self, response: ClientResponse):
+    def __init__(self, response: ClientResponse) -> None:
         """Initialize a Redirect exception instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance containing a location
@@ -124,8 +120,7 @@ class Redirect(ResponseException):
         self.response = response
         msg = f"Redirect to {self.path}"
         msg += (
-            " (You may be trying to perform a non-read-only action via a "
-            "read-only instance.)"
+            " (You may be trying to perform a non-read-only action via a read-only instance.)"
             if "/login/" in self.path
             else ""
         )
@@ -139,11 +134,13 @@ class ServerError(ResponseException):
 class SpecialError(ResponseException):
     """Indicate syntax or spam-prevention issues."""
 
-    def __init__(self, response: ClientResponse, resp_dict: dict[str, Any]):
+    def __init__(self, response: ClientResponse, resp_dict: dict[str, object]) -> None:
         """Initialize a SpecialError exception instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance containing a message and
             a list of special errors.
+        :param resp_dict: A dictionary containing the response data, which should
+            include keys like "message", "reason", and "special_errors".
 
         """
         self.response = response
@@ -161,7 +158,7 @@ class TooLarge(ResponseException):
 class TooManyRequests(ResponseException):
     """Indicate that the user has sent too many requests in a given amount of time."""
 
-    def __init__(self, response: ClientResponse):
+    def __init__(self, response: ClientResponse) -> None:
         """Initialize a TooManyRequests exception instance.
 
         :param response: A ``aiohttp.ClientResponse`` instance that may contain a
@@ -174,10 +171,7 @@ class TooManyRequests(ResponseException):
 
         msg = f"received {response.status} HTTP response"
         if self.retry_after:
-            msg += (
-                f". Please wait at least {float(self.retry_after)} seconds before"
-                f" re-trying this request."
-            )
+            msg += f". Please wait at least {float(self.retry_after)} seconds before re-trying this request."
         AsyncPrawcoreException.__init__(self, msg)
 
 

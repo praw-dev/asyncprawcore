@@ -19,11 +19,7 @@ asyncprawcore
     :alt: GitHub Actions Status
     :target: https://github.com/praw-dev/asyncprawcore/actions/workflows/ci.yml
 
-.. image:: https://coveralls.io/repos/github/praw-dev/asyncprawcore/badge.svg
-    :alt: Coveralls Coverage
-    :target: https://coveralls.io/github/praw-dev/asyncprawcore
-
-.. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/asyncprawcore/badge
+.. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/prawcore/badge
     :alt: OpenSSF Scorecard
     :target: https://api.securityscorecards.dev/projects/github.com/praw-dev/asyncprawcore
 

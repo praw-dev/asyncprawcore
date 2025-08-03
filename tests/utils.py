@@ -1,9 +1,10 @@
 """Pytest utils for integration tests."""
 
 from __future__ import annotations
+
 import json
-import os
 from datetime import datetime
+from pathlib import Path
 
 from vcr.persisters.filesystem import FilesystemPersister
 from vcr.serialize import deserialize, serialize
@@ -35,7 +36,7 @@ def filter_access_token(response):
         except (KeyError, TypeError, ValueError):
             continue
         response["body"]["string"] = response["body"]["string"].replace(
-            token.encode("utf-8"), f"<{token_key.upper()}_TOKEN>".encode("utf-8")
+            token.encode("utf-8"), f"<{token_key.upper()}_TOKEN>".encode()
         )
         _placeholders[f"{token_key}_token"] = token
     return response
@@ -60,31 +61,30 @@ class CustomPersister(FilesystemPersister):
     def load_cassette(cls, cassette_path, serializer):
         """Load cassette."""
         try:
-            with open(cassette_path) as f:
+            with Path(cassette_path).open() as f:
                 cassette_content = f.read()
-        except OSError:
-            raise ValueError("Cassette not found.")
+        except OSError as error:
+            msg = "Cassette not found."
+            raise ValueError(msg) from error
         for replacement, value in [
-            (v, f"<{k.upper()}>")
-            for k, v in {**cls.additional_placeholders, **_placeholders}.items()
+            (v, f"<{k.upper()}>") for k, v in {**cls.additional_placeholders, **_placeholders}.items()
         ]:
             cassette_content = cassette_content.replace(value, replacement)
-        cassette = deserialize(cassette_content, serializer)
-        return cassette
+        return deserialize(cassette_content, serializer)
 
     @classmethod
     def save_cassette(cls, cassette_path, cassette_dict, serializer):
         """Save cassette."""
+        cassette_path = Path(cassette_path)
         data = serialize(cassette_dict, serializer)
         for replacement, value in [
-            (f"<{k.upper()}>", v)
-            for k, v in {**cls.additional_placeholders, **_placeholders}.items()
+            (f"<{k.upper()}>", v) for k, v in {**cls.additional_placeholders, **_placeholders}.items()
         ]:
             data = data.replace(value, replacement)
-        dirname, filename = os.path.split(cassette_path)
-        if dirname and not os.path.exists(dirname):
-            os.makedirs(dirname)
-        with open(cassette_path, "w") as f:
+        dirname = cassette_path.parent
+        if dirname and not dirname.exists():
+            dirname.mkdir(parents=True)
+        with cassette_path.open("w") as f:
             f.write(data)
 
 
@@ -93,7 +93,7 @@ class CustomSerializer:
 
     @staticmethod
     def _serialize_file(file):
-        with open(file.name, "rb") as f:
+        with Path(file.name).open("rb") as f:
             return f.read().decode("utf-8", "replace")
 
     @staticmethod
@@ -124,9 +124,10 @@ class CustomSerializer:
             elif isinstance(item, list):
                 new_list.append(cls._serialize_list(item))
             elif isinstance(item, tuple):
+                file = None
                 if item[0] == "file":
-                    item = (item[0], cls._serialize_file(item[1]))
-                new_list.append(item)
+                    file = (item[0], cls._serialize_file(item[1]))
+                new_list.append(file or item)
             else:
                 new_list.append(item)
         return new_list
