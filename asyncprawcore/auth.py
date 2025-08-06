@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 import time
 from abc import ABC, abstractmethod
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Any, Callable
 
 from aiohttp import ClientRequest
@@ -17,7 +17,7 @@ from .codes import codes
 from .exceptions import InvalidInvocation, OAuthException, ResponseException
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable
+    from collections.abc import AsyncGenerator, Awaitable
 
     from aiohttp import ClientResponse
 
@@ -53,7 +53,7 @@ class BaseAuthenticator(ABC):
         self.redirect_uri = redirect_uri
 
     @asynccontextmanager
-    async def _post(self, *, url: str, **data: Any) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
+    async def _post(self, *, url: str, **data: Any) -> AsyncGenerator[ClientResponse]:
         async with self._requestor.request(
             "POST",
             url,

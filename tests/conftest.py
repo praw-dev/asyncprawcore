@@ -3,7 +3,6 @@
 import asyncio
 import os
 from base64 import b64encode
-from pathlib import Path
 
 import pytest
 
@@ -18,17 +17,6 @@ def patch_sleep(monkeypatch):
         """Dud sleep function."""
 
     monkeypatch.setattr(asyncio, "sleep", value=_sleep)
-
-
-@pytest.fixture
-def image_path():
-    """Return path to image."""
-
-    def _get_path(name):
-        """Return path to image."""
-        return Path(__file__).parent / "integration" / "files" / name
-
-    return _get_path
 
 
 @pytest.fixture
@@ -66,14 +54,8 @@ def env_default(key):
 
 def pytest_configure(config):
     pytest.placeholders = Placeholders(placeholders)
-    config.addinivalue_line("markers", "add_placeholder: Define an additional placeholder for the cassette.")
     config.addinivalue_line("markers", "cassette_name: Name of cassette to use for test.")
     config.addinivalue_line("markers", "recorder_kwargs: Arguments to pass to the recorder.")
-
-
-def two_factor_callback():
-    """Return an OTP code."""
-    return
 
 
 class Placeholders:
@@ -83,13 +65,22 @@ class Placeholders:
 
 placeholders = {
     x: env_default(x)
-    for x in (
-        "client_id client_secret password permanent_grant_code temporary_grant_code"
-        " redirect_uri refresh_token user_agent username"
-    ).split()
+    for x in [
+        "client_id",
+        "client_secret",
+        "password",
+        "permanent_grant_code",
+        "temporary_grant_code",
+        "redirect_uri",
+        "refresh_token",
+        "user_agent",
+        "username",
+    ]
 }
 
-if placeholders["client_id"] != "fake_client_id" and placeholders["client_secret"] == "fake_client_secret":
+if (
+    placeholders["client_id"] != "fake_client_id" and placeholders["client_secret"] == "fake_client_secret"
+):  # pragma: no cover
     placeholders["basic_auth"] = b64encode(f"{placeholders['client_id']}:".encode()).decode("utf-8")
 else:
     placeholders["basic_auth"] = b64encode(

@@ -9,7 +9,7 @@ from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable, Mapping
+    from collections.abc import AsyncGenerator, Awaitable, Mapping
 
     from aiohttp import ClientResponse
 
@@ -40,7 +40,7 @@ class RateLimiter:
         set_header_callback: Callable[[], Awaitable[dict[str, str]]],
         *args: Any,
         **kwargs: Any,
-    ) -> Callable[..., AbstractAsyncContextManager[ClientResponse]]:
+    ) -> AsyncGenerator[ClientResponse]:
         """Rate limit the call to ``request_function``.
 
         :param request_function: A function call that returns an HTTP response object.

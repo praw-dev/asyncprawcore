@@ -60,19 +60,17 @@ class TestSession(IntegrationTest):
         self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer
     ):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.ServerError) as exception_info:
+        with pytest.raises(asyncprawcore.ServerError, check=lambda exception: exception.response.status == 522):
             await session.request("GET", "/")
-        assert exception_info.value.response.status == 522
 
     async def test_request__cloudflare_unknown_error(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.ServerError) as exception_info:
+        with pytest.raises(asyncprawcore.ServerError, check=lambda exception: exception.response.status == 520):
             await session.request("GET", "/")
-        assert exception_info.value.response.status == 520
 
     async def test_request__conflict(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
-        with pytest.raises(asyncprawcore.Conflict) as exception_info:
+        with pytest.raises(asyncprawcore.Conflict, check=lambda exception: exception.response.status == 409):
             await session.request(
                 "POST",
                 "/api/multi/copy/",
@@ -82,7 +80,6 @@ class TestSession(IntegrationTest):
                     "to": f"user/{pytest.placeholders.username}/m/sfwpornnetwork/",
                 },
             )
-        assert exception_info.value.response.status == 409
 
     async def test_request__created(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
@@ -96,9 +93,8 @@ class TestSession(IntegrationTest):
 
     async def test_request__gateway_timeout(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.ServerError) as exception_info:
+        with pytest.raises(asyncprawcore.ServerError, check=lambda exception: exception.response.status == 504):
             await session.request("GET", "/")
-        assert exception_info.value.response.status == 504
 
     async def test_request__get(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
@@ -110,9 +106,8 @@ class TestSession(IntegrationTest):
 
     async def test_request__internal_server_error(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.ServerError) as exception_info:
+        with pytest.raises(asyncprawcore.ServerError, check=lambda exception: exception.response.status == 500):
             await session.request("GET", "/")
-        assert exception_info.value.response.status == 500
 
     async def test_request__no_content(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
@@ -176,15 +171,13 @@ class TestSession(IntegrationTest):
 
     async def test_request__redirect(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.Redirect) as exception_info:
+        with pytest.raises(asyncprawcore.Redirect, check=lambda exception: exception.path.startswith("/r/")):
             await session.request("GET", "/r/random")
-        assert exception_info.value.path.startswith("/r/")
 
     async def test_request__redirect_301(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.Redirect) as exception_info:
+        with pytest.raises(asyncprawcore.Redirect, check=lambda exception: exception.path == "/r/t:bird/"):
             await session.request("GET", "t/bird")
-        assert exception_info.value.path == "/r/t:bird/"
 
     async def test_request__service_unavailable(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
@@ -230,26 +223,25 @@ class TestSession(IntegrationTest):
         data = {"upload_type": "header"}
         with Path("tests/integration/files/too_large.jpg").open("rb") as fp:  # noqa: ASYNC230
             files = {"file": fp}
-            with pytest.raises(asyncprawcore.TooLarge) as exception_info:
+            with pytest.raises(asyncprawcore.TooLarge, check=lambda exception: exception.response.status == 413):
                 await session.request(
                     "POST",
                     "/r/asyncpraw/api/upload_sr_img",
                     data=data,
                     files=files,
                 )
-        assert exception_info.value.response.status == 413
 
     async def test_request__unavailable_for_legal_reasons(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
-        with pytest.raises(asyncprawcore.UnavailableForLegalReasons) as exception_info:
+        with pytest.raises(
+            asyncprawcore.UnavailableForLegalReasons, check=lambda exception: exception.response.status == 451
+        ):
             await session.request("GET", "/")
-        assert exception_info.value.response.status == 451
 
     async def test_request__unexpected_status_code(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
-        with pytest.raises(asyncprawcore.ResponseException) as exception_info:
+        with pytest.raises(asyncprawcore.ResponseException, check=lambda exception: exception.response.status == 205):
             await session.request("DELETE", "/api/v1/me/friends/spez")
-            assert exception_info.value.response.status == 205
 
     async def test_request__unsupported_media_type(self, script_authorizer: asyncprawcore.ScriptAuthorizer):
         session = asyncprawcore.Session(script_authorizer)
@@ -257,18 +249,16 @@ class TestSession(IntegrationTest):
             "content": "type: submission\naction: upvote",
             "page": "config/automoderator",
         }
-        with pytest.raises(asyncprawcore.SpecialError) as exception_info:
+        with pytest.raises(asyncprawcore.SpecialError, check=lambda exception: exception.response.status == 415):
             await session.request("POST", "r/asyncpraw/api/wiki/edit/", data=data)
-        assert exception_info.value.response.status == 415
 
     async def test_request__uri_too_long(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
         path_start = "/api/morechildren?link_id=t3_n7r3uz&children="
         with Path("tests/integration/files/comment_ids.txt").open() as fp:  # noqa: ASYNC230
             ids = fp.read()
-        with pytest.raises(asyncprawcore.URITooLong) as exception_info:
+        with pytest.raises(asyncprawcore.URITooLong, check=lambda exception: exception.response.status == 414):
             await session.request("GET", (path_start + ids)[:9996])
-        assert exception_info.value.response.status == 414
 
     async def test_request__with_insufficient_scope(self, trusted_authenticator):
         authorizer = asyncprawcore.Authorizer(trusted_authenticator, refresh_token=pytest.placeholders.refresh_token)

@@ -1,6 +1,7 @@
 """asyncprawcore Integration test suite."""
 
 import os
+from pathlib import Path
 
 import pytest
 from vcr import VCR
@@ -12,7 +13,7 @@ from ..utils import (
     filter_access_token,
 )
 
-CASSETTES_PATH = "tests/integration/cassettes"
+CASSETTES_PATH = Path("tests/integration/cassettes")
 existing_cassettes = set()
 used_cassettes = set()
 
@@ -21,10 +22,10 @@ class IntegrationTest:
     """Base class for Async PRAW integration tests."""
 
     @pytest.fixture(autouse=True, scope="session")
-    def cassette_tracker(self):
+    def cassette_tracker(self):  # pragma: no cover
         """Track cassettes to ensure unused cassettes are not uploaded."""
-        for cassette in os.listdir(CASSETTES_PATH):
-            existing_cassettes.add(cassette[: cassette.rindex(".")])
+        for cassette in CASSETTES_PATH.iterdir():
+            existing_cassettes.add(str(cassette)[: cassette.name.rindex(".")])
         yield
         unused_cassettes = existing_cassettes - used_cassettes
         if unused_cassettes and os.getenv("ENSURE_NO_UNUSED_CASSETTES", "0") == "1":
@@ -35,8 +36,6 @@ class IntegrationTest:
     def cassette(self, request, recorder, cassette_name):
         """Wrap a test in a VCR cassette."""
         kwargs = {}
-        for marker in request.node.iter_markers("add_placeholder"):
-            recorder.persister.add_additional_placeholders(marker.kwargs)
         for marker in request.node.iter_markers("recorder_kwargs"):
             for key, value in marker.kwargs.items():
                 #  Don't overwrite existing values since function markers are provided
@@ -52,7 +51,7 @@ class IntegrationTest:
         """Configure VCR."""
         vcr = VCR()
         vcr.before_record_response = filter_access_token
-        vcr.cassette_library_dir = CASSETTES_PATH
+        vcr.cassette_library_dir = str(CASSETTES_PATH)
         vcr.decode_compressed_response = True
         vcr.match_on = ["uri", "method"]
         vcr.path_transformer = VCR.ensure_suffix(".json")
@@ -68,4 +67,4 @@ class IntegrationTest:
         marker = request.node.get_closest_marker("cassette_name")
         if marker is None:
             return vcr_cassette_name
-        return marker.args[0]
+        return str(marker.args[0])

@@ -13,7 +13,7 @@ from . import UnitTest
 
 class TestRequestor(UnitTest):
     async def test_deprecated_loop(self):
-        with pytest.warns(DeprecationWarning):
+        with pytest.warns(DeprecationWarning, match="The loop argument is deprecated and will be ignored."):
             asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", loop=asyncio.get_event_loop())
 
     async def test_initialize(self, requestor):
@@ -63,7 +63,7 @@ class TestRequestor(UnitTest):
         requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
         with pytest.raises(asyncprawcore.RequestException) as exception_info:
             async with requestor.request("get", "http://a.b", data="bar") as _:
-                pass
+                pass  # pragma: no cover
         assert isinstance(exception_info.value, RequestException)
         assert exception is exception_info.value.original_exception
         assert exception_info.value.request_args == ("get", "http://a.b")
