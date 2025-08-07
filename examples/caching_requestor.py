@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Example program that shows how simple in-memory caching can be used.
 

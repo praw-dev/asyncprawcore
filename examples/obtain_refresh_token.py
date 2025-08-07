@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Example program that demonstrates the flow for retrieving a refresh token.
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """script_auth_friend_list.py outputs the authenticated user's list of friends.
 
