@@ -6,6 +6,10 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+**Changed**
+
+- Improved exception message when ``asyncio.TimeoutError`` is raised.
+
 3.0.2 (2025/08/06)
 ------------------
 

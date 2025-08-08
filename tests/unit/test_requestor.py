@@ -68,3 +68,18 @@ class TestRequestor(UnitTest):
         assert exception is exception_info.value.original_exception
         assert exception_info.value.request_args == ("get", "http://a.b")
         assert exception_info.value.request_kwargs == {"data": "bar"}
+
+    @patch("aiohttp.ClientSession")
+    async def test_request__wrap_request_exceptions__timeout(self, mock_session):
+        exception = asyncio.TimeoutError()
+        session_instance = mock_session.return_value
+        session_instance.request.side_effect = exception
+        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+        with pytest.raises(asyncprawcore.RequestException) as exception_info:
+            async with requestor.request("get", "http://a.b", data="bar") as _:
+                pass  # pragma: no cover
+        assert isinstance(exception_info.value, RequestException)
+        assert exception is exception_info.value.original_exception
+        assert str(exception_info.value) == "error with request TimeoutError"
+        assert exception_info.value.request_args == ("get", "http://a.b")
+        assert exception_info.value.request_kwargs == {"data": "bar"}

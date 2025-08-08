@@ -1,6 +1,6 @@
 [build-system]
-build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.4,<4"]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
 
 [dependency-groups]
 dev = [
@@ -61,6 +61,9 @@ requires-python = ">=3.9"
 "Issue Tracker" = "https://github.com/praw-dev/asyncprawcore/issues"
 "Source Code" = "https://github.com/praw-dev/asyncprawcore"
 
+[tool.hatch.version]
+path = "asyncprawcore/__init__.py"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 filterwarnings = "ignore::DeprecationWarning"
@@ -68,8 +71,8 @@ testpaths = "tests"
 
 [tool.ruff]
 include = [
-  "examples/*.py",
   "asyncprawcore/*.py",
+  "examples/*.py",
   "tests/*.py"
 ]
 line-length = 120
