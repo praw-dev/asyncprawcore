@@ -7,4 +7,5 @@ updates:
   - package-ecosystem: uv
     directory: /
     schedule:
-      interval: weekly
+      interval: cron
+      cronjob: "* * * * *"
