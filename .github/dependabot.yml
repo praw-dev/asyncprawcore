@@ -8,4 +8,4 @@ updates:
     directory: /
     schedule:
       interval: cron
-      cronjob: "* * * * *"
+      cronjob: "46 17 * * *"
