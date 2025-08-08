@@ -64,6 +64,9 @@ requires-python = ">=3.9"
 [tool.hatch.version]
 path = "asyncprawcore/__init__.py"
 
+[tool.hatch.version.raw-options]
+fallback_version = "0.0.0"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 filterwarnings = "ignore::DeprecationWarning"
