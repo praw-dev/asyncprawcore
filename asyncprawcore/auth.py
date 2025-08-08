@@ -124,8 +124,8 @@ class BaseAuthenticator(ABC):
         if token_type is not None:
             data["token_type_hint"] = token_type
         url = self._requestor.reddit_url + const.REVOKE_TOKEN_PATH
-        async with self._post(url=url, **data) as _:
-            pass  # The response is not used.
+        async with self._post(url=url, **data):
+            pass
 
 
 class BaseAuthorizer:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
@@ -56,7 +57,9 @@ class RequestException(AsyncPrawcoreException):
         self.original_exception = original_exception
         self.request_args = request_args
         self.request_kwargs = request_kwargs
-        super().__init__(f"error with request {original_exception}")
+        super().__init__(
+            f"error with request {'TimeoutError' if isinstance(original_exception, asyncio.TimeoutError) else original_exception}"
+        )
 
 
 class ResponseException(AsyncPrawcoreException):
