@@ -15,7 +15,7 @@ test = [
   "coverage>=7.6.10",
   "pyright",
   "pytest>=8.3.4",
-  "pytest-asyncio ==0.18.*",
+  "pytest-asyncio ==1.2.*",
   "pytest-vcr ==1.*",
   "urllib3 ==1.*",
   "vcrpy ==4.2.1"
@@ -24,7 +24,7 @@ type = [
   "aiohttp <4",
   "pyright>=1.1.393",
   "pytest>=8.3.4",
-  "pytest-asyncio ==0.18.*"
+  "pytest-asyncio ==1.2.*"
 ]
 
 [project]
