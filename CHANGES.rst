@@ -9,6 +9,9 @@ Unreleased
 **Changed**
 
 - Improved exception message when ``asyncio.TimeoutError`` is raised.
+- Fixed type hinting for ``data`` and ``params`` in ``Requestor.request()``.
+- Pass ``files`` to ``aiohttp.ClientSession.request()`` in ``Requestor.request()``
+  correctly again.
 
 3.0.2 (2025/08/06)
 ------------------
