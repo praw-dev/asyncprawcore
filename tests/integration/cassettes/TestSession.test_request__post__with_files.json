@@ -27,7 +27,7 @@
             "close"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
+            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/3.0.3.dev0"
           ]
         },
         "method": "POST",
@@ -42,7 +42,7 @@
             "bytes"
           ],
           "Cache-Control": [
-            "private, max-age=3600"
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store"
           ],
           "Connection": [
             "close"
@@ -54,7 +54,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 27 Nov 2023 01:54:04 GMT"
+            "Sat, 04 Oct 2025 21:26:58 GMT"
+          ],
+          "Expires": [
+            "-1"
           ],
           "NEL": [
             "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
@@ -66,7 +69,7 @@
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=47Z4cbkEIRoMLAEduI; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=LcttArzS78Dk2wvBkG; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubdomains"
@@ -118,10 +121,10 @@
             "bearer <ACCESS_TOKEN>"
           ],
           "Cookie": [
-            "edgebucket=47Z4cbkEIRoMLAEduI"
+            "edgebucket=LcttArzS78Dk2wvBkG"
           ],
           "User-Agent": [
-            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/2.3.1.dev0"
+            "asyncprawcore:test (by u/Lil_SpazJoekp) asyncprawcore/3.0.3.dev0"
           ]
         },
         "method": "POST",
@@ -148,7 +151,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 27 Nov 2023 01:54:04 GMT"
+            "Sat, 04 Oct 2025 21:26:58 GMT"
           ],
           "Expires": [
             "-1"
@@ -163,9 +166,9 @@
             "snooserv"
           ],
           "Set-Cookie": [
-            "loid=00000000003ebyblla.2.1552433321352.Z0FBQUFBQmxZX2E4NVJaUjQzYm82ZUE0aEpxSnJyMlZEc3NNc21hdVl6NGN1MU9ZWnRaLW1CNnBsVmQtdHdiTFdBdnVlX3M1V3VfemlSdU9VMTlkMkdURzA4bmIzSXh4MFU1Z1pFQXk3ajhrcEU3dzEySVVGN2gwZkdGX29UbUJlNkx0bGN5bmJPMGY; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Wed, 26-Nov-2025 01:54:04 GMT; secure",
-            "redesign_optout=true; Domain=reddit.com; Max-Age=94607999; Path=/; expires=Thu, 26-Nov-2026 01:54:04 GMT; secure",
-            "session_tracker=rkcihjnenmqghcdkif.0.1701050044379.Z0FBQUFBQmxZX2E4SG45MHJFN3FZenBZaWZmNV9IRVNCUHg2VWdRdGdDdzdvbUpheHdvanU5d1lFODUyUUh5R3JlTUUxd3p1MWdNcmZHU3dwNVMxVkphY2ZpZFFXLTFwSGtwQktPY1hNMERTaTJSeFVUM1lSTzY4UVhUWktPMUR5UG5mSmF5NVRydHo; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 27-Nov-2023 03:54:04 GMT; secure"
+            "loid=00000000003ebyblla.2.1552433321352.Z0FBQUFBQm80WkVpVFlkajgzWlBlb3VRQ29Zc09wUTJtSi1vQTZiWTNENFhpSVhCeW9SeXlJd2wwQmU3dW91d19qa21ReGhnLUJOaVhsNGlXb0RoWnNraFRCMVAyR3NsMktSWG4zbWJPMTlaeHhLenBHXzhLQlA3MGo5NHVYWUhkMXlmUWxKZUQtdGs; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 04-Oct-2027 21:26:58 GMT; secure",
+            "redesign_optout=true; Domain=reddit.com; Max-Age=94607999; Path=/; expires=Tue, 03-Oct-2028 21:26:58 GMT; secure",
+            "session_tracker=dmmnbkoichealejbmc.0.1759613218619.Z0FBQUFBQm80WkVpTWszMTFMczlvQWpMdEd6LUxqYTNFQUZOSHBSaDVEdU9WRFhuLUJZbjNCMEpCN0xNU1NteWV6NXFVNkhXajFRNlpPenVXeXlzdF9DdjQ2Z1ZJMWdHUjZDMHdDNGdXV25ZZDFyejlkRzlOWU5Ud05iZ01FOU5YRjYwMUhtWmtLNXA; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Oct-2025 23:26:58 GMT; secure"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubdomains"
@@ -186,13 +189,13 @@
             "1; mode=block"
           ],
           "x-ratelimit-remaining": [
-            "992"
+            "997.0"
           ],
           "x-ratelimit-reset": [
-            "356"
+            "181"
           ],
           "x-ratelimit-used": [
-            "4"
+            "3"
           ],
           "x-ua-compatible": [
             "IE=edge"
@@ -206,6 +209,6 @@
       }
     }
   ],
-  "recorded_at": "2023-11-27T01:54:04",
+  "recorded_at": "2025-10-04T21:26:58",
   "version": 1
 }

@@ -30,9 +30,10 @@ def filter_access_token(response):  # pragma: no cover
     if "api/v1/access_token" not in request_uri or response["status"]["code"] != 200:
         return response
     body = response["body"]["string"].decode()
+    json_body = json.loads(body)
     for token_key in ["access", "refresh"]:
         try:
-            token = json.loads(body)[f"{token_key}_token"]
+            token = json_body[f"{token_key}_token"]
         except (KeyError, TypeError, ValueError):
             continue
         response["body"]["string"] = response["body"]["string"].replace(
