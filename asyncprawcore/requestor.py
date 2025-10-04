@@ -121,4 +121,4 @@ class Requestor:
         except ResponseException as exc:
             raise exc
         except Exception as exc:  # noqa: BLE001
-            raise RequestException(exc, args, kwargs) from None
+            raise RequestException(exc, args, kwargs) from exc

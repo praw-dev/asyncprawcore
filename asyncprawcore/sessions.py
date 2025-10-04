@@ -153,14 +153,13 @@ class Session:
         log.debug("Params: %s", pformat(params))
 
     @staticmethod
-    def _preprocess_dict(data: dict[str, object] | None) -> dict[str, object]:
+    def _preprocess_dict(data: dict[str, object]) -> dict[str, object]:
         new_data = {}
-        if data:
-            for key, value in data.items():
-                if isinstance(value, bool):
-                    new_data[key] = str(value).lower()
-                elif value is not None:
-                    new_data[key] = str(value) if not isinstance(value, str) else value
+        for key, value in data.items():
+            if isinstance(value, bool):
+                new_data[key] = str(value).lower()
+            elif value is not None:
+                new_data[key] = str(value) if not isinstance(value, str) else value
         return new_data
 
     @property
@@ -197,7 +196,6 @@ class Session:
         self,
         *,
         data: list[tuple[str, object]] | None,
-        files: dict[str, BinaryIO | TextIO] | None,
         json: dict[str, object] | None,
         method: str,
         params: dict[str, object],
@@ -209,7 +207,6 @@ class Session:
         log.warning("Retrying due to %s: %s %s", status, method, url)
         return await self._request_with_retries(
             data=data,
-            files=files,
             json=json,
             method=method,
             params=params,
@@ -223,7 +220,6 @@ class Session:
     async def _make_request(
         self,
         data: list[tuple[str, object]] | None,
-        files: dict[str, BinaryIO | TextIO] | None,
         json: dict[str, object] | None,
         method: str,
         params: dict[str, object],
@@ -237,7 +233,6 @@ class Session:
             url,
             allow_redirects=False,
             data=data,
-            files=files,
             json=json,
             params=params,
             timeout=timeout,
@@ -253,7 +248,36 @@ class Session:
             )
             yield response
 
-    def _preprocess_params(self, params: dict[str, object] | None) -> dict[str, object]:
+    def _preprocess_data(
+        self,
+        data: dict[str, object],
+        files: dict[str, BinaryIO | TextIO] | None,
+    ) -> dict[str, object]:
+        """Preprocess data and files before request.
+
+        This is to convert requests that are formatted for the ``requests`` package to
+        be compatible with the ``aiohttp`` package. The motivation for this is so that
+        ``praw`` and ``asyncpraw`` can remain as similar as possible and thus making
+        contributions to ``asyncpraw`` simpler.
+
+        This method does the following:
+
+        - Removes keys that have a value of ``None`` from ``data``.
+        - Moves ``files`` into ``data``.
+
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request.
+        :param files: Dictionary, mapping ``filename`` to file-like object to add to
+            ``data``.
+
+        """
+        if isinstance(data, dict):
+            data = self._preprocess_dict(data)
+            if files is not None:
+                data.update(files)
+        return data
+
+    def _preprocess_params(self, params: dict[str, object]) -> dict[str, object]:
         """Preprocess params before request.
 
         This is to convert requests that are formatted for the ``requests`` package to
@@ -275,7 +299,6 @@ class Session:
         self,
         *,
         data: list[tuple[str, object]] | None,
-        files: dict[str, BinaryIO | TextIO] | None,
         json: dict[str, object] | None,
         method: str,
         params: dict[str, object],
@@ -292,7 +315,6 @@ class Session:
         try:
             async with self._make_request(
                 data=data,
-                files=files,
                 json=json,
                 method=method,
                 params=params,
@@ -310,7 +332,6 @@ class Session:
                 if retry_status is not None and retry_strategy_state.should_retry_on_failure():
                     return await self._do_retry(
                         data=data,
-                        files=files,
                         json=json,
                         method=method,
                         params=params,
@@ -340,7 +361,6 @@ class Session:
             ):
                 return await self._do_retry(
                     data=data,
-                    files=files,
                     json=json,
                     method=method,
                     params=params,
@@ -393,7 +413,7 @@ class Session:
         params = self._preprocess_params(deepcopy(params) or {})
         params["raw_json"] = "1"
         if isinstance(data, dict):
-            data = self._preprocess_dict(deepcopy(data))
+            data = self._preprocess_data(deepcopy(data), files)
             data["api_type"] = "json"
             data_list = sorted(data.items())
         else:
@@ -404,7 +424,6 @@ class Session:
         url = urljoin(self._requestor.oauth_url, path)
         return await self._request_with_retries(
             data=data_list,
-            files=files,
             json=json,
             method=method,
             params=params,
