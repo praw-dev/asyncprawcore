@@ -1,7 +1,8 @@
 .. _main_page:
 
-asyncprawcore
-=============
+###############
+ asyncprawcore
+###############
 
 .. image:: https://img.shields.io/pypi/v/asyncprawcore.svg
     :alt: Latest asyncprawcore Version
@@ -33,8 +34,9 @@ asyncprawcore
 
 asyncprawcore is a low-level communication layer used by Async PRAW 7+.
 
-Installation
-------------
+**************
+ Installation
+**************
 
 Install asyncprawcore using ``pip`` via:
 
@@ -42,8 +44,9 @@ Install asyncprawcore using ``pip`` via:
 
     pip install asyncprawcore
 
-Execution Example
------------------
+*******************
+ Execution Example
+*******************
 
 The following example demonstrates how to use asyncprawcore to obtain the list of
 trophies for a given user using the script-app type. This example assumes you have the
@@ -83,8 +86,9 @@ Save the above as ``trophies.py`` and then execute via:
 Additional examples can be found at:
 https://github.com/praw-dev/asyncprawcore/tree/main/examples
 
-Depending on asyncprawcore
---------------------------
+****************************
+ Depending on asyncprawcore
+****************************
 
 asyncprawcore follows `semantic versioning <https://semver.org/>`_ with the exception
 that deprecations will not be preceded by a minor release. In essence, expect only major
@@ -95,14 +99,14 @@ version of asyncprawcore your package requires, but to also limit the major vers
 Below are two examples of how you may want to specify your asyncprawcore dependency:
 
 setup.py
-~~~~~~~~
+========
 
 .. code-block:: python
 
     setup(..., install_requires=["asyncprawcore >=0.1, <1"], ...)
 
 requirements.txt
-~~~~~~~~~~~~~~~~
+================
 
 .. code-block:: text
 

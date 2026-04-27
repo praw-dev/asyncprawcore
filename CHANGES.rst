@@ -1,10 +1,12 @@
-Change Log
-==========
+############
+ Change Log
+############
 
 asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
-Unreleased
-----------
+************
+ Unreleased
+************
 
 **Changed**
 
@@ -13,22 +15,25 @@ Unreleased
 - Pass ``files`` to ``aiohttp.ClientSession.request()`` in ``Requestor.request()``
   correctly again.
 
-3.0.2 (2025/08/06)
-------------------
+********************
+ 3.0.2 (2025/08/06)
+********************
 
 **Changed**
 
 - Improved type hinting.
 
-3.0.1 (2025/08/02)
-------------------
+********************
+ 3.0.1 (2025/08/02)
+********************
 
 **Fixed**
 
 - Increase half-second delay introduced in ``3.0.0`` to a full second delay.
 
-3.0.0 (2025/08/02)
-------------------
+********************
+ 3.0.0 (2025/08/02)
+********************
 
 **Changed**
 
@@ -47,8 +52,9 @@ Unreleased
 
 - Remove :class:`RateLimiter` attribute ``reset_timestamp``.
 
-2.4.0 (2023/11/27)
-------------------
+********************
+ 2.4.0 (2023/11/27)
+********************
 
 **Changed**
 
@@ -57,8 +63,9 @@ Unreleased
 - Updated rate limit algorithm to better handle Reddit's new rate limits.
 - Drop support for Python 3.7, which was end-of-life on 2023-06-27.
 
-2.3.0 (2021/07/27)
-------------------
+********************
+ 2.3.0 (2021/07/27)
+********************
 
 **Added**
 
@@ -69,15 +76,17 @@ Unreleased
   scope of access requests.
 - Retry 408 "Request Timeout" HTTP responses.
 
-2.2.1 (2021/07/06)
-------------------
+********************
+ 2.2.1 (2021/07/06)
+********************
 
 **Changed**
 
 - Cast non-string objects to string when preprocessing ``data`` and ``params``.
 
-2.2.0 (2021/06/15)
-------------------
+********************
+ 2.2.0 (2021/06/15)
+********************
 
 **Added**
 
@@ -88,8 +97,9 @@ Unreleased
 - The expected HTTP response status code for a request made with the proper credentials
   to api/v1/revoke_token has been changed from 204 to 200.
 
-2.1.0 (2021/06/15)
-------------------
+********************
+ 2.1.0 (2021/06/15)
+********************
 
 **Added**
 
@@ -102,8 +112,9 @@ Unreleased
 
 - Fix ``RuntimeWarning`` when executing pre/post refresh token callbacks.
 
-2.0.0 (2021-02-23)
-------------------
+********************
+ 2.0.0 (2021-02-23)
+********************
 
 **Added**
 
@@ -119,15 +130,17 @@ Unreleased
 - The ``refresh_token`` argument to :class:`Authorizer` must now be passed by keyword,
   and cannot be passed as a positional argument.
 
-1.5.1 (2021-01-25)
-------------------
+********************
+ 1.5.1 (2021-01-25)
+********************
 
 **Changed**
 
 - Improved preprocessing for ``data`` and ``params`` in ``Session.request()``.
 
-1.5.0 (2020-09-28)
-------------------
+********************
+ 1.5.0 (2020-09-28)
+********************
 
 **Added**
 
@@ -153,8 +166,9 @@ Unreleased
   ``asyncprawcore.Session.request()`` are now casted to a string as
   ``aiohttp.ClientSession.request()`` does not accept boolean values in ``params``.
 
-1.4.0.post2 (2020-07-12)
-------------------------
+**************************
+ 1.4.0.post2 (2020-07-12)
+**************************
 
 **Fixed**
 
@@ -163,16 +177,18 @@ Unreleased
 - Fixed ``SpecialException`` not able to get ``response.json()`` since it is a
   coroutine.
 
-1.4.0.post1 (2020-07-03)
-------------------------
+**************************
+ 1.4.0.post1 (2020-07-03)
+**************************
 
 **Fixed**
 
 - Documentation errors.
 - ``authorize_url`` will correctly return a ``str`` instead of ``yarl.URL()``.
 
-1.4.0 (2020-06-20)
-------------------
+********************
+ 1.4.0 (2020-06-20)
+********************
 
 - Converted from ``requests`` to ``aiohttp`` for asynchronous operation.
 - Updated upto version 1.4.0 of prawcore.
