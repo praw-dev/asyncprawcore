@@ -12,7 +12,7 @@ lint = [
 ]
 test = [
   "aiohttp <4",
-  "coverage>=7.6.10",
+  "coverage>=7.10.7",
   "pytest>=8.3.4",
   "pytest-asyncio==1.2.*",
   "pytest-vcr==1.*",
