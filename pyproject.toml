@@ -8,7 +8,7 @@ dev = [
 ]
 lint = [
   "pre-commit",
-  "ruff>=0.9.5"
+  "ruff>=0.15.13"
 ]
 test = [
   "aiohttp <4",
