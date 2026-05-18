@@ -1,10 +1,12 @@
-Maintainers
-===========
+#############
+ Maintainers
+#############
 
 - Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 
-Contributors
-============
+##############
+ Contributors
+##############
 
 - nmtake `@nmtake <https://github.com/nmtake>`_
 - elnuno `@elnuno <https://github.com/elnuno>`_
