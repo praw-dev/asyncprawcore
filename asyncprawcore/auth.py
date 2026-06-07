@@ -6,7 +6,7 @@ import inspect
 import time
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from aiohttp import ClientRequest
 from aiohttp.helpers import BasicAuth
@@ -17,7 +17,7 @@ from .codes import codes
 from .exceptions import InvalidInvocation, OAuthException, ResponseException
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator, Awaitable
+    from collections.abc import AsyncGenerator, Awaitable, Callable
 
     from aiohttp import ClientResponse
 

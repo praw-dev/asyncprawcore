@@ -11,7 +11,7 @@ lint = [
   "ruff>=0.9.5"
 ]
 test = [
-  "aiohttp <4",
+  "aiohttp <3.13", # vcrpy's aiohttp stubs break on 3.13+ (AsyncStreamReaderMixin removed)
   "coverage>=7.6.10",
   "pytest>=8.3.4",
   "pytest-asyncio==1.2.*",
@@ -35,11 +35,11 @@ classifiers = [
   "Natural Language :: English",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "aiohttp <4",
@@ -53,7 +53,7 @@ maintainers = [
 ]
 name = "asyncprawcore"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.urls]
 "Issue Tracker" = "https://github.com/praw-dev/asyncprawcore/issues"
@@ -140,7 +140,7 @@ suppress-dummy-args = true
 "tests/**.py" = ["ANN", "D", "PLR2004", "S101", "S105", "S106", "S301"]
 
 [tool.tox]
-envlist = ["py39", "py310", "py311", "py312", "py313", "pre-commit", "style", "type"]
+envlist = ["py310", "py311", "py312", "py313", "py314", "pre-commit", "style", "type"]
 minversion = "4.22"
 
 [tool.tox.env.pre-commit]
@@ -154,7 +154,7 @@ runner = "uv-venv-lock-runner"
 [tool.tox.env.style]
 commands = [
   ["ruff", "check"],
-  ["ruff", "format", "--diff", "--target-version", "py39"]
+  ["ruff", "format", "--diff", "--target-version", "py310"]
 ]
 description = "run lint check on code base"
 dependency_groups = ["lint"]
@@ -163,7 +163,7 @@ runner = "uv-venv-lock-runner"
 [tool.tox.env.stylefix]
 commands = [
   ["ruff", "check", "--fix"],
-  ["ruff", "format", "--target-version", "py39"]
+  ["ruff", "format", "--target-version", "py310"]
 ]
 description = "run lint check on code base"
 dependency_groups = ["lint"]
@@ -183,9 +183,3 @@ commands = [
 description = "Run test under {base_python}"
 dependency_groups = ["test"]
 runner = "uv-venv-lock-runner"
-
-[tool.tox.env_run_py39]
-base_python = "py39"
-dependencies = [
-  "setuptools"
-]
