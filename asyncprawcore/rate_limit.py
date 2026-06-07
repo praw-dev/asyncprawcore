@@ -6,10 +6,10 @@ import asyncio
 import logging
 import time
 from contextlib import AbstractAsyncContextManager, asynccontextmanager
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator, Awaitable, Mapping
+    from collections.abc import AsyncGenerator, Awaitable, Callable, Mapping
 
     from aiohttp import ClientResponse
 

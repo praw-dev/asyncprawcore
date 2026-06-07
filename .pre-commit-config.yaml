@@ -34,5 +34,6 @@ repos:
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
+        additional_dependencies: [ click<8.4 ]
         require_serial: true
-    rev: v1.11.1
+    rev: v2.0.2
