@@ -92,6 +92,12 @@ Save the above as ``trophies.py`` and then execute via:
 Additional examples can be found at:
 https://github.com/praw-dev/asyncprawcore/tree/main/examples
 
+***************
+ Documentation
+***************
+
+asyncprawcore's documentation is located at https://asyncprawcore.readthedocs.io/.
+
 ****************************
  Depending on asyncprawcore
 ****************************
