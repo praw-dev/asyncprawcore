@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from pprint import pformat
-from typing import TYPE_CHECKING, BinaryIO, TextIO
+from typing import IO, TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
@@ -39,7 +39,7 @@ from .rate_limit import RateLimiter
 from .util import authorization_error_class
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator
+    from collections.abc import AsyncGenerator, Mapping
 
     from aiohttp import ClientResponse
     from typing_extensions import Self
@@ -142,7 +142,7 @@ class Session:
     @staticmethod
     def _log_request(
         *,
-        data: list[tuple[str, object]] | None,
+        data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
         method: str,
         params: dict[str, object],
         url: str,
@@ -205,8 +205,8 @@ class Session:
     async def _do_retry(
         self,
         *,
-        data: list[tuple[str, object]] | None,
-        json: dict[str, object] | None,
+        data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
+        json: dict[str, object] | list[object] | None,
         method: str,
         params: dict[str, object],
         retry_strategy_state: FiniteRetryStrategy,
@@ -229,8 +229,8 @@ class Session:
     @asynccontextmanager
     async def _make_request(
         self,
-        data: list[tuple[str, object]] | None,
-        json: dict[str, object] | None,
+        data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
+        json: dict[str, object] | list[object] | None,
         method: str,
         params: dict[str, object],
         timeout: float,
@@ -261,7 +261,7 @@ class Session:
     def _preprocess_data(
         self,
         data: dict[str, object],
-        files: dict[str, BinaryIO | TextIO] | None,
+        files: dict[str, IO[Any]] | None,
     ) -> dict[str, object]:
         """Preprocess data and files before request.
 
@@ -310,8 +310,8 @@ class Session:
     async def _request_with_retries(  # noqa: PLR0912
         self,
         *,
-        data: list[tuple[str, object]] | None,
-        json: dict[str, object] | None,
+        data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
+        json: dict[str, object] | list[object] | None,
         method: str,
         params: dict[str, object],
         retry_strategy_state: FiniteRetryStrategy | None = None,
@@ -401,10 +401,10 @@ class Session:
         self,
         method: str,
         path: str,
-        data: dict[str, object] | None = None,
-        files: dict[str, BinaryIO | TextIO] | None = None,
-        json: dict[str, object] | None = None,
-        params: dict[str, object] | None = None,
+        data: dict[str, object] | bytes | IO[Any] | str | None = None,
+        files: dict[str, IO[Any]] | None = None,
+        json: dict[str, object] | list[object] | None = None,
+        params: Mapping[str, object] | None = None,
         timeout: float = TIMEOUT,
     ) -> dict[str, object] | str | None:
         """Return the json content from the resource at ``path``.
@@ -426,7 +426,7 @@ class Session:
             available.
 
         """
-        params = self._preprocess_params(deepcopy(params) or {})
+        params = self._preprocess_params(deepcopy(dict(params)) if params else {})
         params["raw_json"] = "1"
         if isinstance(data, dict):
             data = self._preprocess_data(deepcopy(data), files)

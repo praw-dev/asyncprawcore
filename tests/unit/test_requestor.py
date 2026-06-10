@@ -7,6 +7,7 @@ import pytest
 
 import asyncprawcore
 from asyncprawcore import RequestException
+from asyncprawcore.const import TIMEOUT
 
 from . import UnitTest
 
@@ -54,6 +55,30 @@ class TestRequestor(UnitTest):
 
         async with requestor.request("get", "https://reddit.com") as response:
             assert await response.content.read() == override
+
+    async def test_request__default_timeout(self):
+        return_of_request = MagicMock()
+        return_of_request.__aenter__ = AsyncMock()
+        session = MagicMock()
+        session.request.return_value = return_of_request
+        session.headers = {}
+        session.closed = False
+        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        async with requestor.request("get", "https://reddit.com"):
+            pass
+        assert session.request.call_args.kwargs["timeout"].total == TIMEOUT
+
+    async def test_request__explicit_timeout(self):
+        return_of_request = MagicMock()
+        return_of_request.__aenter__ = AsyncMock()
+        session = MagicMock()
+        session.request.return_value = return_of_request
+        session.headers = {}
+        session.closed = False
+        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        async with requestor.request("get", "https://reddit.com", timeout=5):
+            pass
+        assert session.request.call_args.kwargs["timeout"].total == 5
 
     @patch("aiohttp.ClientSession")
     async def test_request__wrap_request_exceptions(self, mock_session):
