@@ -9,6 +9,28 @@ from urllib.parse import urlparse
 if TYPE_CHECKING:
     from aiohttp import ClientResponse
 
+__all__ = [
+    "AsyncPrawcoreException",
+    "BadJSON",
+    "BadRequest",
+    "Conflict",
+    "Forbidden",
+    "InsufficientScope",
+    "InvalidInvocation",
+    "InvalidToken",
+    "NotFound",
+    "OAuthException",
+    "Redirect",
+    "RequestException",
+    "ResponseException",
+    "ServerError",
+    "SpecialError",
+    "TooLarge",
+    "TooManyRequests",
+    "URITooLong",
+    "UnavailableForLegalReasons",
+]
+
 
 class AsyncPrawcoreException(Exception):  # noqa: N818
     """Base exception class for exceptions that occur within this package."""

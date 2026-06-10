@@ -11,6 +11,14 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 **Added**
 
 - Support for Python 3.14.
+- Add an ``__all__`` to the ``asyncprawcore`` package to explicitly define its public
+  API.
+- Add a ``py.typed`` marker (:PEP:`561`) so that downstream projects can type check
+  against asyncprawcore's inline annotations.
+- Add read-only :attr:`.Session.authorizer`, :attr:`.Session.rate_limiter`, and
+  :attr:`.Session.requestor` properties, a :attr:`.BaseAuthorizer.authenticator`
+  property, and a :attr:`.BaseAuthenticator.requestor` property, so that downstream code
+  can reach these objects without accessing protected attributes.
 
 **Changed**
 
@@ -18,6 +26,9 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 - Fixed type hinting for ``data`` and ``params`` in ``Requestor.request()``.
 - Pass ``files`` to ``aiohttp.ClientSession.request()`` in ``Requestor.request()``
   correctly again.
+- Widen the ``authorizer`` parameter of :func:`.session` to ``BaseAuthorizer`` to match
+  :class:`.Session`, so that passing an :class:`.ImplicitAuthorizer` or
+  :class:`.DeviceIDAuthorizer` type checks.
 
 **Removed**
 

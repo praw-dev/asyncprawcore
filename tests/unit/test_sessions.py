@@ -9,6 +9,7 @@ from aiohttp.web import HTTPRequestTimeout
 
 import asyncprawcore
 from asyncprawcore.exceptions import RequestException
+from asyncprawcore.rate_limit import RateLimiter
 from asyncprawcore.sessions import FiniteRetryStrategy
 
 from . import UnitTest
@@ -32,6 +33,13 @@ class TestSession(UnitTest):
     @pytest.fixture
     def readonly_authorizer(self, trusted_authenticator):
         return asyncprawcore.ReadOnlyAuthorizer(trusted_authenticator)
+
+    async def test_accessors(self, requestor, trusted_authenticator):
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(trusted_authenticator)
+        session = asyncprawcore.Session(authorizer)
+        assert session.authorizer is authorizer
+        assert isinstance(session.rate_limiter, RateLimiter)
+        assert session.requestor is requestor
 
     async def test_close(self, readonly_authorizer):
         await asyncprawcore.Session(readonly_authorizer).close()

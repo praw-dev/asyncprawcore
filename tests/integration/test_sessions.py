@@ -189,7 +189,7 @@ class TestSession(IntegrationTest):
         self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer
     ):
         session = asyncprawcore.Session(readonly_authorizer)
-        session._requestor._http.headers.update({"User-Agent": "python-requests/2.25.1"})
+        session.requestor._http.headers.update({"User-Agent": "python-requests/2.25.1"})
         with pytest.raises(asyncprawcore.TooManyRequests) as exception_info:
             await session.request("GET", "/api/v1/me")
         assert exception_info.value.response.status == 429
