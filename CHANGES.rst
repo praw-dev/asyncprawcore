@@ -19,10 +19,13 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
   :attr:`.Session.requestor` properties, a :attr:`.BaseAuthorizer.authenticator`
   property, and a :attr:`.BaseAuthenticator.requestor` property, so that downstream code
   can reach these objects without accessing protected attributes.
+- Add Sphinx-based documentation, published at https://asyncprawcore.readthedocs.io/.
 
 **Changed**
 
 - Improved exception message when ``asyncio.TimeoutError`` is raised.
+- Improve source docstrings and type annotations so that references render cleanly in
+  the new documentation.
 - Fixed type hinting for ``data`` and ``params`` in ``Requestor.request()``.
 - Pass ``files`` to ``aiohttp.ClientSession.request()`` in ``Requestor.request()``
   correctly again.
@@ -58,18 +61,18 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
 - Session creation is now delayed and existing sessions will be reused.
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
-- :class:`RateLimiter` attribute ``next_request_timestamp`` has been removed and
+- :class:`.RateLimiter` attribute ``next_request_timestamp`` has been removed and
   replaced with ``next_request_timestamp_ns``.
 
 **Fixed**
 
 - Add a half-second delay when there are no more requests in the rate limit window and
   the window has zero seconds remaining to avoid a semi-rare case where Reddit will
-  return a 429 response resulting in a :class:`TooManyRequests` exception.
+  return a 429 response resulting in a :class:`.TooManyRequests` exception.
 
 **Removed**
 
-- Remove :class:`RateLimiter` attribute ``reset_timestamp``.
+- Remove :class:`.RateLimiter` attribute ``reset_timestamp``.
 
 ********************
  2.4.0 (2023/11/27)
@@ -78,7 +81,7 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 **Changed**
 
 - Drop support for Python 3.6, which was end-of-life on 2021-12-23.
-- :class:`DeviceIDAuthorizer` can be now used with :class:`TrustedAuthenticator`.
+- :class:`.DeviceIDAuthorizer` can be now used with :class:`.TrustedAuthenticator`.
 - Updated rate limit algorithm to better handle Reddit's new rate limits.
 - Drop support for Python 3.7, which was end-of-life on 2023-06-27.
 
@@ -89,9 +92,9 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 **Added**
 
 - 301 redirects result in a ``Redirect`` exception.
-- :class:`Requestor` is now initialized with a ``timeout`` parameter.
-- :class:`ScriptAuthorizer`, :class:`ReadOnlyAuthorizer`, and
-  :class:`DeviceIDAuthorizer` have a new parameter, ``scopes``, which determines the
+- :class:`.Requestor` is now initialized with a ``timeout`` parameter.
+- :class:`.ScriptAuthorizer`, :class:`.ReadOnlyAuthorizer`, and
+  :class:`.DeviceIDAuthorizer` have a new parameter, ``scopes``, which determines the
   scope of access requests.
 - Retry 408 "Request Timeout" HTTP responses.
 
@@ -122,10 +125,10 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
 **Added**
 
-- Add a :class:`URITooLarge` exception.
-- :class:`ScriptAuthorizer` has a new parameter ``two_factor_callback`` that supplies
+- Add a :class:`.URITooLong` exception.
+- :class:`.ScriptAuthorizer` has a new parameter ``two_factor_callback`` that supplies
   OTPs (One-Time Passcodes) when :meth:`.ScriptAuthorizer.refresh` is called.
-- Add a :class:`TooManyRequests` exception.
+- Add a :class:`.TooManyRequests` exception.
 
 **Fixed**
 
@@ -137,16 +140,16 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
 **Added**
 
-- :class:`Authorizer` optionally takes a ``pre_refresh_callback`` keyword argument. If
-  provided, the function will called with the instance of :class:`Authorizer` prior to
+- :class:`.Authorizer` optionally takes a ``pre_refresh_callback`` keyword argument. If
+  provided, the function will called with the instance of :class:`.Authorizer` prior to
   refreshing the access and refresh tokens.
-- :class:`Authorizer` optionally takes a ``post_refresh_callback`` keyword argument. If
-  provided, the function will called with the instance of :class:`Authorizer` after
+- :class:`.Authorizer` optionally takes a ``post_refresh_callback`` keyword argument. If
+  provided, the function will called with the instance of :class:`.Authorizer` after
   refreshing the access and refresh tokens.
 
 **Changed**
 
-- The ``refresh_token`` argument to :class:`Authorizer` must now be passed by keyword,
+- The ``refresh_token`` argument to :class:`.Authorizer` must now be passed by keyword,
   and cannot be passed as a positional argument.
 
 ********************
@@ -173,7 +176,7 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
 **Fixed**
 
-:class:`RateLimiter` will not sleep longer than ``next_request_timestamp``.
+:class:`.RateLimiter` will not sleep longer than ``next_request_timestamp``.
 
 **Fixed**
 

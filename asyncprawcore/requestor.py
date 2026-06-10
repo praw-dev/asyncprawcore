@@ -13,10 +13,8 @@ from .const import TIMEOUT
 from .exceptions import InvalidInvocation, RequestException, ResponseException
 
 if TYPE_CHECKING:
-    from asyncio import AbstractEventLoop
+    import asyncio
     from collections.abc import AsyncGenerator
-
-    from aiohttp import ClientResponse, ClientSession
 
 
 class Requestor:
@@ -35,8 +33,8 @@ class Requestor:
         user_agent: str,
         oauth_url: str = "https://oauth.reddit.com",
         reddit_url: str = "https://www.reddit.com",
-        session: ClientSession | None = None,
-        loop: AbstractEventLoop | None = None,
+        session: aiohttp.ClientSession | None = None,
+        loop: asyncio.AbstractEventLoop | None = None,
         timeout: float = TIMEOUT,
     ) -> None:
         """Create an instance of the Requestor class.
@@ -98,7 +96,9 @@ class Requestor:
             await self._http.close()
 
     @asynccontextmanager
-    async def request(self, *args: Any, timeout: float | None = None, **kwargs: Any) -> AsyncGenerator[ClientResponse]:
+    async def request(
+        self, *args: Any, timeout: float | None = None, **kwargs: Any
+    ) -> AsyncGenerator[aiohttp.ClientResponse]:
         """Issue the HTTP request capturing any errors that may occur.
 
         :param args: Positional arguments to pass to ``aiohttp.ClientSession.request``.
