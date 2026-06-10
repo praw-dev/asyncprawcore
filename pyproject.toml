@@ -66,6 +66,11 @@ path = "asyncprawcore/__init__.py"
 [tool.hatch.version.raw-options]
 fallback_version = "0.0.0"
 
+[tool.pyright]
+include = ["asyncprawcore"]
+pythonVersion = "3.10"
+typeCheckingMode = "strict"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 filterwarnings = "ignore::DeprecationWarning"
@@ -171,7 +176,7 @@ dependency_groups = ["lint"]
 runner = "uv-venv-lock-runner"
 
 [tool.tox.env.type]
-commands = [["pyright", "asyncprawcore"]]
+commands = [["pyright"]]
 dependency_groups = ["type"]
 description = "run type check on code base"
 runner = "uv-venv-lock-runner"
