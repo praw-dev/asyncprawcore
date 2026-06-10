@@ -4,6 +4,10 @@
 
 asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
+************
+ Unreleased
+************
+
 ********************
  3.1.0 (2026/06/10)
 ********************
