@@ -136,7 +136,7 @@ class BaseAuthenticator(ABC):
 class BaseAuthorizer:
     """Superclass for OAuth2 authorization tokens and scopes."""
 
-    AUTHENTICATOR_CLASS: tuple | type = BaseAuthenticator
+    AUTHENTICATOR_CLASS: type[BaseAuthenticator] | tuple[type[BaseAuthenticator], ...] = BaseAuthenticator
 
     @property
     def authenticator(self) -> BaseAuthenticator:
@@ -401,7 +401,7 @@ class ScriptAuthorizer(Authorizer):
         authenticator: BaseAuthenticator,
         username: str | None,
         password: str | None,
-        two_factor_callback: Callable | None = None,
+        two_factor_callback: Callable[[], str | Awaitable[str]] | None = None,
         scopes: list[str] | None = None,
     ) -> None:
         """Represent a single personal-use authorization to Reddit's API.
@@ -428,10 +428,9 @@ class ScriptAuthorizer(Authorizer):
         if self._scopes:
             additional_kwargs["scope"] = " ".join(self._scopes)
         if self._two_factor_callback:
-            if inspect.iscoroutinefunction(self._two_factor_callback):
-                two_factor_code = await self._two_factor_callback()
-            else:
-                two_factor_code = self._two_factor_callback()
+            two_factor_code = self._two_factor_callback()
+            if inspect.isawaitable(two_factor_code):
+                two_factor_code = await two_factor_code
             if two_factor_code:
                 additional_kwargs["otp"] = two_factor_code
         await self._request_token(

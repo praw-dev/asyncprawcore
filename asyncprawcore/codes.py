@@ -5,7 +5,7 @@ from __future__ import annotations
 
 def _make_into_dict(tupledict: dict[int, tuple[str, ...]]) -> dict[str, int]:
     """Transform a ``value, keys`` tupledict."""
-    newdict = {}
+    newdict: dict[str, int] = {}
     for value, keys in tupledict.items():
         for key in keys:
             newdict[key] = value

@@ -153,7 +153,7 @@ class Session:
 
     @staticmethod
     def _preprocess_dict(data: dict[str, object]) -> dict[str, object]:
-        new_data = {}
+        new_data: dict[str, object] = {}
         for key, value in data.items():
             if isinstance(value, bool):
                 new_data[key] = str(value).lower()
@@ -180,7 +180,7 @@ class Session:
         """Allow this object to be used as a context manager."""
         return self
 
-    async def __aexit__(self, *_args) -> None:
+    async def __aexit__(self, *_args: object) -> None:
         """Allow this object to be used as a context manager."""
         await self.close()
 
@@ -281,7 +281,9 @@ class Session:
             ``data``.
 
         """
-        if isinstance(data, dict):
+        # ``data`` is annotated ``dict`` but the guard is kept for runtime parity with
+        # praw, which passes bytes and file-like bodies straight through.
+        if isinstance(data, dict):  # pyright: ignore[reportUnnecessaryIsInstance]
             data = self._preprocess_dict(data)
             if files is not None:
                 data.update(files)
@@ -354,10 +356,13 @@ class Session:
                 if response.status == codes["no_content"]:
                     return None
                 if response.status in self.STATUS_EXCEPTIONS:
+                    # STATUS_EXCEPTIONS maps each status to its exception class; only
+                    # SpecialError (media_type) takes the parsed body, so pyright cannot
+                    # match the heterogeneous constructors to the runtime status.
                     if response.status == codes["media_type"]:
                         # since exception class needs response.json
-                        raise self.STATUS_EXCEPTIONS[response.status](response, await response.json())
-                    raise self.STATUS_EXCEPTIONS[response.status](response)
+                        raise self.STATUS_EXCEPTIONS[response.status](response, await response.json())  # pyright: ignore[reportCallIssue]
+                    raise self.STATUS_EXCEPTIONS[response.status](response)  # pyright: ignore[reportCallIssue]
                 if response.status not in self.SUCCESS_STATUSES:
                     raise ResponseException(response)
                 if response.headers.get("content-length") == "0":
