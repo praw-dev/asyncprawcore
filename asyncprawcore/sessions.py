@@ -44,7 +44,6 @@ if TYPE_CHECKING:
     from aiohttp import ClientResponse
     from typing_extensions import Self
 
-    from .auth import Authorizer
     from .requestor import Requestor
 
 log = logging.getLogger(__package__)
@@ -163,8 +162,19 @@ class Session:
         return new_data
 
     @property
-    def _requestor(self) -> Requestor:
-        return self._authorizer._authenticator._requestor
+    def authorizer(self) -> BaseAuthorizer:
+        """Return the :class:`.BaseAuthorizer` used to authorize requests."""
+        return self._authorizer
+
+    @property
+    def rate_limiter(self) -> RateLimiter:
+        """Return the :class:`.RateLimiter` that throttles requests."""
+        return self._rate_limiter
+
+    @property
+    def requestor(self) -> Requestor:
+        """Return the :class:`.Requestor` used to issue HTTP requests."""
+        return self._authorizer.authenticator.requestor
 
     async def __aenter__(self) -> Self:
         """Allow this object to be used as a context manager."""
@@ -227,7 +237,7 @@ class Session:
         url: str,
     ) -> AsyncGenerator[ClientResponse]:
         async with self._rate_limiter.call(
-            self._requestor.request,
+            self.requestor.request,
             self._set_header_callback,
             method,
             url,
@@ -323,7 +333,8 @@ class Session:
             ) as response:
                 retry_status = None
                 if response.status == codes["unauthorized"]:
-                    self._authorizer._clear_access_token()
+                    # _clear_access_token is an internal helper shared with the authorizer.
+                    self._authorizer._clear_access_token()  # pyright: ignore[reportPrivateUsage]
                     if hasattr(self._authorizer, "refresh"):
                         retry_status = f"{response.status} status"
                 elif response.status in self.RETRY_STATUSES:
@@ -379,7 +390,7 @@ class Session:
 
     async def close(self) -> None:
         """Close the session and perform any clean up."""
-        await self._requestor.close()
+        await self.requestor.close()
 
     async def request(
         self,
@@ -421,7 +432,7 @@ class Session:
         if isinstance(json, dict):
             json = deepcopy(json)
             json["api_type"] = "json"
-        url = urljoin(self._requestor.oauth_url, path)
+        url = urljoin(self.requestor.oauth_url, path)
         return await self._request_with_retries(
             data=data_list,
             json=json,
@@ -433,12 +444,12 @@ class Session:
 
 
 def session(
-    authorizer: Authorizer | None = None,
+    authorizer: BaseAuthorizer | None = None,
     window_size: int = WINDOW_SIZE,
 ) -> Session:
     """Return a :class:`.Session` instance.
 
-    :param authorizer: An instance of :class:`.Authorizer`.
+    :param authorizer: An instance of :class:`.BaseAuthorizer`.
     :param window_size: The size of the rate limit reset window in seconds.
 
     """

@@ -31,6 +31,11 @@ class BaseAuthenticator(ABC):
     def _auth(self) -> BasicAuth:
         pass
 
+    @property
+    def requestor(self) -> Requestor:
+        """Return the :class:`.Requestor` used to issue HTTP requests."""
+        return self._requestor
+
     def __init__(
         self,
         requestor: Requestor,
@@ -133,6 +138,11 @@ class BaseAuthorizer:
 
     AUTHENTICATOR_CLASS: tuple | type = BaseAuthenticator
 
+    @property
+    def authenticator(self) -> BaseAuthenticator:
+        """Return the :class:`.BaseAuthenticator` used to authenticate requests."""
+        return self._authenticator
+
     def __init__(self, authenticator: BaseAuthenticator) -> None:
         """Represent a single authorization to Reddit's API.
 
@@ -149,9 +159,10 @@ class BaseAuthorizer:
         self.scopes: set[str] | None = None
 
     async def _request_token(self, **data: Any):
-        url = self._authenticator._requestor.reddit_url + const.ACCESS_TOKEN_PATH
+        url = self._authenticator.requestor.reddit_url + const.ACCESS_TOKEN_PATH
         pre_request_timestamp_ns = time.monotonic_ns()
-        async with self._authenticator._post(url=url, **data) as response:
+        # _post is an internal helper shared between the authenticator and authorizer.
+        async with self._authenticator._post(url=url, **data) as response:  # pyright: ignore[reportPrivateUsage]
             payload = await response.json()
         if "error" in payload:  # Why are these OKAY responses?
             raise OAuthException(response, payload["error"], payload.get("error_description"))
