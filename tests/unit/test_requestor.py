@@ -13,10 +13,6 @@ from . import UnitTest
 
 
 class TestRequestor(UnitTest):
-    async def test_deprecated_loop(self):
-        with pytest.warns(DeprecationWarning, match="The loop argument is deprecated and will be ignored."):
-            asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", loop=asyncio.get_event_loop())
-
     async def test_initialize(self, requestor):
         async with requestor.request("get", "https://reddit.com") as _:
             pass
@@ -28,7 +24,7 @@ class TestRequestor(UnitTest):
     async def test_initialize__failures(self):
         for agent in [None, "shorty"]:
             with pytest.raises(asyncprawcore.InvalidInvocation):
-                asyncprawcore.Requestor(agent)
+                asyncprawcore.Requestor(user_agent=agent)
 
     async def test_request__use_custom_session(self):
         override = "REQUEST OVERRIDDEN"
@@ -45,7 +41,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = headers
         session.closed = False
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
 
         assert (
             requestor._http.headers["User-Agent"]
@@ -63,7 +59,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = {}
         session.closed = False
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
         async with requestor.request("get", "https://reddit.com"):
             pass
         assert session.request.call_args.kwargs["timeout"].total == TIMEOUT
@@ -75,7 +71,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = {}
         session.closed = False
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
         async with requestor.request("get", "https://reddit.com", timeout=5):
             pass
         assert session.request.call_args.kwargs["timeout"].total == 5
@@ -85,7 +81,7 @@ class TestRequestor(UnitTest):
         exception = Exception("asyncprawcore wrap_request_exceptions")
         session_instance = mock_session.return_value
         session_instance.request.side_effect = exception
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
         with pytest.raises(asyncprawcore.RequestException) as exception_info:
             async with requestor.request("get", "http://a.b", data="bar") as _:
                 pass  # pragma: no cover
@@ -99,7 +95,7 @@ class TestRequestor(UnitTest):
         exception = asyncio.TimeoutError()
         session_instance = mock_session.return_value
         session_instance.request.side_effect = exception
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
         with pytest.raises(asyncprawcore.RequestException) as exception_info:
             async with requestor.request("get", "http://a.b", data="bar") as _:
                 pass  # pragma: no cover

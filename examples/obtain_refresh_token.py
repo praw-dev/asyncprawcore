@@ -47,7 +47,7 @@ async def main():
         print(f"Usage: {sys.argv[0]} SCOPE...")
         return 1
 
-    requestor = asyncprawcore.Requestor("asyncprawcore_refresh_token_example")
+    requestor = asyncprawcore.Requestor(user_agent="asyncprawcore_refresh_token_example")
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
             requestor,
@@ -56,8 +56,8 @@ async def main():
             "http://localhost:8080",
         )
 
-        state = str(random.randint(0, 65000))  # noqa: S311
-        url = authenticator.authorize_url("permanent", sys.argv[1:], state)
+        state = str(random.randint(0, 65000))
+        url = authenticator.authorize_url(duration="permanent", scopes=sys.argv[1:], state=state)
         print(url)
 
         client = receive_connection()

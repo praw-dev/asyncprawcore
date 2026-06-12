@@ -17,7 +17,7 @@ import asyncprawcore
 
 async def main():
     """Provide the program's entry point when directly executed."""
-    requestor = asyncprawcore.Requestor("asyncprawcore_script_auth_example")
+    requestor = asyncprawcore.Requestor(user_agent="asyncprawcore_script_auth_example")
 
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
@@ -33,7 +33,7 @@ async def main():
         await authorizer.refresh()
 
         async with asyncprawcore.session(authorizer) as session:
-            data = await session.request("GET", "/api/v1/me/friends")
+            data = await session.request(method="GET", path="/api/v1/me/friends")
 
         for friend in data["data"]["children"]:
             print(friend["name"])

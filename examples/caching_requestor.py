@@ -10,6 +10,7 @@ Demonstrates the use of custom sessions with :class:`.Requestor`. It's an adapta
 import asyncio
 import os
 import sys
+from typing import ClassVar
 
 import aiohttp
 
@@ -24,17 +25,17 @@ class CachingSession(aiohttp.ClientSession):
 
     """
 
-    get_cache = {}
+    get_cache: ClassVar = {}
 
     async def request(self, method, url, params=None, **kwargs):
         """Perform a request, or return a cached response if available."""
         params_key = tuple(params.items()) if params else ()
         if method.upper() == "GET" and (url, params_key) in self.get_cache:
             print("Returning cached response for:", method, url, params)
-            return self.get_cache[(url, params_key)]
+            return self.get_cache[url, params_key]
         result = await super().request(method, url, params=params, **kwargs)
         if method.upper() == "GET":
-            self.get_cache[(url, params_key)] = result
+            self.get_cache[url, params_key] = result
             print("Adding entry to the cache:", method, url, params)
         return result
 
@@ -45,7 +46,9 @@ async def main():
         print(f"Usage: {sys.argv[0]} USERNAME")
         return 1
 
-    caching_requestor = asyncprawcore.Requestor("asyncprawcore_device_id_auth_example", session=CachingSession())
+    caching_requestor = asyncprawcore.Requestor(
+        user_agent="asyncprawcore_device_id_auth_example", session=CachingSession()
+    )
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
             caching_requestor,
@@ -58,10 +61,10 @@ async def main():
         user = sys.argv[1]
 
         async with asyncprawcore.session(authorizer) as session:
-            data1 = await session.request("GET", f"/api/v1/user/{user}/trophies")
+            data1 = await session.request(method="GET", path=f"/api/v1/user/{user}/trophies")
 
         async with asyncprawcore.session(authorizer) as session:
-            data2 = await session.request("GET", f"/api/v1/user/{user}/trophies")
+            data2 = await session.request(method="GET", path=f"/api/v1/user/{user}/trophies")
 
         for trophy in data1["data"]["trophies"]:
             description = trophy["data"]["description"]

@@ -1,8 +1,15 @@
+########
+ Author
+########
+
+- Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
+
 #############
  Maintainers
 #############
 
 - Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
+- Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
 
 ##############
  Contributors
@@ -18,3 +25,9 @@
 - PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
 - MaybeNetwork `@MaybeNetwork <https://github.com/MaybeNetwork>`_
 - Add "Name <email (optional)> and github profile link" above this line.
+
+#################
+ prawcore Author
+#################
+
+- Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_

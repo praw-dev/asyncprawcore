@@ -5,7 +5,7 @@ from datetime import datetime
 sys.path.insert(0, ".")
 sys.path.insert(1, "..")
 
-from asyncprawcore import __version__  # noqa: E402
+from asyncprawcore import __version__
 
 always_use_bars_union = True
 autodoc_typehints = "description"
@@ -15,6 +15,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx_autodoc_typehints",
+    "sphinxcontrib_trio",
 ]
 html_theme = "furo"
 intersphinx_mapping = {
