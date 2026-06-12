@@ -33,7 +33,7 @@ class IntegrationTest:
     @pytest.fixture(autouse=True, scope="session")
     def cassette_tracker(self):  # pragma: no cover
         """Track cassettes to ensure unused cassettes are not uploaded."""
-        existing_cassettes.update(str(cassette)[: cassette.name.rindex(".")] for cassette in CASSETTES_PATH.iterdir())
+        existing_cassettes.update(cassette.name[: cassette.name.rindex(".")] for cassette in CASSETTES_PATH.iterdir())
         yield
         unused_cassettes = existing_cassettes - used_cassettes
         if unused_cassettes and os.getenv("ENSURE_NO_UNUSED_CASSETTES", "0") == "1":
