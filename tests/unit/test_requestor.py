@@ -13,10 +13,6 @@ from . import UnitTest
 
 
 class TestRequestor(UnitTest):
-    async def test_deprecated_loop(self):
-        with pytest.warns(DeprecationWarning, match="The loop argument is deprecated and will be ignored."):
-            asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", loop=asyncio.get_event_loop())
-
     async def test_initialize(self, requestor):
         async with requestor.request("get", "https://reddit.com") as _:
             pass

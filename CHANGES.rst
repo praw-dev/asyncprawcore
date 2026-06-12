@@ -47,6 +47,8 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
 
 **Removed**
 
+- The deprecated ``loop`` argument of :class:`.Requestor`, which has been ignored since
+  2.5.0.
 - Support for Python 3.9, which is end-of-life on 2025-10-31.
 
 ********************

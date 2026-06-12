@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Any
-from warnings import warn
 
 import aiohttp
 from aiohttp import ClientTimeout
@@ -13,7 +12,6 @@ from asyncprawcore.const import TIMEOUT
 from asyncprawcore.exceptions import InvalidInvocation, RequestException, ResponseException
 
 if TYPE_CHECKING:
-    import asyncio
     from collections.abc import AsyncGenerator
 
 
@@ -31,7 +29,6 @@ class Requestor:
     def __init__(
         self,
         *,
-        loop: asyncio.AbstractEventLoop | None = None,
         oauth_url: str = "https://oauth.reddit.com",
         reddit_url: str = "https://www.reddit.com",
         session: aiohttp.ClientSession | None = None,
@@ -39,12 +36,6 @@ class Requestor:
         user_agent: str,
     ) -> None:
         """Create an instance of the Requestor class.
-
-        :param loop: The event loop to run the requestor on (default: ``None``).
-
-            .. Deprecated:: 2.5.0
-
-                The ``loop`` argument is deprecated and will be ignored.
 
         :param oauth_url: The URL used to make OAuth requests to the Reddit site
             (default: ``"https://oauth.reddit.com"``).
@@ -60,10 +51,6 @@ class Requestor:
         """
         # Imported locally to avoid an import cycle, with __init__
         from asyncprawcore import __version__  # noqa: PLC0415
-
-        if loop is not None:
-            msg = "The loop argument is deprecated and will be ignored."
-            warn(msg, DeprecationWarning, stacklevel=2)
 
         # ``user_agent`` is typed ``str``, but validate at runtime for untyped callers.
         if (
