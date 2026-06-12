@@ -9,8 +9,8 @@ from warnings import warn
 import aiohttp
 from aiohttp import ClientTimeout
 
-from .const import TIMEOUT
-from .exceptions import InvalidInvocation, RequestException, ResponseException
+from asyncprawcore.const import TIMEOUT
+from asyncprawcore.exceptions import InvalidInvocation, RequestException, ResponseException
 
 if TYPE_CHECKING:
     import asyncio
@@ -28,7 +28,7 @@ class Requestor:
             raise AttributeError(attribute)
         return getattr(self._http, attribute)
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         user_agent: str,
         oauth_url: str = "https://oauth.reddit.com",
@@ -58,7 +58,7 @@ class Requestor:
 
         """
         # Imported locally to avoid an import cycle, with __init__
-        from . import __version__  # noqa: PLC0415
+        from asyncprawcore import __version__  # noqa: PLC0415
 
         if loop is not None:
             msg = "The loop argument is deprecated and will be ignored."
@@ -122,7 +122,7 @@ class Requestor:
                     **kwargs_copy,
                 ) as request:
                     yield request
-        except ResponseException as exc:
-            raise exc
-        except Exception as exc:  # noqa: BLE001
+        except ResponseException:
+            raise
+        except Exception as exc:
             raise RequestException(exc, args, kwargs) from exc

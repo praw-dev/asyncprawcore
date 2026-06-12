@@ -31,10 +31,10 @@ class CachingSession(aiohttp.ClientSession):
         params_key = tuple(params.items()) if params else ()
         if method.upper() == "GET" and (url, params_key) in self.get_cache:
             print("Returning cached response for:", method, url, params)
-            return self.get_cache[(url, params_key)]
+            return self.get_cache[url, params_key]
         result = await super().request(method, url, params=params, **kwargs)
         if method.upper() == "GET":
-            self.get_cache[(url, params_key)] = result
+            self.get_cache[url, params_key] = result
             print("Adding entry to the cache:", method, url, params)
         return result
 

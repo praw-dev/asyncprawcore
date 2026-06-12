@@ -92,7 +92,7 @@ class TestSession(UnitTest):
         # Fail on subsequent request
         session_instance.request.side_effect = exception
 
-        with pytest.raises(RequestException) as exception_info:  # noqa: PT012
+        with pytest.raises(RequestException) as exception_info:
             async with asyncprawcore.Session(authorizer) as session:
                 await session.request("GET", "/")
         message = (

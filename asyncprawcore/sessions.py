@@ -11,15 +11,15 @@ from contextlib import asynccontextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from pprint import pformat
-from typing import IO, TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Any, ClassVar
 from urllib.parse import urljoin
 
 from aiohttp.web import HTTPRequestTimeout
 
-from .auth import BaseAuthorizer
-from .codes import codes
-from .const import TIMEOUT, WINDOW_SIZE
-from .exceptions import (
+from asyncprawcore.auth import BaseAuthorizer
+from asyncprawcore.codes import codes
+from asyncprawcore.const import TIMEOUT, WINDOW_SIZE
+from asyncprawcore.exceptions import (
     BadJSON,
     BadRequest,
     Conflict,
@@ -35,8 +35,8 @@ from .exceptions import (
     UnavailableForLegalReasons,
     URITooLong,
 )
-from .rate_limit import RateLimiter
-from .util import authorization_error_class
+from asyncprawcore.rate_limit import RateLimiter
+from asyncprawcore.util import authorization_error_class
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator, Mapping
@@ -44,7 +44,7 @@ if TYPE_CHECKING:
     from aiohttp import ClientResponse
     from typing_extensions import Self
 
-    from .requestor import Requestor
+    from asyncprawcore.requestor import Requestor
 
 log = logging.getLogger(__package__)
 
@@ -83,7 +83,7 @@ class RetryStrategy(ABC):
 class FiniteRetryStrategy(RetryStrategy):
     """A ``RetryStrategy`` that retries requests a finite number of times."""
 
-    DEFAULT_RETRIES = 2
+    DEFAULT_RETRIES: ClassVar[int] = 2
 
     retries: int = DEFAULT_RETRIES
 
@@ -223,11 +223,10 @@ class Session:
             retry_strategy_state=retry_strategy_state.consume_available_retry(),
             timeout=timeout,
             url=url,
-            # noqa: E501
         )
 
     @asynccontextmanager
-    async def _make_request(
+    async def _make_request(  # noqa: PLR0917
         self,
         data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
         json: dict[str, object] | list[object] | None,
@@ -372,7 +371,7 @@ class Session:
                 except ValueError:
                     raise BadJSON(response) from None
         except RequestException as exception:
-            if retry_strategy_state.should_retry_on_failure() and isinstance(  # noqa: E501
+            if retry_strategy_state.should_retry_on_failure() and isinstance(
                 exception.original_exception, self.RETRY_EXCEPTIONS
             ):
                 return await self._do_retry(
@@ -397,7 +396,7 @@ class Session:
         """Close the session and perform any clean up."""
         await self.requestor.close()
 
-    async def request(
+    async def request(  # noqa: PLR0917
         self,
         method: str,
         path: str,

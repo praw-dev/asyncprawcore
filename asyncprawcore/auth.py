@@ -12,9 +12,9 @@ from aiohttp import ClientRequest
 from aiohttp.helpers import BasicAuth
 from yarl import URL
 
-from . import const
-from .codes import codes
-from .exceptions import InvalidInvocation, OAuthException, ResponseException
+from asyncprawcore import const
+from asyncprawcore.codes import codes
+from asyncprawcore.exceptions import InvalidInvocation, OAuthException, ResponseException
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator, Awaitable, Callable

@@ -255,8 +255,7 @@ class TestSession(IntegrationTest):
     async def test_request__uri_too_long(self, readonly_authorizer: asyncprawcore.ReadOnlyAuthorizer):
         session = asyncprawcore.Session(readonly_authorizer)
         path_start = "/api/morechildren?link_id=t3_n7r3uz&children="
-        with Path("tests/integration/files/comment_ids.txt").open() as fp:  # noqa: ASYNC230
-            ids = fp.read()
+        ids = Path("tests/integration/files/comment_ids.txt").read_text()
         with pytest.raises(asyncprawcore.URITooLong, check=lambda exception: exception.response.status == 414):
             await session.request("GET", (path_start + ids)[:9996])
 

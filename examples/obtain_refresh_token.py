@@ -56,7 +56,7 @@ async def main():
             "http://localhost:8080",
         )
 
-        state = str(random.randint(0, 65000))  # noqa: S311
+        state = str(random.randint(0, 65000))
         url = authenticator.authorize_url("permanent", sys.argv[1:], state)
         print(url)
 
