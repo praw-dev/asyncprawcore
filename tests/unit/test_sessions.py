@@ -18,10 +18,10 @@ from . import UnitTest
 class InvalidAuthorizer(asyncprawcore.Authorizer):
     def __init__(self, requestor):
         super().__init__(
-            asyncprawcore.TrustedAuthenticator(
-                requestor,
-                pytest.placeholders.client_id,
-                pytest.placeholders.client_secret,
+            authenticator=asyncprawcore.TrustedAuthenticator(
+                client_id=pytest.placeholders.client_id,
+                client_secret=pytest.placeholders.client_secret,
+                requestor=requestor,
             )
         )
 
@@ -32,33 +32,35 @@ class InvalidAuthorizer(asyncprawcore.Authorizer):
 class TestSession(UnitTest):
     @pytest.fixture
     def readonly_authorizer(self, trusted_authenticator):
-        return asyncprawcore.ReadOnlyAuthorizer(trusted_authenticator)
+        return asyncprawcore.ReadOnlyAuthorizer(authenticator=trusted_authenticator)
 
     async def test_accessors(self, requestor, trusted_authenticator):
-        authorizer = asyncprawcore.ReadOnlyAuthorizer(trusted_authenticator)
-        session = asyncprawcore.Session(authorizer)
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator=trusted_authenticator)
+        session = asyncprawcore.Session(authorizer=authorizer)
         assert session.authorizer is authorizer
         assert isinstance(session.rate_limiter, RateLimiter)
         assert session.requestor is requestor
 
     async def test_close(self, readonly_authorizer):
-        await asyncprawcore.Session(readonly_authorizer).close()
+        await asyncprawcore.Session(authorizer=readonly_authorizer).close()
 
     async def test_context_manager(self, readonly_authorizer):
-        async with asyncprawcore.Session(readonly_authorizer) as session:
+        async with asyncprawcore.Session(authorizer=readonly_authorizer) as session:
             assert isinstance(session, asyncprawcore.Session)
 
     def test_init__with_device_id_authorizer(self, untrusted_authenticator):
-        authorizer = asyncprawcore.DeviceIDAuthorizer(untrusted_authenticator)
-        asyncprawcore.Session(authorizer)
+        authorizer = asyncprawcore.DeviceIDAuthorizer(authenticator=untrusted_authenticator)
+        asyncprawcore.Session(authorizer=authorizer)
 
     def test_init__with_implicit_authorizer(self, untrusted_authenticator):
-        authorizer = asyncprawcore.ImplicitAuthorizer(untrusted_authenticator, None, 0, "")
-        asyncprawcore.Session(authorizer)
+        authorizer = asyncprawcore.ImplicitAuthorizer(
+            access_token=None, authenticator=untrusted_authenticator, expires_in=0, scope=""
+        )
+        asyncprawcore.Session(authorizer=authorizer)
 
     def test_init__without_authenticator(self):
         with pytest.raises(asyncprawcore.InvalidInvocation):
-            asyncprawcore.Session(None)
+            asyncprawcore.Session(authorizer=None)
 
     @patch("aiohttp.ClientSession")
     @pytest.mark.parametrize(
@@ -82,18 +84,18 @@ class TestSession(UnitTest):
         session_instance.request.return_value.__aenter__.return_value = response_mock
         requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
         authenticator = asyncprawcore.TrustedAuthenticator(
-            requestor,
-            pytest.placeholders.client_id,
-            pytest.placeholders.client_secret,
+            client_id=pytest.placeholders.client_id,
+            client_secret=pytest.placeholders.client_secret,
+            requestor=requestor,
         )
-        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator=authenticator)
         await authorizer.refresh()
         session_instance.request.reset_mock()
         # Fail on subsequent request
         session_instance.request.side_effect = exception
 
         with pytest.raises(RequestException) as exception_info:
-            async with asyncprawcore.Session(authorizer) as session:
+            async with asyncprawcore.Session(authorizer=authorizer) as session:
                 await session.request(method="GET", path="/")
         message = (
             "<HTTPRequestTimeout Request Timeout not prepared>"
@@ -110,14 +112,14 @@ class TestSession(UnitTest):
         assert session_instance.request.call_count == 3
 
     async def test_request__with_invalid_authorizer(self, requestor):
-        session = asyncprawcore.Session(InvalidAuthorizer(requestor))
+        session = asyncprawcore.Session(authorizer=InvalidAuthorizer(requestor))
         with pytest.raises(asyncprawcore.InvalidInvocation):
             await session.request(method="get", path="/")
 
 
 class TestSessionFunction(UnitTest):
     def test_session(self, requestor):
-        assert isinstance(asyncprawcore.session(InvalidAuthorizer(requestor)), asyncprawcore.Session)
+        assert isinstance(asyncprawcore.session(authorizer=InvalidAuthorizer(requestor)), asyncprawcore.Session)
 
 
 class TestFiniteRetryStrategy(UnitTest):

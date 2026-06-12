@@ -186,6 +186,7 @@ class Session:
 
     def __init__(
         self,
+        *,
         authorizer: BaseAuthorizer | None,
         window_size: int = WINDOW_SIZE,
     ) -> None:
@@ -237,15 +238,15 @@ class Session:
         url: str,
     ) -> AsyncGenerator[ClientResponse]:
         async with self._rate_limiter.call(
-            self.requestor.request,
-            self._set_header_callback,
-            method,
-            url,
             allow_redirects=False,
             data=data,
             json=json,
+            method=method,
             params=params,
+            request_function=self.requestor.request,
+            set_header_callback=self._set_header_callback,
             timeout=timeout,
+            url=url,
         ) as response:
             log.debug(
                 "Response: %s (%s bytes) (rst-%s:rem-%s:used-%s ratelimit) at %s",
@@ -450,6 +451,7 @@ class Session:
 
 
 def session(
+    *,
     authorizer: BaseAuthorizer | None = None,
     window_size: int = WINDOW_SIZE,
 ) -> Session:

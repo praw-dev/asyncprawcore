@@ -50,10 +50,10 @@ async def main():
     requestor = asyncprawcore.Requestor(user_agent="asyncprawcore_refresh_token_example")
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
-            requestor,
-            os.environ["PRAWCORE_CLIENT_ID"],
-            os.environ["PRAWCORE_CLIENT_SECRET"],
-            "http://localhost:8080",
+            client_id=os.environ["PRAWCORE_CLIENT_ID"],
+            client_secret=os.environ["PRAWCORE_CLIENT_SECRET"],
+            redirect_uri="http://localhost:8080",
+            requestor=requestor,
         )
 
         state = str(random.randint(0, 65000))
@@ -75,7 +75,7 @@ async def main():
             send_message(client, params["error"])
             return 1
 
-        authorizer = asyncprawcore.Authorizer(authenticator)
+        authorizer = asyncprawcore.Authorizer(authenticator=authenticator)
         await authorizer.authorize(params["code"])
 
         send_message(client, f"Refresh token: {authorizer.refresh_token}")

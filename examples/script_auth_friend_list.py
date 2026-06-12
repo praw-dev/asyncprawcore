@@ -21,18 +21,18 @@ async def main():
 
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
-            requestor,
-            os.environ["PRAWCORE_CLIENT_ID"],
-            os.environ["PRAWCORE_CLIENT_SECRET"],
+            client_id=os.environ["PRAWCORE_CLIENT_ID"],
+            client_secret=os.environ["PRAWCORE_CLIENT_SECRET"],
+            requestor=requestor,
         )
         authorizer = asyncprawcore.ScriptAuthorizer(
-            authenticator,
-            os.environ["PRAWCORE_USERNAME"],
-            os.environ["PRAWCORE_PASSWORD"],
+            authenticator=authenticator,
+            username=os.environ["PRAWCORE_USERNAME"],
+            password=os.environ["PRAWCORE_PASSWORD"],
         )
         await authorizer.refresh()
 
-        async with asyncprawcore.session(authorizer) as session:
+        async with asyncprawcore.session(authorizer=authorizer) as session:
             data = await session.request(method="GET", path="/api/v1/me/friends")
 
         for friend in data["data"]["children"]:
