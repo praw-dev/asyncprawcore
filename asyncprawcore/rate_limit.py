@@ -35,25 +35,28 @@ class RateLimiter:
     @asynccontextmanager
     async def call(
         self,
+        *,
+        method: str,
         # async context manager
         request_function: Callable[..., AbstractAsyncContextManager[ClientResponse]],
         set_header_callback: Callable[[], Awaitable[dict[str, str]]],
-        *args: Any,
+        url: str,
         **kwargs: Any,
     ) -> AsyncGenerator[ClientResponse]:
         """Rate limit the call to ``request_function``.
 
+        :param method: The HTTP method of the request.
         :param request_function: A function call that returns an HTTP response object.
         :param set_header_callback: A callback function used to set the request headers.
             This callback is called after any necessary sleep time occurs.
-        :param args: The positional arguments to ``request_function``.
+        :param url: The URL of the request.
         :param kwargs: The keyword arguments to ``request_function``.
 
         """
         await self.delay()
         kwargs["headers"] = await set_header_callback()
-        async with request_function(*args, **kwargs) as response:
-            self.update(response.headers)
+        async with request_function(method, url, **kwargs) as response:
+            self.update(response_headers=response.headers)
             yield response
 
     async def delay(self) -> None:
@@ -67,7 +70,7 @@ class RateLimiter:
         log.debug(message)
         await asyncio.sleep(sleep_seconds)
 
-    def update(self, response_headers: Mapping[str, str]) -> None:
+    def update(self, *, response_headers: Mapping[str, str]) -> None:
         """Update the state of the rate limiter based on the response headers.
 
         This method should only be called following an HTTP request to Reddit.

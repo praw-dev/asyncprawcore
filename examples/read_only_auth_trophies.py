@@ -23,15 +23,15 @@ async def main():
     requestor = asyncprawcore.Requestor(user_agent="asyncprawcore_read_only_example")
     try:
         authenticator = asyncprawcore.TrustedAuthenticator(
-            requestor,
-            os.environ["PRAWCORE_CLIENT_ID"],
-            os.environ["PRAWCORE_CLIENT_SECRET"],
+            client_id=os.environ["PRAWCORE_CLIENT_ID"],
+            client_secret=os.environ["PRAWCORE_CLIENT_SECRET"],
+            requestor=requestor,
         )
-        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator=authenticator)
         await authorizer.refresh()
 
         user = sys.argv[1]
-        async with asyncprawcore.session(authorizer) as session:
+        async with asyncprawcore.session(authorizer=authorizer) as session:
             data = await session.request(method="GET", path=f"/api/v1/user/{user}/trophies")
 
         for trophy in data["data"]["trophies"]:

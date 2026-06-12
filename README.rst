@@ -69,15 +69,17 @@ appropriate values for your application.
 
     async def main():
         authenticator = asyncprawcore.TrustedAuthenticator(
-            asyncprawcore.Requestor(user_agent="YOUR_VALID_USER_AGENT"),
-            os.environ["PRAWCORE_CLIENT_ID"],
-            os.environ["PRAWCORE_CLIENT_SECRET"],
+            client_id=os.environ["PRAWCORE_CLIENT_ID"],
+            client_secret=os.environ["PRAWCORE_CLIENT_SECRET"],
+            requestor=asyncprawcore.Requestor(user_agent="YOUR_VALID_USER_AGENT"),
         )
-        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator)
+        authorizer = asyncprawcore.ReadOnlyAuthorizer(authenticator=authenticator)
         await authorizer.refresh()
 
-        async with asyncprawcore.session(authorizer) as session:
-            pprint.pprint(await session.request("GET", "/api/v1/user/bboe/trophies"))
+        async with asyncprawcore.session(authorizer=authorizer) as session:
+            pprint.pprint(
+                await session.request(method="GET", path="/api/v1/user/bboe/trophies")
+            )
 
 
     if __name__ == "__main__":

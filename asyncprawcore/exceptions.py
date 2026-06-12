@@ -43,7 +43,7 @@ class InvalidInvocation(AsyncPrawcoreException):
 class OAuthException(AsyncPrawcoreException):
     """Indicate that there was an OAuth2 related error with the request."""
 
-    def __init__(self, response: aiohttp.ClientResponse, error: str, description: str | None = None) -> None:
+    def __init__(self, response: aiohttp.ClientResponse, /, error: str, description: str | None = None) -> None:
         """Initialize a OAuthException instance.
 
         :param response: A :class:`aiohttp.ClientResponse` instance.
@@ -87,7 +87,7 @@ class RequestException(AsyncPrawcoreException):
 class ResponseException(AsyncPrawcoreException):
     """Indicate that there was an error with the completed HTTP request."""
 
-    def __init__(self, response: aiohttp.ClientResponse) -> None:
+    def __init__(self, response: aiohttp.ClientResponse, /) -> None:
         """Initialize a ResponseException instance.
 
         :param response: A :class:`aiohttp.ClientResponse` instance.
@@ -133,7 +133,7 @@ class Redirect(ResponseException):
 
     """
 
-    def __init__(self, response: aiohttp.ClientResponse) -> None:
+    def __init__(self, response: aiohttp.ClientResponse, /) -> None:
         """Initialize a Redirect exception instance.
 
         :param response: A :class:`aiohttp.ClientResponse` instance containing a
@@ -159,7 +159,7 @@ class ServerError(ResponseException):
 class SpecialError(ResponseException):
     """Indicate syntax or spam-prevention issues."""
 
-    def __init__(self, response: aiohttp.ClientResponse, resp_dict: dict[str, object]) -> None:
+    def __init__(self, response: aiohttp.ClientResponse, /, resp_dict: dict[str, object]) -> None:
         """Initialize a SpecialError exception instance.
 
         :param response: A :class:`aiohttp.ClientResponse` instance containing a message
@@ -183,7 +183,7 @@ class TooLarge(ResponseException):
 class TooManyRequests(ResponseException):
     """Indicate that the user has sent too many requests in a given amount of time."""
 
-    def __init__(self, response: aiohttp.ClientResponse) -> None:
+    def __init__(self, response: aiohttp.ClientResponse, /) -> None:
         """Initialize a TooManyRequests exception instance.
 
         :param response: A :class:`aiohttp.ClientResponse` instance that may contain a
