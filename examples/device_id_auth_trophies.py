@@ -20,7 +20,7 @@ async def main():
         return 1
 
     authenticator = asyncprawcore.UntrustedAuthenticator(
-        asyncprawcore.Requestor("asyncprawcore_device_id_auth_example"),
+        asyncprawcore.Requestor(user_agent="asyncprawcore_device_id_auth_example"),
         os.environ["PRAWCORE_CLIENT_ID"],
     )
     authorizer = asyncprawcore.DeviceIDAuthorizer(authenticator)
@@ -28,7 +28,7 @@ async def main():
 
     user = sys.argv[1]
     async with asyncprawcore.session(authorizer) as session:
-        data = await session.request("GET", f"/api/v1/user/{user}/trophies")
+        data = await session.request(method="GET", path=f"/api/v1/user/{user}/trophies")
 
     for trophy in data["data"]["trophies"]:
         description = trophy["data"]["description"]

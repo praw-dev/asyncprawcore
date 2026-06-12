@@ -80,7 +80,7 @@ class TestSession(UnitTest):
         response_mock = MagicMock(spec=aiohttp.client.ClientResponse, status=200, headers={})
         response_mock.json = json_mock
         session_instance.request.return_value.__aenter__.return_value = response_mock
-        requestor = asyncprawcore.Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
         authenticator = asyncprawcore.TrustedAuthenticator(
             requestor,
             pytest.placeholders.client_id,
@@ -94,7 +94,7 @@ class TestSession(UnitTest):
 
         with pytest.raises(RequestException) as exception_info:
             async with asyncprawcore.Session(authorizer) as session:
-                await session.request("GET", "/")
+                await session.request(method="GET", path="/")
         message = (
             "<HTTPRequestTimeout Request Timeout not prepared>"
             if isinstance(exception, HTTPRequestTimeout)
@@ -112,7 +112,7 @@ class TestSession(UnitTest):
     async def test_request__with_invalid_authorizer(self, requestor):
         session = asyncprawcore.Session(InvalidAuthorizer(requestor))
         with pytest.raises(asyncprawcore.InvalidInvocation):
-            await session.request("get", "/")
+            await session.request(method="get", path="/")
 
 
 class TestSessionFunction(UnitTest):

@@ -69,7 +69,7 @@ appropriate values for your application.
 
     async def main():
         authenticator = asyncprawcore.TrustedAuthenticator(
-            asyncprawcore.Requestor("YOUR_VALID_USER_AGENT"),
+            asyncprawcore.Requestor(user_agent="YOUR_VALID_USER_AGENT"),
             os.environ["PRAWCORE_CLIENT_ID"],
             os.environ["PRAWCORE_CLIENT_SECRET"],
         )

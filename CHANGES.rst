@@ -36,6 +36,14 @@ asyncprawcore follows `semantic versioning <https://semver.org/>`_.
   :meth:`.Session.request` to reflect the values it already accepts at runtime (for
   example a non-dict ``data`` body, a ``list`` ``json`` payload, and any ``IO`` file
   object), so that callers no longer need to cast these arguments.
+- Make the parameters of :meth:`.BaseAuthenticator.authorize_url` keyword-only, so that
+  callers must pass ``duration``, ``scopes``, and ``state`` (and any other arguments) by
+  name.
+- Make the ``only_access`` argument of :meth:`.Authorizer.revoke` keyword-only.
+- Make the parameters of :class:`.Requestor` keyword-only, so that callers must pass
+  ``user_agent`` (and any other arguments) by name.
+- Make the parameters of :meth:`.Session.request` keyword-only, so that callers must
+  pass ``method`` and ``path`` (and any other arguments) by name.
 
 **Removed**
 

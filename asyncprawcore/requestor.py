@@ -28,33 +28,34 @@ class Requestor:
             raise AttributeError(attribute)
         return getattr(self._http, attribute)
 
-    def __init__(  # noqa: PLR0917
+    def __init__(
         self,
-        user_agent: str,
+        *,
+        loop: asyncio.AbstractEventLoop | None = None,
         oauth_url: str = "https://oauth.reddit.com",
         reddit_url: str = "https://www.reddit.com",
         session: aiohttp.ClientSession | None = None,
-        loop: asyncio.AbstractEventLoop | None = None,
         timeout: float = TIMEOUT,
+        user_agent: str,
     ) -> None:
         """Create an instance of the Requestor class.
 
-        :param user_agent: The user-agent for your application. Please follow Reddit's
-            user-agent guidelines: https://github.com/reddit/reddit/wiki/API#rules
-        :param oauth_url: The URL used to make OAuth requests to the Reddit site
-            (default: ``"https://oauth.reddit.com"``).
-        :param reddit_url: The URL used when obtaining access tokens (default:
-            ``"https://www.reddit.com"``).
-        :param session: A session instance to handle requests, compatible with
-            ``aiohttp.ClientSession()`` (default: ``None``).
         :param loop: The event loop to run the requestor on (default: ``None``).
 
             .. Deprecated:: 2.5.0
 
                 The ``loop`` argument is deprecated and will be ignored.
 
+        :param oauth_url: The URL used to make OAuth requests to the Reddit site
+            (default: ``"https://oauth.reddit.com"``).
+        :param reddit_url: The URL used when obtaining access tokens (default:
+            ``"https://www.reddit.com"``).
+        :param session: A session instance to handle requests, compatible with
+            ``aiohttp.ClientSession()`` (default: ``None``).
         :param timeout: How many seconds to wait for the server to send data before
             giving up (default: ``asyncprawcore.const.TIMEOUT``).
+        :param user_agent: The user-agent for your application. Please follow Reddit's
+            user-agent guidelines: https://github.com/reddit/reddit/wiki/API#rules
 
         """
         # Imported locally to avoid an import cycle, with __init__

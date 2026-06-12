@@ -106,7 +106,7 @@ class Session:
     """The low-level connection interface to Reddit's API."""
 
     RETRY_EXCEPTIONS = (ConnectionError, HTTPRequestTimeout)
-    RETRY_STATUSES = {
+    RETRY_STATUSES: ClassVar = {
         520,
         522,
         codes["bad_gateway"],
@@ -115,7 +115,7 @@ class Session:
         codes["request_timeout"],
         codes["service_unavailable"],
     }
-    STATUS_EXCEPTIONS = {
+    STATUS_EXCEPTIONS: ClassVar = {
         codes["bad_gateway"]: ServerError,
         codes["bad_request"]: BadRequest,
         codes["conflict"]: Conflict,
@@ -137,7 +137,7 @@ class Session:
         520: ServerError,
         522: ServerError,
     }
-    SUCCESS_STATUSES = {codes["accepted"], codes["created"], codes["ok"]}
+    SUCCESS_STATUSES: ClassVar = {codes["accepted"], codes["created"], codes["ok"]}
 
     @staticmethod
     def _log_request(
@@ -226,8 +226,9 @@ class Session:
         )
 
     @asynccontextmanager
-    async def _make_request(  # noqa: PLR0917
+    async def _make_request(
         self,
+        *,
         data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
         json: dict[str, object] | list[object] | None,
         method: str,
@@ -396,26 +397,27 @@ class Session:
         """Close the session and perform any clean up."""
         await self.requestor.close()
 
-    async def request(  # noqa: PLR0917
+    async def request(
         self,
-        method: str,
-        path: str,
+        *,
         data: dict[str, object] | bytes | IO[Any] | str | None = None,
         files: dict[str, IO[Any]] | None = None,
         json: dict[str, object] | list[object] | None = None,
+        method: str,
         params: Mapping[str, object] | None = None,
+        path: str,
         timeout: float = TIMEOUT,
     ) -> dict[str, object] | str | None:
         """Return the json content from the resource at ``path``.
 
-        :param method: The request verb. E.g., ``"GET"``, ``"POST"``, ``"PUT"``.
-        :param path: The path of the request. This path will be combined with the
-            ``oauth_url`` of the Requestor.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
             request.
         :param files: Dictionary, mapping ``filename`` to file-like object.
         :param json: Object to be serialized to JSON in the body of the request.
+        :param method: The request verb. E.g., ``"GET"``, ``"POST"``, ``"PUT"``.
         :param params: The query parameters to send with the request.
+        :param path: The path of the request. This path will be combined with the
+            ``oauth_url`` of the Requestor.
         :param timeout: Specifies a particular timeout, in seconds.
 
         Automatically refreshes the access token if it becomes invalid and a refresh

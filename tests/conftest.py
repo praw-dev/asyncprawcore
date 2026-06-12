@@ -22,7 +22,7 @@ def patch_sleep(monkeypatch):
 @pytest.fixture
 async def requestor():
     """Return path to image."""
-    _requestor = Requestor("asyncprawcore:test (by u/Lil_SpazJoekp)")
+    _requestor = Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
     _requestor.headers = {"Accept-Encoding": "identity", **_requestor.headers}
     yield _requestor
     await _requestor.close()
