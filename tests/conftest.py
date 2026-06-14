@@ -9,6 +9,11 @@ import pytest
 from asyncprawcore import Requestor, TrustedAuthenticator, UntrustedAuthenticator
 
 
+class Placeholders:
+    def __init__(self, _dict):
+        self.__dict__ = _dict
+
+
 @pytest.fixture(autouse=True)
 def patch_sleep(monkeypatch):
     """Auto patch sleep to speed up tests."""
@@ -52,17 +57,6 @@ def env_default(key):
     )
 
 
-def pytest_configure(config):
-    pytest.placeholders = Placeholders(placeholders)
-    config.addinivalue_line("markers", "cassette_name: Name of cassette to use for test.")
-    config.addinivalue_line("markers", "recorder_kwargs: Arguments to pass to the recorder.")
-
-
-class Placeholders:
-    def __init__(self, _dict):
-        self.__dict__ = _dict
-
-
 placeholders = {
     x: env_default(x)
     for x in [
@@ -77,6 +71,13 @@ placeholders = {
         "username",
     ]
 }
+
+
+def pytest_configure(config):
+    pytest.placeholders = Placeholders(placeholders)
+    config.addinivalue_line("markers", "cassette_name: Name of cassette to use for test.")
+    config.addinivalue_line("markers", "recorder_kwargs: Arguments to pass to the recorder.")
+
 
 if (
     placeholders["client_id"] != "fake_client_id" and placeholders["client_secret"] == "fake_client_secret"

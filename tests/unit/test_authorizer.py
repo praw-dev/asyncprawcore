@@ -88,7 +88,7 @@ class TestImplicitAuthorizer(UnitTest):
     def test_initialize__with_trusted_authenticator(self, trusted_authenticator):
         with pytest.raises(asyncprawcore.InvalidInvocation):
             asyncprawcore.ImplicitAuthorizer(
-                authenticator=trusted_authenticator, access_token=None, expires_in=None, scope=None
+                access_token=None, authenticator=trusted_authenticator, expires_in=None, scope=None
             )
 
 
@@ -101,4 +101,4 @@ class TestReadOnlyAuthorizer(UnitTest):
 class TestScriptAuthorizer(UnitTest):
     def test_initialize__with_untrusted_authenticator(self, untrusted_authenticator):
         with pytest.raises(asyncprawcore.InvalidInvocation):
-            asyncprawcore.ScriptAuthorizer(authenticator=untrusted_authenticator, username=None, password=None)
+            asyncprawcore.ScriptAuthorizer(authenticator=untrusted_authenticator, password=None, username=None)

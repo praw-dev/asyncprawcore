@@ -231,8 +231,8 @@ class TestScriptAuthorizer(IntegrationTest):
     async def test_refresh(self, trusted_authenticator):
         authorizer = asyncprawcore.ScriptAuthorizer(
             authenticator=trusted_authenticator,
-            username=pytest.placeholders.username,
             password=pytest.placeholders.password,
+            username=pytest.placeholders.username,
         )
         assert authorizer.access_token is None
         assert authorizer.scopes is None
@@ -246,9 +246,9 @@ class TestScriptAuthorizer(IntegrationTest):
     async def test_refresh__with_invalid_otp(self, trusted_authenticator):
         authorizer = asyncprawcore.ScriptAuthorizer(
             authenticator=trusted_authenticator,
-            username=pytest.placeholders.username,
             password=pytest.placeholders.password,
             two_factor_callback=lambda: "fake",
+            username=pytest.placeholders.username,
         )
         with pytest.raises(asyncprawcore.OAuthException):
             await authorizer.refresh()
@@ -256,7 +256,7 @@ class TestScriptAuthorizer(IntegrationTest):
 
     async def test_refresh__with_invalid_username_or_password(self, trusted_authenticator):
         authorizer = asyncprawcore.ScriptAuthorizer(
-            authenticator=trusted_authenticator, username=pytest.placeholders.username, password="invalidpassword"
+            authenticator=trusted_authenticator, password="invalidpassword", username=pytest.placeholders.username
         )
         with pytest.raises(asyncprawcore.OAuthException):
             await authorizer.refresh()
@@ -266,9 +266,9 @@ class TestScriptAuthorizer(IntegrationTest):
         scope_list = {"adsedit", "adsread", "creddits", "history"}
         authorizer = asyncprawcore.ScriptAuthorizer(
             authenticator=trusted_authenticator,
-            username=pytest.placeholders.username,
             password=pytest.placeholders.password,
             scopes=scope_list,
+            username=pytest.placeholders.username,
         )
         await authorizer.refresh()
 
@@ -279,9 +279,9 @@ class TestScriptAuthorizer(IntegrationTest):
     async def test_refresh__with_valid_otp(self, trusted_authenticator):
         authorizer = asyncprawcore.ScriptAuthorizer(
             authenticator=trusted_authenticator,
-            username=pytest.placeholders.username,
             password=pytest.placeholders.password,
             two_factor_callback=lambda: "000000",
+            username=pytest.placeholders.username,
         )
         assert authorizer.access_token is None
         assert authorizer.scopes is None
@@ -299,9 +299,9 @@ class TestScriptAuthorizer(IntegrationTest):
 
         authorizer = asyncprawcore.ScriptAuthorizer(
             authenticator=trusted_authenticator,
-            username=pytest.placeholders.username,
             password=pytest.placeholders.password,
             two_factor_callback=otp_function,
+            username=pytest.placeholders.username,
         )
         assert authorizer.access_token is None
         assert authorizer.scopes is None

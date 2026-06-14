@@ -33,7 +33,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = {}
         session.closed = False
-        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        requestor = asyncprawcore.Requestor(session=session, user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
         async with requestor.request("get", "https://reddit.com"):
             pass
         assert session.request.call_args.kwargs["timeout"].total == TIMEOUT
@@ -45,7 +45,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = {}
         session.closed = False
-        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        requestor = asyncprawcore.Requestor(session=session, user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
         async with requestor.request("get", "https://reddit.com", timeout=5):
             pass
         assert session.request.call_args.kwargs["timeout"].total == 5
@@ -65,7 +65,7 @@ class TestRequestor(UnitTest):
         session.request.return_value = return_of_request
         session.headers = headers
         session.closed = False
-        requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)", session=session)
+        requestor = asyncprawcore.Requestor(session=session, user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")
 
         assert (
             requestor._http.headers["User-Agent"]
