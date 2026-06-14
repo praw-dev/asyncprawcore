@@ -104,7 +104,7 @@ class TestSession(UnitTest):
                 "scope": "",
             },
         )
-        response_mock = MagicMock(spec=aiohttp.client.ClientResponse, status=200, headers={})
+        response_mock = MagicMock(headers={}, spec=aiohttp.client.ClientResponse, status=200)
         response_mock.json = json_mock
         session_instance.request.return_value.__aenter__.return_value = response_mock
         requestor = asyncprawcore.Requestor(user_agent="asyncprawcore:test (by u/Lil_SpazJoekp)")

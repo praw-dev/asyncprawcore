@@ -2,16 +2,6 @@
 
 from __future__ import annotations
 
-
-def _make_into_dict(tupledict: dict[int, tuple[str, ...]]) -> dict[str, int]:
-    """Transform a ``value, keys`` tupledict."""
-    newdict: dict[str, int] = {}
-    for value, keys in tupledict.items():
-        for key in keys:
-            newdict[key] = value
-    return newdict
-
-
 _codes = {
     # Informational.
     100: ("continue",),
@@ -94,5 +84,15 @@ _codes = {
     510: ("not_extended",),
     511: ("network_authentication_required", "network_auth", "network_authentication"),
 }
+
+
+def _make_into_dict(tupledict: dict[int, tuple[str, ...]]) -> dict[str, int]:
+    """Transform a ``value, keys`` tupledict."""
+    newdict: dict[str, int] = {}
+    for value, keys in tupledict.items():
+        for key in keys:
+            newdict[key] = value
+    return newdict
+
 
 codes = _make_into_dict(_codes)
