@@ -32,7 +32,7 @@ __all__ = [
 ]
 
 
-class AsyncPrawcoreException(Exception):  # noqa: N818
+class AsyncPrawcoreException(Exception):  # ruff:ignore[error-suffix-on-exception-name]
     """Base exception class for exceptions that occur within this package."""
 
 

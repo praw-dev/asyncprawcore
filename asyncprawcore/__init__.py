@@ -12,7 +12,7 @@ from asyncprawcore.auth import (
     TrustedAuthenticator,
     UntrustedAuthenticator,
 )
-from asyncprawcore.exceptions import *  # noqa: F403
+from asyncprawcore.exceptions import *  # ruff:ignore[undefined-local-with-import-star]
 from asyncprawcore.requestor import Requestor
 from asyncprawcore.sessions import Session, session
 
