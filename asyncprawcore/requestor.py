@@ -50,7 +50,7 @@ class Requestor:
 
         """
         # Imported locally to avoid an import cycle, with __init__
-        from asyncprawcore import __version__  # noqa: PLC0415
+        from asyncprawcore import __version__  # ruff:ignore[import-outside-top-level]
 
         # ``user_agent`` is typed ``str``, but validate at runtime for untyped callers.
         if (

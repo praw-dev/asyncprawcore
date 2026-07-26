@@ -90,7 +90,7 @@ class FiniteRetryStrategy(RetryStrategy):
     def _sleep_seconds(self) -> float | None:
         if self.retries < self.DEFAULT_RETRIES:
             base = 0 if self.retries > 0 else 2
-            return base + 2 * random.random()  # noqa: S311
+            return base + 2 * random.random()  # ruff:ignore[suspicious-non-cryptographic-random-usage]
         return None
 
     def consume_available_retry(self) -> FiniteRetryStrategy:
@@ -308,7 +308,7 @@ class Session:
         """
         return self._preprocess_dict(params)
 
-    async def _request_with_retries(  # noqa: PLR0912
+    async def _request_with_retries(  # ruff:ignore[too-many-branches]
         self,
         *,
         data: list[tuple[str, object]] | bytes | IO[Any] | str | None,
