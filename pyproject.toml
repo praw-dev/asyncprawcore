@@ -25,11 +25,11 @@ test = [
 ]
 type = [
   "pyright>=1.1.410",
-  {include-group = "test"}
+  { include-group = "test" }
 ]
 
 [project]
-authors = [{email = "lilspazjoekp@gmail.com", name = "Joel Payne"}]
+authors = [{ email = "lilspazjoekp@gmail.com", name = "Joel Payne" }]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -52,10 +52,10 @@ dependencies = [
 description = "Low-level asynchronous communication layer for Async PRAW 7+."
 dynamic = ["version"]
 keywords = ["praw", "reddit", "api", "async", "asynchronous", "asyncpraw"]
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE.txt" }
 maintainers = [
-  {email = "lilspazjoekp@gmail.com", name = "Joel Payne"},
-  {email = "bbzbryce@gmail.com", name = "Bryce Boe"}
+  { email = "lilspazjoekp@gmail.com", name = "Joel Payne" },
+  { email = "bbzbryce@gmail.com", name = "Bryce Boe" }
 ]
 name = "asyncprawcore"
 readme = "README.rst"
